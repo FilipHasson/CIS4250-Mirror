@@ -1,0 +1,9 @@
+FROM python:3.6-alpine
+EXPOSE 5000
+WORKDIR /code
+RUN apk add --no-cache build-base
+RUN apk add --no-cache postgresql-dev
+COPY requirements.txt .
+RUN pip install --no-cache-dir --quiet -r requirements.txt
+COPY . .
+CMD gunicorn --bind :5000 wsgi:api

@@ -1,0 +1,71 @@
+require 'yaml'
+require 'fileutils'
+require 'io/console'
+
+Rake::TaskManager.record_task_metadata = true
+
+
+## CONFIGURATION ---------------------------------------------------------------
+
+# Please make local changes to the generated config.yml file, not to this section
+begin
+    CONFIG = YAML.load_file('config.yml')
+rescue
+    CONFIG = {
+        'deployment' => 'development',
+        'detatch' => 'true',
+        'db_username' => nil,
+        'db_password' => nil,
+        'db_host' => nil
+    }
+    File.write('config.yml', CONFIG.to_yaml)
+end
+
+
+## TASKS -----------------------------------------------------------------------
+
+task :default do
+    puts 'Tasks'.bold
+    Rake.application.tasks.each do |t|
+      print "  - #{t.name_with_args}: "
+      puts t.comment
+    end
+end
+
+desc ''
+task :build do
+    docker_compose("build")
+end
+
+desc ''
+task :up do
+    docker_compose("up" + " -d" if CONFIG['detatch'])
+end
+
+desc ''
+task :down do
+    docker_compose('down')
+end
+
+
+## HELPER FUNCTIONS ------------------------------------------------------------
+
+def docker_compose(command)
+    directory = "./deployments/#{CONFIG['deployment']}"
+
+    puts "Running 'docker-compose #{command}".yellow.bold
+    puts "... from '#{directory}"
+    puts "... with "
+    Dir.chdir(directory) do
+        system "docker-compose " command
+    end
+end
+
+class String
+    def colorize(color_code) "\e[#{color_code}m#{self}\e[0m" end
+    def red; colorize(31) end
+    def green; colorize(32) end
+    def yellow; colorize(33) end
+    def bold; colorize(1) end
+    def dark; colorize(2) end
+end

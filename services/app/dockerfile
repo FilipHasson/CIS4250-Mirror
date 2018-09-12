@@ -1,0 +1,7 @@
+FROM node:10.9-alpine
+WORKDIR /code
+COPY package.json .
+COPY package-lock.json .
+RUN npm install --loglevel error
+COPY . .
+RUN npm run build

@@ -1,0 +1,6 @@
+---
+deployment: development
+detatch: 'true'
+db_username: 
+db_password: 
+db_host: 

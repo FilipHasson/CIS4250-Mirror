@@ -1,0 +1,39 @@
+# Production deployment
+version: '3'
+services:
+  api:
+    build: ${SERVICES_DIR}/api
+    restart: on-failure
+    links:
+      - db:db
+    environment:
+      - DEPLOYMENT=${DEPLOYMENT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  app:
+    build: ${SERVICES_DIR}/app
+    volumes:
+      - dist:/code/dist
+  db:
+    build: ${SERVICES_DIR}/db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+  http:
+    build: ${SERVICES_DIR}/http
+    restart: on-failure
+    ports:
+      - 80:80
+    links:
+      - api:api
+    volumes:
+      - dist:/dist
+      - ${SERVICES_DIR}/http/${DEPLOYMENT}.conf:/etc/nginx/conf.d/http.conf
+volumes:
+  pgdata:
+  dist:

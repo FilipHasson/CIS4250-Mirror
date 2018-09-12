@@ -1,0 +1,24 @@
+# Development overrides
+version: "3"
+services:
+  api:
+    volumes:
+      - ./api:/code # Enables live changes
+    environment:
+      - FLASK_ENV=development
+    command: flask run -h 0.0.0.0 # Use flask dev server instead of gunicorn
+    ports:
+      - 8081:5000 # Exposes development server to host
+  app:
+    volumes:
+      - ./app/src:/code/src # Enables hot reloading
+    command: npm run serve # Use Vue's dev server instead of nginx
+    ports:
+      - 8080:8080 # Exposes dev server to host
+    restart: always
+  db:
+    ports:
+      - 5432:5432 # Exposes postgres db to host
+  http:
+    volumes:
+      - ./http/http-dev.conf:/etc/nginx/conf.d/http.conf

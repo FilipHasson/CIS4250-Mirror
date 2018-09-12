@@ -1,0 +1,52 @@
+# Development deployment
+version: '3'
+services:
+  api:
+    build: ${SERVICES_DIR}/api
+    restart: on-failure
+    links:
+      - db:db
+    environment:
+      - DEPLOYMENT=${DEPLOYMENT}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: flask run -h 0.0.0.0 # Use flask dev server instead of gunicorn
+    ports:
+      - 8081:5000 # Exposes development server to host
+    volumes:
+      - ${SERVICES_DIR}/api:/code # Enable live changes
+  app:
+    build: ${SERVICES_DIR}/app
+    volumes:
+      - dist:/code/dist
+      - ${SERVICES_DIR}/app/src:/code/src # Enables hot reloading
+    command: npm run serve # Use Vue's dev server instead of nginx
+    ports:
+      - 8080:8080 # Exposes dev server to host
+    restart: always
+  db:
+    build: ${SERVICES_DIR}/db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - 5432:5432 # Exposes postgres db to host
+  http:
+    build: ${SERVICES_DIR}/http
+    restart: on-failure
+    ports:
+      - 80:80
+    links:
+      - api:api
+      - app:app
+    volumes:
+      - dist:/dist
+      - ${SERVICES_DIR}/http/${DEPLOYMENT}.conf:/etc/nginx/conf.d/http.conf
+volumes:
+  pgdata:
+  dist:
