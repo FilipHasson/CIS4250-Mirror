@@ -27,22 +27,24 @@ end
 task :default do
     puts 'Tasks'.bold
     Rake.application.tasks.each do |t|
-      print "  - #{t.name_with_args}: "
+        next if t.name == 'default'
+      print "  - rake #{t.name_with_args}\t: "
       puts t.comment
     end
 end
 
-desc ''
+desc 'Builds service images'
 task :build do
     docker_compose("build")
 end
 
-desc ''
+desc 'Brings up services'
 task :up do
-    docker_compose("up" + " -d" if CONFIG['detatch'])
+    command = "up" + " -d" if CONFIG['detatch']
+    docker_compose(command)
 end
 
-desc ''
+desc 'Brings down services'
 task :down do
     docker_compose('down')
 end
@@ -57,7 +59,7 @@ def docker_compose(command)
     puts "... from '#{directory}"
     puts "... with "
     Dir.chdir(directory) do
-        system "docker-compose " command
+        system "docker-compose " + command
     end
 end
 
