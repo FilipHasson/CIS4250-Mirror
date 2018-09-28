@@ -7,7 +7,7 @@ services:
     links:
       - db:db
     environment:
-      - DEPLOYMENT=${DEPLOYMENT}
+      - FLASK_ENV=development
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_USER=${POSTGRES_USER}
