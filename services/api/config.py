@@ -1,9 +1,9 @@
 from os import environ as env
 
-POSTGRES_DB = env.get("POSTGRES_DB", "docker")
+POSTGRES_DB = env.get("POSTGRES_DB", "postgres")
 POSTGRES_HOST = env.get("POSTGRES_HOST", "localhost")
-POSTGRES_USER = env.get("POSTGRES_USER", "docker")
-POSTGRES_PASSWORD = env.get("POSTGRES_PASSWORD", "docker")
+POSTGRES_USER = env.get("POSTGRES_USER", "postgres")
+POSTGRES_PASSWORD = env.get("POSTGRES_PASSWORD", "postgres")
 DB_CONFIG = f"{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}/{POSTGRES_DB}"
 
 class Config:
