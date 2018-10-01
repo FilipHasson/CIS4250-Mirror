@@ -2,12 +2,12 @@
 .config.yml
 .DS_Store
 .idea
-.iml
 .mtj.tmp
 .project
 .vscode
 *.class
 *.ear
+*.iml
 *.jar
 *.prefs
 *.war
