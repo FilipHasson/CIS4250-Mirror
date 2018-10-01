@@ -7,16 +7,14 @@ services:
     links:
       - db:db
     environment:
-      - FLASK_ENV=development
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    command: flask run -h 0.0.0.0 # Use flask dev server instead of gunicorn
     ports:
-      - 8081:5000 # Exposes development server to host
-    volumes:
-      - ${SERVICES_DIR}/api:/code # Enable live changes
+      - 5005:5005 # Exposes remote debugging port
+      - 8000:8080 # Exposes dev server to host
+    command: mvn spring-boot:run -Drun.jvmArguments="${JVM_ARGUMENTS}"
   app:
     build: ${SERVICES_DIR}/app
     volumes:
@@ -24,7 +22,7 @@ services:
       - ${SERVICES_DIR}/app/src:/code/src # Enables hot reloading
     command: npm run serve # Use Vue's dev server instead of nginx
     ports:
-      - 8080:8080 # Exposes dev server to host
+      - 8001:8080 # Exposes dev server to host
     restart: always
   db:
     build: ${SERVICES_DIR}/db
@@ -46,7 +44,7 @@ services:
       - app:app
     volumes:
       - dist:/dist
-      - ${SERVICES_DIR}/http/${DEPLOYMENT}.conf:/etc/nginx/conf.d/http.conf
+      - ${SERVICES_DIR}/http/development.conf:/etc/nginx/conf.d/http.conf
 volumes:
   pgdata:
   dist:

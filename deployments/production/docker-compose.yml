@@ -11,6 +11,7 @@ services:
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    command: mvn spring-boot:run -Drun.jvmArguments="${JVM_ARGUMENTS}"
   app:
     build: ${SERVICES_DIR}/app
     volumes:
@@ -32,7 +33,7 @@ services:
       - api:api
     volumes:
       - dist:/dist
-      - ${SERVICES_DIR}/http/${DEPLOYMENT}.conf:/etc/nginx/conf.d/http.conf
+      - ${SERVICES_DIR}/http/production.conf:/etc/nginx/conf.d/http.conf
 volumes:
   pgdata:
   dist:
