@@ -10,6 +10,7 @@
 *.iml
 *.jar
 *.prefs
+*.pyc
 *.war
 dist/
 hs_err_pid*
