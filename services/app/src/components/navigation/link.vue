@@ -1,13 +1,12 @@
-<template>
-<li><a href="{page}">{text}</a></li>
-</template>
-
 <script>
 export default {
   name: 'navigation-link'
 }
 </script>
 
-<style lang="scss">
+<template>
+<li><a href="{page}">{text}</a></li>
+</template>
 
+<style lang="scss">
 </style>

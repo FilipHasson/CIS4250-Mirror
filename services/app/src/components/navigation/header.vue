@@ -1,15 +1,5 @@
-<template>
-  <nav class="navigation-header">
-    <ul>
-      <li v-for="route in routes" :key=route.id>
-        <router-link :to="route.path">{{route.name}}</router-link>
-      </li>
-    </ul>
-  </nav>
-</template>
-
 <script>
-import { routes } from '@/router'
+import { routes } from '@/utils/router'
 
 export default {
   data: function () {
@@ -19,6 +9,16 @@ export default {
   }
 }
 </script>
+
+<template>
+  <nav class="navigation-header">
+    <ul>
+      <li v-for="route in routes" :key=route.id>
+        <router-link :to="route.path">{{route.name}}</router-link>
+      </li>
+    </ul>
+  </nav>
+</template>
 
 <style lang="scss">
 nav.navigation-header {
