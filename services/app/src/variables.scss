@@ -1,6 +1,4 @@
-// general
-
-// colours ---------------------------------------------------------------------
+// colour ----------------------------------------------------------------------
 
 $colour-dark: hsl(0, 0%, 30%);
 $colour-light: #a3a3a3;
@@ -10,21 +8,6 @@ $colour-background: rgb(235, 226, 224);
 
 
 // fonts -----------------------------------------------------------------------
-
-html {
-  font-size: 18px;
-}
-
-body {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-family: sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-}
 
 @font-face {
   font-family: "Open Sans";
