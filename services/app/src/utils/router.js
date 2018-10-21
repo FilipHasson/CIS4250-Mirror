@@ -1,45 +1,38 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import HomePage from '@/pages/home'
-import ExplorePage from '@/pages/explore'
-import RecipesPage from '@/pages/recipes'
-import GoalsPage from '@/pages/goals'
-import PlanPage from '@/pages/plan'
-import AccountPage from '@/pages/account'
-
 Vue.use(Router)
 
 // Extries listed here are also placed in nav bar
 export const routes = [
   {
-    component: HomePage,
+    component: () => import('@/pages/home'),
     path: '/',
     name: 'YUMM'
   },
   {
-    component: ExplorePage,
+    component: () => import('@/pages/explore'),
     path: '/explore',
     name: 'Explore'
   },
   {
-    component: RecipesPage,
+    component: () => import('@/pages/recipes'),
     path: '/recipes',
     name: 'Recipes'
   },
   {
-    component: GoalsPage,
+    component: () => import('@/pages/goals'),
     path: '/goals',
     name: 'Goals'
   },
   {
+    component: () => import('@/pages/plan'),
     path: '/plan',
-    component: PlanPage,
     name: 'Meal Plan'
   },
   {
+    component: () => import('@/pages/account'),
     path: '/account',
-    component: AccountPage,
     name: 'Account'
   }
 ]

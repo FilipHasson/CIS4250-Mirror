@@ -1,9 +1,9 @@
 import Vue from 'vue'
-import App from '@/app.vue'
+import App from './app'
 
-import router from '@/router'
-import store from '@/store'
-import '@/fonts'
+import store from '@/utils/store'
+import router from '@/utils/router'
+import '@/utils/fonts'
 
 Vue.config.productionTip = false
 
