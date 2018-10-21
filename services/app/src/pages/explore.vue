@@ -1,33 +1,32 @@
-<template>
-  <div id="recipes">
-    <PostCard />
-    <PostCard />
-    <PostCard />
-    <PostCard />
-    <PostCard />
-    <PostCard />
-    <PostCard />
-  </div>
-</template>
-
 <style lang="scss">
-#recipes {
+#explore {
   display: grid;
   grid-template-columns: repeat(auto-fit, 500px);
   grid-template-rows: auto;
   grid-gap: 1rem;
-  padding: 1rem;
   justify-content: center;
 }
 </style>
 
+<template>
+  <div id="explore" class="page">
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+    <RecipeCard />
+  </div>
+</template>
+
 <script>
-import PostCard from '@/components/cards/post'
+import RecipeCard from '@/components/layout/recipe/card'
 
 export default {
   name: 'CategoryPage',
   components: {
-    PostCard
+    RecipeCard
   }
 }
 </script>

@@ -1,3 +1,3 @@
 <template>
-    <div>Meal Plan</div>
+  <div>Meal Plan</div>
 </template>
