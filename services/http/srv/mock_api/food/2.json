@@ -1,0 +1,12 @@
+{
+  "id": 2,
+  "name": "Mac and Cheese",
+  "category": "comfort",
+  "portions": 6,
+  "created": 1540254015,
+  "updated": 1540254015,
+  "view_count": 50,
+  "star_count": 2,
+  "visibility": "public",
+  "author_id": 2
+}

@@ -1,0 +1,12 @@
+{
+  "id": 1,
+  "name": "Bacon and Eggs",
+  "category": "keto",
+  "portions": 4,
+  "created": 1540253892,
+  "updated": 1540253892,
+  "view_count": 100,
+  "star_count": 10,
+  "visibility": "public",
+  "author_id": 1
+}
