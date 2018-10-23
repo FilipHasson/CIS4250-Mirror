@@ -10,18 +10,30 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 DO LANGUAGE plpgsql
 $$
 BEGIN
-	CREATE TYPE VISIBILITY AS ENUM (
-		'public',
-		'private',
-		'deleted',
-		'archived',
-		'banned'
-	);
-	CREATE TYPE PRIVILEGE AS ENUM (
-		'administrator',
-		'moderator',
-		'user'
-	);
+  CREATE TYPE RECIPE_CATEGORY AS ENUM (
+    'atkins',
+    'beverage',
+    'breakfast',
+    'comfort',
+    'dessert',
+    'dinner',
+    'keto',
+    'lunch',
+    'quick',
+    'salad',
+    'sauce',
+    'side',
+    'snack',
+    'soup'
+  );
+  CREATE TYPE MEAL_TYPE AS ENUM (
+    'breakfast',
+    'snack1',
+    'lunch',
+    'snack2',
+    'dinner',
+    'snack3'
+  );
 	EXCEPTION WHEN OTHERS
 	THEN
 END;
@@ -33,21 +45,13 @@ $$;
 CREATE TABLE IF NOT EXISTS account (
 	id SERIAL PRIMARY KEY,
 	username VARCHAR(25),
-	password CHAR(64),
+	password CHAR(32),
 	email VARCHAR(128),
-	priviledge PRIVILEGE NOT NULL DEFAULT 'user',
-	status VISIBILITY NOT NULL DEFAULT 'public'
 );
 CREATE UNIQUE INDEX IF NOT EXISTS unique_username_idx
 	ON account (trim(lower(username)));
 CREATE UNIQUE INDEX IF NOT EXISTS unique_email_idx
 	ON account (trim(lower(email)));
-
--- Category
-CREATE TABLE IF NOT EXISTS category (
-	id SERIAL PRIMARY KEY,
-	name VARCHAR(25)
-);
 
 -- Nutrition
 CREATE TABLE IF NOT EXISTS nutrition (
@@ -67,7 +71,7 @@ CREATE TABLE IF NOT EXISTS nutrition (
 	niacin REAL DEFAULT 0,
 	pantothenic_acid REAL DEFAULT 0,
 	riboflavin REAL DEFAULT 0,
-	thiamin REAL DEFAULT 0,
+	thiamine REAL DEFAULT 0,
 	vitamin_a REAL DEFAULT 0,
 	vitamin_b12 REAL DEFAULT 0,
 	vitamin_b6 REAL DEFAULT 0,
@@ -116,7 +120,7 @@ CREATE OR REPLACE VIEW nutrition_vitamins AS
 		niacin,
 		pantothenic_acid,
 		riboflavin,
-		thiamin,
+		thiamine,
 		vitamin_a,
 		vitamin_b12,
 		vitamin_b6,
@@ -146,33 +150,19 @@ CREATE OR REPLACE VIEW nutrition_minerals AS
 -- Recipe
 CREATE TABLE IF NOT EXISTS recipe (
 	id SERIAL PRIMARY KEY,
-	name VARCHAR(50),
-	header VARCHAR(100),
-	description TEXT,
-	author INTEGER NOT NULL REFERENCES account,
-	date_created TIMESTAMP NOT NULL,
-	date_modified TIMESTAMP NOT NULL
+  category RECIPE_CATEGORY[],
+  steps TEXT[]
 );
 
 -- Food
 CREATE TABLE IF NOT EXISTS food (
 	id SERIAL PRIMARY KEY,
-	category_id INTEGER REFERENCES category NOT NULL,
 	nutrition_id INTEGER REFERENCES nutrition NOT NULL,
 	recipe_id INTEGER REFERENCES recipe,
-	date_created TIMESTAMP NOT NULL,
-	date_updated TIMESTAMP NOT NULL,
+	time_created TIMESTAMP NOT NULL,
+	time_updated TIMESTAMP NOT NULL,
 	view_count INTEGER DEFAULT 0,
-	star_count INTEGER DEFAULT 0,
-	status VISIBILITY DEFAULT 'public'
-);
-
--- Step
-CREATE TABLE IF NOT EXISTS step (
-	id SERIAL PRIMARY KEY,
-	recipe_id INTEGER NOT NULL REFERENCES recipe,
-	position INTEGER NOT NULL,
-	description TEXT
+	star_count INTEGER DEFAULT 0
 );
 
 -- Meal
@@ -181,7 +171,7 @@ CREATE TABLE IF NOT EXISTS meal (
 	account_id INTEGER NOT NULL REFERENCES account,
 	date DATE,
 	position INTEGER NOT NULL DEFAULT 0,
-	type VARCHAR(25)
+  type MEAL_TYPE NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS unique_combination_idx
 	ON meal (account_id, date, position, trim(lower(type)));
