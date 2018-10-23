@@ -47,6 +47,7 @@ services:
     volumes:
       - dist:/dist
       - ${SERVICES_DIR}/http/development.conf:/etc/nginx/conf.d/http.conf
+      - ${SERVICES_DIR}/http/srv:/srv
 volumes:
   pgdata:
   dist:
