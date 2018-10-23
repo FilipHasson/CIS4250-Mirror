@@ -149,7 +149,8 @@ CREATE OR REPLACE VIEW nutrition_minerals AS
 
 -- Recipe
 CREATE TABLE IF NOT EXISTS recipe (
-	id SERIAL PRIMARY KEY,
+  id SERIAL PRIMARY KEY,
+  account_id INTEGER REFERENCES account NOT NULL,
   portions REAL NOT NULL,
   categories RECIPE_CATEGORY[],
   steps TEXT[]
