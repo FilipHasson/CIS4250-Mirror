@@ -15,4 +15,5 @@
 dist/
 hs_err_pid*
 node_modules/
+services/http/srv/images
 target/
