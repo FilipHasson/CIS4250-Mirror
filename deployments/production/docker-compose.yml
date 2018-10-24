@@ -33,7 +33,9 @@ services:
       - api:api
     volumes:
       - dist:/dist
+      - images:/srv/images
       - ${SERVICES_DIR}/http/production.conf:/etc/nginx/conf.d/http.conf
 volumes:
-  pgdata:
   dist:
+  images:
+  pgdata:
