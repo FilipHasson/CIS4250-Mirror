@@ -1,3 +1,8 @@
+/**
+ * router.js
+ * contains listing of vue-router page routes
+ */
+
 import Vue from 'vue'
 import Router from 'vue-router'
 import { logError } from '@/utils/log'
@@ -5,7 +10,7 @@ import { isLoggedIn } from '@/utils/persist'
 
 Vue.use(Router)
 
-// Entries listed here are also placed in nav bar
+// note: entries listed here are also placed in nav bar
 export const routes = [
   {
     component: () => import('@/pages/home'),
