@@ -160,12 +160,12 @@ CREATE TABLE IF NOT EXISTS food (
 );
 
 -- Meal
-CREATE TABLE IF NOT EXISTS meal (
-    id SERIAL PRIMARY KEY,
-    account_id INTEGER NOT NULL REFERENCES account,
-    date DATE,
-    position INTEGER NOT NULL DEFAULT 0,
-  type MEAL_TYPE NOT NULL
-);
-CREATE UNIQUE INDEX IF NOT EXISTS unique_combination_idx
-    ON meal (account_id, date, position, trim(lower(type)));
+-- CREATE TABLE IF NOT EXISTS meal (
+--     id SERIAL PRIMARY KEY,
+--     account_id INTEGER NOT NULL REFERENCES account,
+--     date DATE,
+--     position INTEGER NOT NULL DEFAULT 0,
+--   type MEAL_TYPE NOT NULL
+-- );
+-- CREATE UNIQUE INDEX IF NOT EXISTS unique_combination_idx
+--     ON meal (account_id, date, position, trim(lower(type)));
