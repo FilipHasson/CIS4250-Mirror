@@ -1,9 +1,8 @@
 .classpath
-.config.yml
 .DS_Store
 .idea
-.mtj.tmp
 .project
+.settings
 .vscode
 *.class
 *.ear
@@ -11,9 +10,10 @@
 *.jar
 *.prefs
 *.pyc
+*.tmp
 *.war
-dist/
+dist
 hs_err_pid*
-node_modules/
-services/http/srv/images
-target/
+http/srv/images/*
+node_modules
+target

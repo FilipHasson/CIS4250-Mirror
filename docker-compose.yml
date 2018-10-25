@@ -1,0 +1,53 @@
+# Development deployment
+version: '3'
+services:
+  db:
+    build: db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - 5432:5432 # Exposes postgres db to host
+  api:
+    build: api
+    restart: on-failure
+    links:
+      - db:db
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - 5005:5005 # Exposes remote debugging port
+      - 8000:8080 # Exposes dev server to host
+    command: mvn spring-boot:run -Drun.jvmArguments="${DEBUG_JVM_ARGS}"
+  app:
+    build: app
+    volumes:
+      - ./dist:/code/dist
+      - ./app/src:/code/src # Enables hot reloading
+    command: npm run serve # Use Vue's dev server instead of nginx
+    environment:
+      - CHOKIDAR_USEPOLLING
+    ports:
+      - 8001:8080 # Exposes dev server to host
+    restart: always
+  http:
+    build: http
+    restart: on-failure
+    ports:
+      - 80:80
+    links:
+      - api:api
+      - app:app
+    volumes:
+      - ./dist:/dist
+      - ./http/development.conf:/etc/nginx/conf.d/http.conf
+      - ./http/srv:/srv
+volumes:
+  pgdata:
+  dist:

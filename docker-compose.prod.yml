@@ -1,0 +1,43 @@
+# Production deployment
+version: '3'
+services:
+  db:
+    build: db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+  api:
+    build: api
+    restart: on-failure
+    links:
+      - db:db
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_HOST
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    command: mvn spring-boot:run
+  app:
+    build: app
+    volumes:
+      - dist:/code/dist
+    environment:
+      - CHOKIDAR_USEPOLLING
+  http:
+    build: http
+    restart: on-failure
+    ports:
+      - 80:80
+    links:
+      - api:api
+    volumes:
+      - dist:/dist
+      - ./http/production.conf:/etc/nginx/conf.d/http.conf
+      - images:/srv/images
+volumes:
+  dist:
+  images:
+  pgdata:
