@@ -31,27 +31,42 @@ export default {
 
 <template>
   <div class="navigation-header">
-
     <nav>
-      <ul>
-        <li v-for="route in routes" :key=route.path>
-          <router-link :to="route.path">{{route.name}}</router-link>
-        </li>
-        <li><a @click="showModal">{{relevantModal.name}}</a></li>
-      </ul>
+      <transition>
+        <ul>
+          <li v-for="route in routes" :key="route.path">
+            <router-link :to="route.path">{{route.name}}</router-link>
+          </li>
+          <li>
+            <a @click="showModal">{{relevantModal.name}}</a>
+          </li>
+        </ul>
+      </transition>
     </nav>
-    <component :is="relevantModal.component" />
+    <component :is="relevantModal.component"/>
   </div>
 </template>
 
 <style lang="scss">
-nav {
-  background-color: $colour-primary;
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity 0.5s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
+  nav {
+    background-color: $colour-primary;
+    box-shadow: 0 0 15px 2px $colour-light;
+    position: fixed;
+    top: 0;
+    width: 100%;
 
-  ul {
-    display: flex;
-    justify-content: flex-start;
-    list-style: none;
+    ul {
+      display: flex;
+      justify-content: flex-start;
+      list-style: none;
+    }
 
     li {
       display: flex;
@@ -60,24 +75,6 @@ nav {
       justify-content: center;
       margin: 10px 10px 7px;
       text-align: center;
-      // .router-link-exact-active {
-      //   border-bottom-color: hsla(0, 0, 0, 0.1);
-      // }
-      a {
-        color: $colour-lighter;
-        cursor: pointer;
-        font-family: "Roboto", sans-serif;
-        text-decoration: none;
-        border-bottom: 3px solid transparent;
-
-        &.active {
-          color: black;
-        }
-
-        &:hover {
-          border-bottom-color: $colour-lighter;
-        }
-      }
       &:first-child {
         font-size: 1.5rem;
         font-weight: bolder;
@@ -85,7 +82,24 @@ nav {
       &:last-child {
         margin-left: auto;
       }
+      // .router-link-exact-active {
+      //   border-bottom-color: hsla(0, 0, 0, 0.1);
+      // }
+    }
+    a {
+      color: $colour-lighter;
+      cursor: pointer;
+      font-family: "Roboto", sans-serif;
+      text-decoration: none;
+      border-bottom: 3px solid transparent;
+
+      &.active {
+        color: black;
+      }
+
+      &:hover {
+        border-bottom-color: $colour-lighter;
+      }
     }
   }
-}
 </style>

@@ -20,10 +20,12 @@ export default {
     <h1>Your Recipes</h1>
 
     <div class="recipes--users-list">
-      <RecipeLine v-for="i in 10" :key=i style="line" />
+      <RecipeLine v-for="id in latestFoodIds" :key="id"
+      :recipeId=id
+      />
     </div>
 
-    <!-- <VButton :onClick=getRecipe>Create New</VButton> -->
+    <VButton :onClick=getRecipe>Create New</VButton>
 
     <h1>Starred Recipes</h1>
     <div class="recipes--users-list">

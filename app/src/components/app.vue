@@ -46,6 +46,7 @@ h2 {
 }
 
 .page {
+  padding-top: 3rem;
   margin: 1rem;
 }
 </style>

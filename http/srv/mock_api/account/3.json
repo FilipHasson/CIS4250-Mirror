@@ -1,5 +1,8 @@
 {
   "email": "gdouglas@uoguelph.ca",
   "id": 3,
-  "username": "grant"
+  "username": "grant",
+  "recipe_ids": [
+    3
+  ]
 }

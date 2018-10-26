@@ -1,4 +1,4 @@
-import { publicRoutes, privateRoutes } from '@/scripts/vue/router'
+import { publicRoutes, privateRoutes } from '@/scripts/helpers/routes'
 
 export default {
   session: {

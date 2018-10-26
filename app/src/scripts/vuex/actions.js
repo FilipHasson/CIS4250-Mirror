@@ -3,86 +3,85 @@
  * contains vuex action definitions which evaluate application "business logic"
  * and asynchronously commit mutations
  */
-
+import axios from 'axios'
 import { API } from '@/scripts/helpers/config'
-import { logRetrieval, logRequest, logError } from '@/scripts/helpers/log'
-import router from '@/scripts/vue/router'
+import { logRetrieval, logRequest } from '@/scripts/helpers/log'
+
+const api = axios.create({
+  baseURL: API,
+  timeout: 1000,
+  responseType: 'json'
+})
+api.interceptors.request.use(
+  (response) => {
+    logRequest(response.url)
+    return response
+  },
+  (error) => {
+    console.log(error)
+    return Promise.reject(error)
+  }
+)
+
 // Session ---------------------------------------------------------------------
 
-function tryLogin ({ commit }, payload) {
-  commit('login', payload.username)
-  commit('closeModal')
+function tryLogin (context, payload) {
+  context.commit('login', payload.username)
+  context.commit('closeModal')
 }
 
-function tryLogout ({ commit }) {
+function tryLogout ({ commit, state }) {
   commit('logout')
   commit('closeModal')
-  router.push('/')
+  // redirect to home page if current page required login
+  if (!this.$router.currentRoute.meta.is_public) {
+    this.$router.push('/')
+  }
 }
 
 // Account ---------------------------------------------------------------------
 
-function fetchAccounts ({ dispatch }) {
-  return fetch(`${API}/accounts`)
-    .then(response => response.json())
-    .catch(error => logError('accounts', error))
-    .then(ids => {
-      logRequest('accounts')
-      for (const id of ids) {
-        dispatch('fetchAccount', id)
-      }
-      return ids
-    })
+async function fetchAccounts ({ dispatch }) {
+  const accountIds = await api('/accounts')
+  for (const accountId of accountIds) {
+    dispatch('fetchAccount', accountId)
+  }
+  return accountIds
 }
 
-function fetchAccount ({ commit, state }, id) {
+async function fetchAccount ({ commit, state }, id) {
   if (state.model_data.account[id]) {
     logRetrieval(`account(${id})`)
     return state.model_data.account[id]
-  } else {
-    logRequest(`account(${id})`)
-    return fetch(`${API}/account/${id}`)
-      .then(response => response.json())
-      .catch(error => logError(`account(${id})`, error))
-      .then(data => {
-        commit('cacheAccount', data)
-        return data
-      })
   }
+  const response = await api(`/account/${id}`)
+  const accountData = response.data
+  return commit('cacheAccount', accountData)
 }
 
 // Food  -----------------------------------------------------------------------
 
-function fetchFoods ({ dispatch }) {
-  return fetch(`${API}/foods`)
-    .then(response => response.json())
-    .then(ids => {
-      logRequest('foods')
-      for (const id of ids) {
-        dispatch('fetchFood', id)
-      }
-      return ids
-    })
-    .catch(error => logError('foods', error))
+async function fetchFoods ({ dispatch }) {
+  const response = await api('/foods')
+  const foodIds = response.data
+  for (const foodId of foodIds) {
+    dispatch('fetchFood', foodId)
+  }
+  return foodIds
 }
 
-function fetchFood ({ commit, dispatch, state }, id) {
+async function fetchFood ({ commit, dispatch, state }, id) {
   if (state.model_data.food[id]) {
     logRetrieval(`food(${id})`)
     const accountId = state.model_data.food[id].account_id
-    dispatch('fetchAccount', accountId)
-  } else {
-    logRequest(`food(${id})`)
-    return fetch(`${API}/food/${id}`)
-      .then(response => response.json())
-      .catch(error => logError(`food(${id})`, error))
-      .then(data => {
-        commit('cacheFood', data)
-        const accountId = state.model_data.food[id].account_id
-        dispatch('fetchAccount', accountId)
-        return data
-      })
+    return dispatch('fetchAccount', accountId)
   }
+  const response = await api(`/food/${id}`)
+  const foodData = response.data
+  commit('cacheFood', foodData)
+  const accountId = state.model_data.food[id].account_id
+  dispatch('fetchAccount', accountId)
+  return foodData
 }
 
 // -----------------------------------------------------------------------------
