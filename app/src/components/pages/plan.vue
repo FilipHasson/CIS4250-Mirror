@@ -1,3 +1,3 @@
 <template>
-  <div class="page">Meal Plan</div>
+  <div class="page todo">Coming Soon! 😎</div>
 </template>

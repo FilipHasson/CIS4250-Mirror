@@ -56,4 +56,10 @@ h2 {
   padding-top: 3rem;
   margin: 1rem;
 }
+
+.todo {
+  color: $colour-primary;
+  font-size: 2rem;
+  font-weight: bold;
+}
 </style>

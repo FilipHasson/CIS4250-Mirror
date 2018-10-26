@@ -1,3 +1,3 @@
 <template>
-  <div class="page">Home Page</div>
+  <div class="page todo">Coming Soon! 😎</div>
 </template>
