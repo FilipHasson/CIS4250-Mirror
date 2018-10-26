@@ -3,18 +3,18 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 
-// Vuex Store
-import actions from '@/scripts/vuex/actions'
-import getters from '@/scripts/vuex/getters'
-import mutations from '@/scripts/vuex/mutations'
-import state from '@/scripts/vuex/state'
-
 // Helper Scripts
 import '@/scripts/helpers/config'
 import '@/scripts/helpers/fonts'
 import '@/scripts/helpers/log'
 import '@/scripts/helpers/storage'
 import { routes, before, after } from '@/scripts/helpers/routes'
+
+// Vuex Store
+import actions from '@/scripts/vuex/actions'
+import getters from '@/scripts/vuex/getters'
+import mutations from '@/scripts/vuex/mutations'
+import state from '@/scripts/vuex/state'
 
 // Components
 import App from '@/components/app'
