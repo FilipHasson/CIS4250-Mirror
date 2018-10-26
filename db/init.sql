@@ -144,6 +144,8 @@ CREATE TABLE IF NOT EXISTS recipe (
   id SERIAL PRIMARY KEY,
   account_id INTEGER REFERENCES account NOT NULL,
   portions REAL NOT NULL,
+  view_count INTEGER DEFAULT 0,
+  star_count INTEGER DEFAULT 0
   categories RECIPE_CATEGORY[],
   steps TEXT[]
 );
@@ -154,9 +156,7 @@ CREATE TABLE IF NOT EXISTS food (
     nutrition_id INTEGER REFERENCES nutrition NOT NULL,
     recipe_id INTEGER REFERENCES recipe,
     time_created TIMESTAMP NOT NULL,
-    time_updated TIMESTAMP NOT NULL,
-    view_count INTEGER DEFAULT 0,
-    star_count INTEGER DEFAULT 0
+    time_updated TIMESTAMP NOT NULL
 );
 
 -- Meal
