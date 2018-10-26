@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     login: function () {
-      this.$store.dispatch('tryLogin', { username: this.user, password: this.password })
+      this.$store.dispatch('tryLogin', { username: this.username, password: this.password })
     }
   }
 }

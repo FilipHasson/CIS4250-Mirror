@@ -15,7 +15,7 @@ import {
 function login (state, payload) {
   // note: just mocking logging in at the moment
   const userId = () => {
-    switch (payload.user_name) {
+    switch (payload.username) {
       case 'jessy':
         return 1
       case 'filip':
@@ -26,7 +26,7 @@ function login (state, payload) {
         throw new Error('invalid username')
     }
   }
-  state.session.user_id = userId
+  state.session.user_id = userId()
   localStorage.setItem('user_id', userId)
 }
 

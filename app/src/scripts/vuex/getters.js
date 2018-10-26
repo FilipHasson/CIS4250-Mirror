@@ -10,9 +10,8 @@ function isLoggedIn (state) {
   return state.session.user_id !== null
 }
 
-function getUserModel (state) {
-  const userId = state.session.user_id
-  return userId ? state.model_data.account[userId] : null
+function getUserId (state) {
+  return state.session.user_id
 }
 
 function isModalShown (state) {
@@ -26,7 +25,7 @@ function currentModal (state) {
 // Account ---------------------------------------------------------------------
 
 function getAccountModel (state) {
-  return id => state.model_data.account[id]
+  return id => (state.model_data.account[id] || null)
 }
 
 // Food ------------------------------------------------------------------------
@@ -59,7 +58,7 @@ export default {
   isLoggedIn,
   isModalShown,
   currentModal,
-  getUserModel,
+  getUserId,
   getAccountModel,
   getFoodModel,
   getLatestFoodIds

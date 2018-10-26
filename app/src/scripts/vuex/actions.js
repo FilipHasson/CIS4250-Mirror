@@ -25,12 +25,12 @@ api.interceptors.request.use(
 
 // Session ---------------------------------------------------------------------
 
-function tryLogin (context, payload) {
-  context.commit('login', payload.username)
-  context.commit('closeModal')
+function tryLogin ({ commit }, payload) {
+  commit('login', payload)
+  commit('closeModal')
 }
 
-function tryLogout ({ commit, state }) {
+function tryLogout ({ commit }) {
   commit('logout')
   commit('closeModal')
   // redirect to home page if current page required login
