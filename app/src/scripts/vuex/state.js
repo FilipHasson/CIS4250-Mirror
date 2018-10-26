@@ -1,9 +1,17 @@
+import { publicRoutes, privateRoutes } from '@/scripts/helpers/routes'
 
 export default {
   session: {
-    account_id: 0
+    user_id: localStorage.getObject('user_id'),
+    shown_modal: null
   },
-  fields: {
+  registry: {
+    routes: {
+      public: publicRoutes,
+      private: privateRoutes,
+      all: publicRoutes.concat(privateRoutes)
+    },
+    modals: ['login', 'account'],
     category: ['Keto'],
     nutrition: {
       carbohydrate_fiber: 'Fiber',
@@ -43,7 +51,7 @@ export default {
       water: 'Water'
     }
   },
-  model_data: {
+  models: {
     account: {},
     comment: {},
     food: {},

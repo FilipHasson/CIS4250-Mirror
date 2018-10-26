@@ -1,5 +1,8 @@
 {
   "email": "  @uoguelph.ca",
   "id": 2,
-  "username": "filip"
+  "username": "filip",
+  "recipe_ids": [
+    2
+  ]
 }

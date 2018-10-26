@@ -4,6 +4,13 @@ export default {
   name: 'app',
   components: {
     NavigationHeader
+  },
+  mounted: function () {
+    // load user data if available
+    const userId = this.$store.state.session.user_id
+    if (userId) {
+      this.$store.dispatch('fetchAccount', userId)
+    }
   }
 }
 </script>
@@ -29,6 +36,9 @@ body {
 * {
   margin: 0;
   padding: 0;
+  :focus {
+    outline: none;
+  }
 }
 
 h1 {
@@ -43,6 +53,13 @@ h2 {
 }
 
 .page {
+  padding-top: 3rem;
   margin: 1rem;
+}
+
+.todo {
+  color: $colour-primary;
+  font-size: 2rem;
+  font-weight: bold;
 }
 </style>
