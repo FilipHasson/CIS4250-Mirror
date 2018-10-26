@@ -3,6 +3,7 @@
  * contains vuex action definitions which evaluate application "business logic"
  * and asynchronously commit mutations
  */
+
 import axios from 'axios'
 import { API } from '@/scripts/helpers/config'
 import { logRetrieval, logRequest } from '@/scripts/helpers/log'
@@ -25,8 +26,25 @@ api.interceptors.request.use(
 
 // Session ---------------------------------------------------------------------
 
-function tryLogin ({ commit }, payload) {
-  commit('login', payload)
+async function tryLogin ({ commit, dispatch }, payload) {
+  const getUserId = () => {
+    switch (payload.username) {
+      case 'jessy':
+        return 1
+      case 'filip':
+        return 2
+      case 'grant':
+        return 3
+      default:
+        return null
+    }
+  }
+  const userId = getUserId()
+  if (userId == null) {
+    return Promise.reject(Error('Login rejected'))
+  }
+  await dispatch('fetchAccount', userId)
+  commit('login', userId)
   commit('closeModal')
 }
 
@@ -39,6 +57,13 @@ function tryLogout ({ commit }) {
   }
 }
 
+async function fetchUserFoods ({ dispatch }) {
+  const userModel = await dispatch('fetchUserModel')
+  const foodIds = userModel.recipe_ids
+  const foodModels = foodIds.map(id => dispatch('fetchFood', id))
+  return Promise.all(foodModels)
+}
+
 // Account ---------------------------------------------------------------------
 
 async function fetchAccounts ({ dispatch }) {
@@ -49,14 +74,15 @@ async function fetchAccounts ({ dispatch }) {
   return accountIds
 }
 
-async function fetchAccount ({ commit, state }, id) {
-  if (state.model_data.account[id]) {
+async function fetchAccount ({ commit, getters }, id) {
+  let accountModel = getters.getAccountModel(id)
+  if (accountModel) {
     logRetrieval(`account(${id})`)
-    return state.model_data.account[id]
+    return accountModel
   }
   const response = await api(`/account/${id}`)
-  const accountData = response.data
-  return commit('cacheAccount', accountData)
+  accountModel = response.data
+  return commit('cacheAccount', accountModel)
 }
 
 // Food  -----------------------------------------------------------------------
@@ -71,15 +97,15 @@ async function fetchFoods ({ dispatch }) {
 }
 
 async function fetchFood ({ commit, dispatch, state }, id) {
-  if (state.model_data.food[id]) {
+  if (state.models.food[id]) {
     logRetrieval(`food(${id})`)
-    const accountId = state.model_data.food[id].account_id
+    const accountId = state.models.food[id].account_id
     return dispatch('fetchAccount', accountId)
   }
   const response = await api(`/food/${id}`)
   const foodData = response.data
   commit('cacheFood', foodData)
-  const accountId = state.model_data.food[id].account_id
+  const accountId = state.models.food[id].account_id
   dispatch('fetchAccount', accountId)
   return foodData
 }
@@ -89,6 +115,7 @@ async function fetchFood ({ commit, dispatch, state }, id) {
 export default {
   tryLogin,
   tryLogout,
+  fetchUserFoods,
   fetchAccounts,
   fetchAccount,
   fetchFoods,

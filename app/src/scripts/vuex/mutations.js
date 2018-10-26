@@ -12,22 +12,10 @@ import {
 
 // Session ---------------------------------------------------------------------
 
-function login (state, payload) {
+function login (state, id) {
   // note: just mocking logging in at the moment
-  const userId = () => {
-    switch (payload.username) {
-      case 'jessy':
-        return 1
-      case 'filip':
-        return 2
-      case 'grant':
-        return 3
-      default:
-        throw new Error('invalid username')
-    }
-  }
-  state.session.user_id = userId()
-  localStorage.setItem('user_id', userId)
+  state.session.user_id = id
+  localStorage.setItem('user_id', id)
 }
 
 function logout (state) {
@@ -66,14 +54,14 @@ function cacheFood (state, payload) {
 // -----------------------------------------------------------------------------
 
 function storeModelData (state, payload, entity) {
-  if (!state.model_data[entity]) {
-    logError(`${entity}(${payload.id})`, `can't commit to model_data.${entity}`)
+  if (!state.models[entity]) {
+    logError(`${entity}(${payload.id})`, `can't commit to models.${entity}`)
   } else if (!payload) {
     logError(`${entity}(${payload.id})`, "can't commit without payload")
   } else if (!payload.id) {
     logError(`${entity}(${payload.id})`, "can't commit without id")
   } else {
-    Vue.set(state.model_data[entity], payload.id, payload)
+    Vue.set(state.models[entity], payload.id, payload)
     logCache(`${entity}(${payload.id})`)
   }
 }

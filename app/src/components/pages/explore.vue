@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     latestFoodIds: function () {
-      return this.$store.getters.getLatestFoodIds()
+      return this.$store.getters.latestFoodIds
     }
   }
 }

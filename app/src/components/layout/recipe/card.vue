@@ -10,10 +10,10 @@ export default {
   },
   computed: {
     model: function () {
-      return this.$store.state.model_data.food[this.recipeId]
+      return this.$store.state.models.food[this.recipeId]
     },
     author: function () {
-      const accountModel = this.$store.state.model_data.account[this.model.account_id]
+      const accountModel = this.$store.state.models.account[this.model.account_id]
       return accountModel ? accountModel.username : ''
     },
     title: function () {

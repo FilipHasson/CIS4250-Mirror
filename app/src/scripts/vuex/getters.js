@@ -10,46 +10,45 @@ function isLoggedIn (state) {
   return state.session.user_id !== null
 }
 
-function getUserId (state) {
-  return state.session.user_id
-}
-
 function isModalShown (state) {
   return state.session.shown_modal !== null
 }
 
-function currentModal (state) {
-  return state.session.shown_modal
+function userName (state) {
+  const userId = state.session.user_id
+  try {
+    return userId ? state.models.account[userId].username : null
+  } catch (e) {
+    return null
+  }
+}
+
+function userEmail (state) {
+  const userId = state.session.user_id
+  try {
+    return userId ? state.models.account[userId].email : null
+  } catch (e) {
+    return null
+  }
 }
 
 // Account ---------------------------------------------------------------------
 
 function getAccountModel (state) {
-  return id => (state.model_data.account[id] || null)
+  return id => (state.models.account[id] || null)
 }
 
 // Food ------------------------------------------------------------------------
 
 function getFoodModel (state) {
-  return id => state.model_data.food[id]
+  return id => state.models.food[id]
 }
 
-function getLatestFoodIds (state) {
-  return payload => {
-    const category = (payload ? payload.category : null) || null
-    const count = (payload ? payload.count : null) || 100
-    let data
-    if (category) {
-      data = state.model_data.food.filter(
-        food => food.categories.includes(category)
-      )
-    } else {
-      data = state.model_data.food
-    }
-    let keys = Object.keys(data).map(Number)
-    keys.sort((a, b) => data[a].time_created - data[b].time_created)
-    return keys.slice(0, count)
-  }
+function latestFoodIds (state) {
+  const data = state.models.food
+  let keys = Object.keys(data).map(Number)
+  keys.sort((a, b) => data[a].time_created - data[b].time_created)
+  return keys.slice(0, 100)
 }
 
 // -----------------------------------------------------------------------------
@@ -57,9 +56,9 @@ function getLatestFoodIds (state) {
 export default {
   isLoggedIn,
   isModalShown,
-  currentModal,
-  getUserId,
+  userName,
+  userEmail,
   getAccountModel,
   getFoodModel,
-  getLatestFoodIds
+  latestFoodIds
 }

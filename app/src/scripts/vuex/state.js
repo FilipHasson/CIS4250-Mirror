@@ -2,7 +2,7 @@ import { publicRoutes, privateRoutes } from '@/scripts/helpers/routes'
 
 export default {
   session: {
-    user_id: localStorage.getItem('user_id'),
+    user_id: localStorage.getObject('user_id'),
     shown_modal: null
   },
   registry: {
@@ -51,7 +51,7 @@ export default {
       water: 'Water'
     }
   },
-  model_data: {
+  models: {
     account: {},
     comment: {},
     food: {},

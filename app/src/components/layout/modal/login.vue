@@ -12,7 +12,7 @@ export default {
   },
   computed: {
     shown: function () {
-      return this.$store.getters.currentModal === 'login'
+      return this.$store.state.session.shown_modal === 'login'
     }
   },
   methods: {
