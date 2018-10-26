@@ -29,6 +29,9 @@ body {
 * {
   margin: 0;
   padding: 0;
+  :focus {
+    outline: none;
+  }
 }
 
 h1 {

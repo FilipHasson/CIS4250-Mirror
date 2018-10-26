@@ -3,7 +3,7 @@
  * a collection of helper functions used for logging data to the console
  */
 
-import { IS_DEV_DEPLOYMENT } from '@/utils/config'
+import { IS_DEV_DEPLOYMENT } from '@/scripts/helpers/config'
 
 // note: with the exception of logError, all other log functions will only log
 // when deployed in the development environment and will only work in Chrome
@@ -29,6 +29,6 @@ export function logCache (entity, ...msg) {
 }
 
 export function logError (entity, ...msg) {
-  let text = `[ERROR] ${entity}` + msg ? ': ' + msg.join(', ') : ''
+  let text = `[ERROR] ${entity}` + (msg ? ': ' + msg.join(', ') : '')
   console.error(text)
 }

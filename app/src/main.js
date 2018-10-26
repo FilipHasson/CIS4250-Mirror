@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import App from './app'
 
-import store from '@/utils/store'
-import router from '@/utils/router'
-import '@/utils/config'
-import '@/utils/fonts'
-import '@/utils/persist'
+import '@/scripts/helpers/config'
+import '@/scripts/helpers/fonts'
+import '@/scripts/helpers/storage'
+import store from '@/scripts/vue/store'
+import router from '@/scripts/vue/router'
 
 new Vue({
   store,

@@ -4,8 +4,21 @@
  * and asynchronously commit mutations
  */
 
-import { API } from '@/utils/config'
-import { logRetrieval, logRequest, logError } from '@/utils/log'
+import { API } from '@/scripts/helpers/config'
+import { logRetrieval, logRequest, logError } from '@/scripts/helpers/log'
+import router from '@/scripts/vue/router'
+// Session ---------------------------------------------------------------------
+
+function tryLogin ({ commit }, payload) {
+  commit('login', payload.username)
+  commit('closeModal')
+}
+
+function tryLogout ({ commit }) {
+  commit('logout')
+  commit('closeModal')
+  router.push('/')
+}
 
 // Account ---------------------------------------------------------------------
 
@@ -43,7 +56,6 @@ function fetchAccount ({ commit, state }, id) {
 function fetchFoods ({ dispatch }) {
   return fetch(`${API}/foods`)
     .then(response => response.json())
-    .catch(error => logError('foods', error))
     .then(ids => {
       logRequest('foods')
       for (const id of ids) {
@@ -51,6 +63,7 @@ function fetchFoods ({ dispatch }) {
       }
       return ids
     })
+    .catch(error => logError('foods', error))
 }
 
 function fetchFood ({ commit, dispatch, state }, id) {
@@ -75,6 +88,8 @@ function fetchFood ({ commit, dispatch, state }, id) {
 // -----------------------------------------------------------------------------
 
 export default {
+  tryLogin,
+  tryLogout,
   fetchAccounts,
   fetchAccount,
   fetchFoods,

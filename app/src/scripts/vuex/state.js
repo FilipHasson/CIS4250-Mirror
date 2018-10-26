@@ -1,9 +1,17 @@
+import { publicRoutes, privateRoutes } from '@/scripts/vue/router'
 
 export default {
   session: {
-    account_id: 0
+    user_id: localStorage.getItem('user_id'),
+    shown_modal: null
   },
-  fields: {
+  registry: {
+    routes: {
+      public: publicRoutes,
+      private: privateRoutes,
+      all: publicRoutes.concat(privateRoutes)
+    },
+    modals: ['login', 'account'],
     category: ['Keto'],
     nutrition: {
       carbohydrate_fiber: 'Fiber',

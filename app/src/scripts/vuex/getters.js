@@ -4,6 +4,25 @@
  * shared application state
  */
 
+// Session ---------------------------------------------------------------------
+
+function isLoggedIn (state) {
+  return state.session.user_id !== null
+}
+
+function getUserModel (state) {
+  const userId = state.session.user_id
+  return userId ? state.model_data.account[userId] : null
+}
+
+function isModalShown (state) {
+  return state.session.shown_modal !== null
+}
+
+function currentModal (state) {
+  return state.session.shown_modal
+}
+
 // Account ---------------------------------------------------------------------
 
 function getAccountModel (state) {
@@ -37,6 +56,10 @@ function getLatestFoodIds (state) {
 // -----------------------------------------------------------------------------
 
 export default {
+  isLoggedIn,
+  isModalShown,
+  currentModal,
+  getUserModel,
   getAccountModel,
   getFoodModel,
   getLatestFoodIds
