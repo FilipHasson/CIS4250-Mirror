@@ -1,5 +1,4 @@
 FROM postgres:11-alpine
-RUN apk add --no-cache python3
 ARG USDS_URL=http://www.ars.usda.gov/ARSUserFiles/80400525/Data/BFPDB/BFPD_csv_07132018.zip
 ARG SEED_FILE=seed.zip
 ADD $USDS_URL $SEED_FILE
