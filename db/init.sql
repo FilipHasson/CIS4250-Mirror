@@ -126,6 +126,8 @@ CREATE TABLE food (
 --     ON meal (account_id, date, position, trim(lower(type)));
 
 
+-- SEEDING ---------------------------------------------------------------------
+
 CREATE EXTENSION IF NOT EXISTS tablefunc;
 CREATE SCHEMA IF NOT EXISTS usda;
 
@@ -297,3 +299,4 @@ DELETE FROM food WHERE nutrition_id IS NULL;
 ALTER TABLE food DROP COLUMN usda_id;
 ALTER TABLE nutrition DROP COLUMN usda_id;
 DROP SCHEMA usda CASCADE;
+DROP EXTENSION tablefunc;
