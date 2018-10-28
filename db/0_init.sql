@@ -95,46 +95,6 @@ CREATE TABLE IF NOT EXISTS nutrition (
 
 );
 
-CREATE OR REPLACE VIEW nutrition_macros AS
-  SELECT
-    total_fiber +
-    sugars carbohydrates,
-    fat_mono +
-    fat_poly +
-    fat_sat +
-    fat_trans fats,
-    protein
-  FROM
-    nutrition;
-
-CREATE OR REPLACE VIEW nutrition_vitamins AS
-  SELECT
-    folate +
-    folic_acid vitamin_b9,
-    niacin,
-    riboflavin,
-    vitamin_a,
-    vitamin_b6,
-    vitamin_c,
-    vitamin_d,
-    vitamin_e,
-    vitamin_k
-  FROM
-    nutrition;
-
-CREATE OR REPLACE VIEW nutrition_minerals AS
-  SELECT
-    calcium,
-    copper,
-    iron,
-    magnesium,
-    phosphorus,
-    potassium,
-    sodium,
-    zinc
-  FROM
-    nutrition;
-
 -- Recipe
 CREATE TABLE IF NOT EXISTS recipe (
   id SERIAL PRIMARY KEY,
