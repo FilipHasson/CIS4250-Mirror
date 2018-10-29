@@ -17,14 +17,16 @@ services:
     links:
       - db:db
     environment:
+      - FLASK_ENV=development
       - POSTGRES_DB
       - POSTGRES_HOST
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+    command: flask run -h 0.0.0.0 # Use flask dev server instead of gunicorn
     ports:
-      - 5005:5005 # Exposes remote debugging port
-      - 8000:8080 # Exposes dev server to host
-    command: mvn spring-boot:run -Drun.jvmArguments="${DEBUG_JVM_ARGS}"
+      - 8081:5000 # Exposes development server to host
+    volumes:
+      - ./api:/code # Enable live changes
   app:
     build: app
     volumes:
