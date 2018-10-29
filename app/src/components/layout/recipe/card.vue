@@ -74,7 +74,7 @@ export default {
   border-width: 0.15rem;
 
   display: grid;
-  grid-template-columns: 1fr 50px;
+  grid-template-columns: 1fr 2.5rem;
 
   &--by-line {
     font-size: 0.75rem;
@@ -108,7 +108,7 @@ export default {
     border-style: solid;
     border-width: 0.15rem;
     background-color: $colour-dark;
-    height: 200px;
+    height: 10rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
   }
