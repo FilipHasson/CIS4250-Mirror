@@ -91,10 +91,10 @@ public class FoodDAO extends DAO{
         return foods;
     }
 
-    public Food findById(int id){
-        if (0 != id) {
+    public Food findByInt(String field, int searchIndex){
+        if (0 != searchIndex) {
             try {
-                ResultSet resultSet = super.findByInt("food","id",id);
+                ResultSet resultSet = super.findByInt("food",field,searchIndex);
                 resultSet.next();
                 return getFoodFromResultSet(resultSet);
             } catch (SQLException e) {
@@ -102,6 +102,14 @@ public class FoodDAO extends DAO{
             }
         }
         return null;
+    }
+
+    public Food findById(int id){
+        return findByInt("id",id);
+    }
+
+    public Food findByRecipeId(int id){
+        return findByInt("recipe_id",id);
     }
 
     private Food getFoodFromResultSet(ResultSet resultSet){
