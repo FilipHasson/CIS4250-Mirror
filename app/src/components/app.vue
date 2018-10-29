@@ -52,6 +52,17 @@ h2 {
   margin-bottom: 1rem;
 }
 
+table {
+  border-collapse: collapse;
+  width: 50ch;
+}
+
+td {
+  border: 3px solid $colour-medium;
+  text-align: left;
+  padding: 8px;
+}
+
 .page {
   margin: 4.5rem 1rem;
 }

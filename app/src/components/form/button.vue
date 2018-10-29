@@ -19,7 +19,7 @@ export default {
 .v-button {
   color: white;
   border: none;
-  background-color: $colour-light;
+  background-color: $colour-medium;
   padding: 8px 16px 8px 16px;
   margin-top: 8px;
   transition: 150ms;

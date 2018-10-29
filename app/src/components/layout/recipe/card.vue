@@ -10,7 +10,7 @@ export default {
   },
   computed: {
     model: function () {
-      return this.$store.state.models.food[this.recipeId]
+      return this.$store.state.models.food[this.recipeId] || {}
     },
     author: function () {
       const accountModel = this.$store.state.models.account[this.model.account_id]
@@ -69,7 +69,7 @@ export default {
   background-color: $colour-lighter;
   padding: 0.75rem;
 
-  border-color: $colour-dark;
+  border-color: $colour-medium;
   border-style: solid;
   border-width: 0.15rem;
 
@@ -93,21 +93,26 @@ export default {
     text-align: center;
     font-size: 0.75rem;
     font-weight: bold;
-    [data-icon="star"] {
-      color: yellow;
+    .card--star-icon {
       width: 25px;
       height: auto;
-      stroke: $colour-dark;
-      stroke-width: 25;
+      color: $colour-medium;
+      stroke-width: 50;
+      stroke: transparent;
+      &:hover {
+        color: yellow;
+        stroke: hsl(50, 100%, 50%);
+      }
     }
   }
 
   &--image {
     grid-column-start: 1;
     grid-column-end: 3;
-    border-style: solid;
+    border-style: dashed;
     border-width: 0.15rem;
-    background-color: $colour-dark;
+    border-color: $colour-dark;
+    background-color: $colour-light;
     height: 10rem;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;

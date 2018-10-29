@@ -18,15 +18,16 @@ export default {
 
 <template>
   <div id="explore" class="page">
-    <RecipeCard
-      v-for="id in latestFoodIds" :key="id"
-      :recipeId=id
-    />
+    <h1>Recent Recipes</h1>
+
+    <div class="cards">
+      <RecipeCard v-for="id in latestFoodIds" :key="id" :recipeId=id />
+    </div>
   </div>
 </template>
 
 <style lang="scss">
-#explore {
+.cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, 28rem);
   grid-template-rows: auto;

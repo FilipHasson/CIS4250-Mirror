@@ -84,7 +84,7 @@ export default {
       }
     }
     a {
-      color: $colour-background;
+      color: $colour-lighter;
       cursor: pointer;
       font-family: "Roboto", sans-serif;
       text-decoration: none;
@@ -95,7 +95,7 @@ export default {
       }
 
       &:hover {
-        border-bottom-color: $colour-background;
+        border-bottom-color: $colour-lighter;
       }
     }
   }
