@@ -1,6 +1,5 @@
 <script>
 export default {
-  name: 'v-button',
   props: {
     onClick: {
       type: Function,
@@ -18,15 +17,16 @@ export default {
 
 <style lang="scss">
 .v-button {
-  background-color: $colour-lighter;
-  border: 2px solid transparent;
-  border-radius: 5px;
-  color: $colour-primary;
-  font-weight: bold;
-  padding: 0.25rem 0.75rem;
-  transition-duration: 0.2s;
-  &:hover {
-    border-color: $colour-primary;
+  color: white;
+  border: none;
+  background-color: $colour-light;
+  padding: 8px 16px 8px 16px;
+  margin-top: 8px;
+  transition: 150ms;
+  cursor: pointer;
+  &:hover,
+  &:focus {
+    background-color: $colour-primary;
   }
 }
 </style>

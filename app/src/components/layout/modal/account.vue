@@ -1,8 +1,10 @@
 <script>
 import Modal from '@/components/form/modal'
+import VButton from '@/components/form/button'
 export default {
   components: {
-    Modal
+    Modal,
+    VButton
   },
   computed: {
     shown: function () {
@@ -29,7 +31,7 @@ export default {
     <div slot="body">
       <p class="account-modal--field"><strong>username:</strong> {{username}}</p>
       <p class="account-modal--field"><strong>email:</strong> {{email}}</p>
-      <button type="button" @click="logout">Logout</button>
+      <VButton type="button" :onClick=logout>Logout</VButton>
     </div>
   </Modal>
 </template>

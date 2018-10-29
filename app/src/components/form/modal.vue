@@ -46,9 +46,7 @@ export default {
 </template>
 
 <style lang="scss">
-h1,
-h2,
-h3 {
+.modal-header h1,h2,h3 {
   margin: 0 !important;
   padding: 0 !important;
   user-select: none;
@@ -100,10 +98,6 @@ h3 {
       cursor: pointer;
     }
   }
-}
-
-.modal-default-button {
-  float: right;
 }
 
 input {
