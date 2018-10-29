@@ -37,6 +37,12 @@ def endpoint_foods():
     return query(statement)
 
 
+@api.route("/recipe")
+def endpoint_recipes():
+    statement = "SELECT id FROM food WHERE recipe_id IS NOT NULL ORDER BY time_created DESC LIMIT 100"
+    return query(statement)
+
+
 @api.route("/food/<food_id>")
 def endpoint_food(food_id):
     statement = f"""
