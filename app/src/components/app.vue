@@ -53,8 +53,7 @@ h2 {
 }
 
 .page {
-  padding-top: 3rem;
-  margin: 1rem;
+  margin: 4.5rem 1rem;
 }
 
 .todo {
