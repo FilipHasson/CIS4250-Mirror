@@ -6,9 +6,12 @@ import api.object.Food;
 import api.object.Recipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -55,4 +58,18 @@ public class EndpointController {
         json.addAll(Food.getIds(new FoodDAO().findByRecipeCategory(category)));
         return json;
     }
+
+    /*
+    @RequestMapping(value="/food/new")
+    @ResponseBody
+    public void newFood(@RequestBody String jsonString){
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject json = (JSONObject)parser.parse(jsonString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        //JSONObject json = new JSONObject(jsonString);
+    }
+    */
 }

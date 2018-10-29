@@ -145,7 +145,7 @@ public class Recipe {
         } else {
             json.put("recipe_id",recipe.id);
             categories.addAll(Arrays.asList(recipe.getCategoriesAsStrings()));
-            steps.add(Arrays.asList(recipe.getSteps()));
+            steps.addAll(Arrays.asList(recipe.getSteps()));
             json.put("account_id",recipe.getAccountId());
             json.put("portions",recipe.getPortions());
             json.put("star_count",recipe.getStars());
