@@ -33,7 +33,7 @@ def query_json(statement):
 
 @api.route("/food")
 def endpoint_foods():
-    statement = "SELECT id FROM food LIMIT 100 ORDER BY time_created"
+    statement = "SELECT id FROM food ORDER BY time_created DESC LIMIT 100"
     return query(statement)
 
 
