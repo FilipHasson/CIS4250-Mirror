@@ -39,7 +39,6 @@ public class EndpointController {
     @ResponseBody
     public JSONArray getRecipes(){
         JSONArray json = new JSONArray();
-        //Food.getIds(new FoodDAO().findAllOrderByFieldLimit("date_created",100))
         json.addAll(Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100)));
         return json;
     }

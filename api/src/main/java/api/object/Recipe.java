@@ -148,8 +148,8 @@ public class Recipe {
             steps.add(Arrays.asList(recipe.getSteps()));
             json.put("account_id",recipe.getAccountId());
             json.put("portions",recipe.getPortions());
-            //json.put("star_count",recipe.getStars());
-            //json.put("view_count",recipe.getViews());
+            json.put("star_count",recipe.getStars());
+            json.put("view_count",recipe.getViews());
         }
 
         json.put("categories",categories);

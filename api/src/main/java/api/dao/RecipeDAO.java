@@ -96,11 +96,10 @@ public class RecipeDAO extends DAO{
                     resultSet.getInt("id"),
                     resultSet.getInt("account_id"),
                     resultSet.getDouble("portions"),
-                    //Recipe.stringToCategory(resultSet.getString("categories")), // Single Category
                     Recipe.stringsToCategories((String[])resultSet.getArray("categories").getArray()),
-                    (String[])resultSet.getArray("steps").getArray()//,
-//                    resultSet.getInt("view_count"),
-//                    resultSet.getInt("star_count")
+                    (String[])resultSet.getArray("steps").getArray(),
+                    resultSet.getInt("view_count"),
+                    resultSet.getInt("star_count")
                 );
         } catch (SQLException e) {
             e.printStackTrace();
