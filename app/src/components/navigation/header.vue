@@ -82,12 +82,9 @@ export default {
       &:last-child {
         margin-left: auto;
       }
-      // .router-link-exact-active {
-      //   border-bottom-color: hsla(0, 0, 0, 0.1);
-      // }
     }
     a {
-      color: $colour-lighter;
+      color: $colour-background;
       cursor: pointer;
       font-family: "Roboto", sans-serif;
       text-decoration: none;
@@ -98,7 +95,7 @@ export default {
       }
 
       &:hover {
-        border-bottom-color: $colour-lighter;
+        border-bottom-color: $colour-background;
       }
     }
   }
