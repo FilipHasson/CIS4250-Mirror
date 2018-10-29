@@ -13,7 +13,14 @@ import java.sql.SQLException;
  */
 public class NutritionDAO extends DAO{
     public Nutrition findById(int id){
-        return getNutritionFromResultSet(super.findByInt("nutrition","id",id));
+        ResultSet resultSet = super.findByInt("nutrition","id",id);
+        try {
+            resultSet.next();
+            return getNutritionFromResultSet(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private Nutrition getNutritionFromResultSet(ResultSet resultSet){

@@ -46,9 +46,16 @@ public class RecipeDAO extends DAO{
     }
 
     public Recipe findById(int id){
-        if (0 != id)
-            return getRecipeFromResultSet(super.findByInt("recipe","id",id));
-        else return null;
+        if (0 != id) {
+            ResultSet resultSet = super.findByInt("recipe", "id", id);
+            try {
+                resultSet.next();
+                return getRecipeFromResultSet(resultSet);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     private Recipe getRecipeFromResultSet(ResultSet resultSet){

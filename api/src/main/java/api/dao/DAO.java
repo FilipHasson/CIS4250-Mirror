@@ -20,12 +20,14 @@ public class DAO {
     private static final String EQUALS = " =";
 
 
-    @Value("${spring.datasource.url}")
-    private String jdbcUrl;
-    @Value("${spring.datasource.username}")
-    private String jdbcUsername;
-    @Value("${spring.datasource.password}")
-    private String jdbcPassword;
+    //TODO make the information actually load from the resource file
+    //@Value("${spring.datasource.url}")
+    //private String jdbcUrl = "jdbc:postgresql://0.0.0.0:5432/postgres";//works without docker
+    private String jdbcUrl = "jdbc:postgresql://db:5432/postgres";//works on docker
+    //@Value("${spring.datasource.username}")
+    private String jdbcUsername = "postgres";
+    //@Value("${spring.datasource.password}")
+    private String jdbcPassword = "postgres";
 
 
     public Connection connect (){
@@ -61,12 +63,10 @@ public class DAO {
         Connection connection = connect();
         PreparedStatement statement;
         ResultSet resultSet = null;
-        String query = SELECT_ALL + PARAM;
+        String query = SELECT_ALL + " "+table;
 
         try{
             statement = connection.prepareStatement(query);
-            statement.setString(1,table);
-
             resultSet = statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -80,13 +80,10 @@ public class DAO {
         Connection connection = connect();
         PreparedStatement statement;
         ResultSet resultSet = null;
-        String query = SELECT + PARAM + FROM + PARAM;
+        String query = SELECT + " "+table + FROM + " "+field;
 
         try {
             statement = connection.prepareStatement(query);
-            statement.setString(1, field);
-            statement.setString(2, table);
-
             resultSet = statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -100,14 +97,11 @@ public class DAO {
         Connection connection = connect();
         PreparedStatement statement;
         ResultSet resultSet = null;
-        String query = SELECT_ALL + PARAM + WHERE + PARAM + EQUALS + PARAM;
+        String query = SELECT_ALL + " "+table + WHERE + " "+field + EQUALS + PARAM;
 
         try {
             statement = connection.prepareStatement(query);
-            statement.setString(1, table);
-            statement.setString(2, field);
-            statement.setInt(3, searchIndex);
-
+            statement.setInt(1, searchIndex);
             resultSet = statement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -121,13 +115,11 @@ public class DAO {
         Connection connection = connect();
         PreparedStatement statement;
         ResultSet resultSet = null;
-        String query = SELECT_ALL + PARAM + WHERE + PARAM + EQUALS + PARAM;
+        String query = SELECT_ALL + " "+table + WHERE + " "+field + EQUALS + PARAM;
 
         try {
             statement = connection.prepareStatement(query);
-            statement.setString(1, table);
-            statement.setString(2, field);
-            statement.setString(3, searchIndex);
+            statement.setString(1, searchIndex);
 
             resultSet = statement.executeQuery();
         } catch (SQLException e) {
