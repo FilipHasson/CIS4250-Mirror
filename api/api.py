@@ -14,12 +14,12 @@ api.config.from_object(Config)
 db = SQLAlchemy(api)
 
 
-def query(statement):
+def query(statement, as_json=True):
     result = db.engine.execute(statement)
     Record = namedtuple("Record", result.keys())
     records = [Record(*r) for r in result.fetchall()]
     records = [r[0] if len(r) == 1 else r for r in records]
-    return jsonify(records)
+    return jsonify(records) if as_json else records
 
 
 def query_json(statement):
@@ -40,10 +40,10 @@ def endpoint_foods():
 @api.route("/food/<food_id>")
 def endpoint_food(food_id):
     statement = f"""
-  SELECT * FROM food
-  JOIN nutrition ON food.nutrition_id = nutrition.id
-  WHERE food.id={food_id}
-  """
+      SELECT * FROM food
+      JOIN nutrition ON food.nutrition_id = nutrition.id
+      WHERE food.id={food_id}
+    """
     return query_json(statement)
 
 
@@ -51,7 +51,9 @@ def endpoint_food(food_id):
 def endpoint_status():
     endpoints = [
         {
-            url_for(rule.endpoint, **{arg: "[%s]" % arg for arg in rule.arguments}): {
+            url_for(rule.endpoint, **{arg: "[%s]" % arg for arg in rule.arguments})
+            .replace("%5B", "{")
+            .replace("%5D", "}"): {
                 "method": rule.endpoint,
                 "actions": [
                     method
@@ -74,7 +76,8 @@ def endpoint_status():
                 FROM information_schema.tables
                 WHERE table_schema='public'
                 AND table_type='BASE TABLE'
-                """
+                """,
+                as_json=False,
             )
         except:
             tables = []
