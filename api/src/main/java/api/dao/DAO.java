@@ -76,6 +76,23 @@ public class DAO {
         return resultSet;
     }
 
+    public ResultSet findAllOrderByFieldLimit(String table, String field, int limit){
+        Connection connection = connect();
+        PreparedStatement statement;
+        ResultSet resultSet = null;
+        String query = SELECT_ALL+" "+table+" ORDER BY "+field+" LIMIT "+limit;
+
+        try{
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        disconnect(connection);
+        return resultSet;
+    }
+
     public ResultSet findAllField(String table, String field){
         Connection connection = connect();
         PreparedStatement statement;

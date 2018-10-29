@@ -1,14 +1,15 @@
 package api.controller;
 
 import api.dao.FoodDAO;
+import api.dao.RecipeDAO;
 import api.object.Food;
+import api.object.Recipe;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -26,11 +27,20 @@ public class EndpointController {
         return new FoodDAO().findById(id).toJson();
     }
 
-    @RequestMapping(value="/foods/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/foods", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JSONArray getFoods(){
         JSONArray json = new JSONArray();
-        json.addAll(Food.getIds(new FoodDAO().findAll()));
+        json.addAll(Food.getIds(new FoodDAO().findAllOrderByFieldLimit("time_created",100)));
+        return json;
+    }
+
+    @RequestMapping(value="/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public JSONArray getRecipes(){
+        JSONArray json = new JSONArray();
+        //Food.getIds(new FoodDAO().findAllOrderByFieldLimit("date_created",100))
+        json.addAll(Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100)));
         return json;
     }
 

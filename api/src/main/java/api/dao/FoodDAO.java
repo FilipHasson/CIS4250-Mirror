@@ -34,6 +34,21 @@ public class FoodDAO extends DAO{
         return foods;
     }
 
+    public List<Food> findAllOrderByFieldLimit(String field, int limit){
+        ResultSet resultSet =  super.findAllOrderByFieldLimit("food",field,limit);
+        List<Food> foods = new ArrayList<>();
+
+        try {
+            while (resultSet.next()) {
+                foods.add(getFoodFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return foods;
+    }
+
     public List<Integer> findAllIds(){
         ResultSet resultSet = super.findAllField("food", "id");
         List<Integer> foods = new ArrayList<>();

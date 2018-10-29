@@ -3,7 +3,9 @@ package api.object;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Recipe Buisness Object for YUMM app
@@ -97,7 +99,7 @@ public class Recipe {
             case "SOUP":
                 return Category.SOUP;
             default:
-                return Category.NONE;
+                return null;
         }
     }
 
@@ -143,6 +145,16 @@ public class Recipe {
 
         json.put("categories",categories);
         json.put("steps",steps);
+    }
+
+    public static List<Integer> getIds(List<Recipe> recipes){
+        ArrayList<Integer> recipeIds = new ArrayList<>();
+
+        for (Recipe recipe : recipes){
+            recipeIds.add(recipe.getId());
+        }
+
+        return recipeIds;
     }
 
     public int getId() {

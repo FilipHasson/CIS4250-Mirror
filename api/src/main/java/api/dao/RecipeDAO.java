@@ -2,6 +2,8 @@ package api.dao;
 
 import api.object.Recipe;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -20,6 +22,26 @@ public class RecipeDAO extends DAO{
         List<Recipe> recipes = new ArrayList<>();
 
         try {
+            while (resultSet.next()) {
+                recipes.add(getRecipeFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return recipes;
+    }
+
+    public List<Recipe> findAllOrderByTimeLimit(int limit){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String query = "SELECT * FROM recipe, food WHERE food.recipe_id = recipe.id ORDER BY food.time_created LIMIT "+limit;
+        List<Recipe> recipes = new ArrayList<>();
+
+        try {
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 recipes.add(getRecipeFromResultSet(resultSet));
             }
