@@ -54,6 +54,11 @@ CREATE UNIQUE INDEX IF NOT EXISTS unique_username_idx
 CREATE UNIQUE INDEX IF NOT EXISTS unique_email_idx
   ON account (trim(lower(email)));
 
+
+-- Dummy Accounts
+INSERT INTO account(username, password, email) VALUES ('test1', 'testing123', 'test1@test.com'),
+('test2', 'testing345', 'test2@test.com');
+
 -- Nutrition
 DROP TABLE IF EXISTS nutrition CASCADE;
 CREATE TABLE nutrition (
@@ -98,6 +103,12 @@ CREATE TABLE recipe (
   categories RECIPE_CATEGORY [],
   steps TEXT []
 );
+
+-- Dummy recipes
+INSERT INTO recipe(account_id, portions, categories, steps)
+VALUES (1, 1, '{keto, atkins}', '{setep 1, step 2, step 3}'),
+(1, 2, '{keto, side, snack}', '{setep 4, step 5, step 6}'),
+(2, 5, '{quick, snack}', '{do this, then do this, this as well, then finally, this, yay!}');
 
 -- Food
 DROP TABLE IF EXISTS food CASCADE;
