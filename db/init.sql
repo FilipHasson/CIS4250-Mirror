@@ -312,3 +312,18 @@ ALTER TABLE food DROP COLUMN usda_id;
 ALTER TABLE nutrition DROP COLUMN usda_id;
 DROP SCHEMA usda CASCADE;
 DROP EXTENSION tablefunc;
+
+UPDATE food
+SET recipe_id = 1
+from recipe
+where food.id = 31789;
+
+UPDATE food
+SET recipe_id = 2
+from recipe
+where food.id = 32599;
+
+UPDATE food
+SET recipe_id = 3
+from recipe
+where food.id = 32937;
