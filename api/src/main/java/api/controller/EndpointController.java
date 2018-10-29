@@ -41,7 +41,10 @@ public class EndpointController {
     @ResponseBody
     public JSONArray getRecipes(){
         JSONArray json = new JSONArray();
-        json.addAll(Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100)));
+        List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100));
+        for (int id : recipeIds){
+            json.add(new FoodDAO().findByInt("recipe_id",id).getId());
+        }
         return json;
     }
 

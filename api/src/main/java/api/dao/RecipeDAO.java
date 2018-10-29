@@ -43,7 +43,7 @@ public class RecipeDAO extends DAO{
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                recipes.add(getRecipeFromResultSet(resultSet, "food"));
+                recipes.add(getRecipeFromResultSet(resultSet));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,31 +93,14 @@ public class RecipeDAO extends DAO{
     private Recipe getRecipeFromResultSet(ResultSet resultSet){
         try {
             return new Recipe(
-                    resultSet.getInt("recipe.id"),
-                    resultSet.getInt("recipe.account_id"),
+                    resultSet.getInt("id"),
+                    resultSet.getInt("account_id"),
                     resultSet.getDouble("portions"),
-                    Recipe.stringsToCategories((String[])resultSet.getArray("recipe.categories").getArray()),
-                    (String[])resultSet.getArray("recipe.steps").getArray(),
-                    resultSet.getInt("recipe.view_count"),
-                    resultSet.getInt("recipe.star_count")
+                    Recipe.stringsToCategories((String[])resultSet.getArray("categories").getArray()),
+                    (String[])resultSet.getArray("steps").getArray(),
+                    resultSet.getInt("view_count"),
+                    resultSet.getInt("star_count")
                 );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Recipe getRecipeFromResultSet(ResultSet resultSet, String idTable){
-        try {
-            return new Recipe(
-                    resultSet.getInt(idTable+".id"),
-                    resultSet.getInt("recipe.account_id"),
-                    resultSet.getDouble("portions"),
-                    Recipe.stringsToCategories((String[])resultSet.getArray("recipe.categories").getArray()),
-                    (String[])resultSet.getArray("recipe.steps").getArray(),
-                    resultSet.getInt("recipe.view_count"),
-                    resultSet.getInt("recipe.star_count")
-            );
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
