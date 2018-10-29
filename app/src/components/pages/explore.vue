@@ -28,7 +28,7 @@ export default {
 <style lang="scss">
 #explore {
   display: grid;
-  grid-template-columns: repeat(auto-fit, 500px);
+  grid-template-columns: repeat(auto-fit, 28rem);
   grid-template-rows: auto;
   grid-gap: 1rem;
   justify-content: center;
