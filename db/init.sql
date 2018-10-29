@@ -101,7 +101,9 @@ CREATE TABLE recipe (
   account_id INTEGER REFERENCES account NOT NULL,
   portions REAL NOT NULL,
   categories RECIPE_CATEGORY [],
-  steps TEXT []
+  steps TEXT [],
+  view_count INTEGER DEFAULT 0,
+  star_count INTEGER DEFAULT 0
 );
 
 -- Dummy recipes
@@ -119,9 +121,8 @@ CREATE TABLE food (
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
   recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
-  time_updated TIMESTAMP DEFAULT now() NOT NULL,
-  view_count INTEGER DEFAULT 0,
-  star_count INTEGER DEFAULT 0
+  time_updated TIMESTAMP DEFAULT now() NOT NULL
+
 );
 
 -- Meal
