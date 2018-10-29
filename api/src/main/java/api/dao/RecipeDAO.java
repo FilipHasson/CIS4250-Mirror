@@ -69,15 +69,25 @@ public class RecipeDAO extends DAO{
 
     public Recipe findById(int id){
         if (0 != id) {
-            ResultSet resultSet = super.findByInt("recipe", "id", id);
+            Connection connection = super.connect();
+            PreparedStatement statement;
+            ResultSet resultSet;
+            String query = "SELECT * FROM recipe WHERE id = ?";
+
             try {
+                Recipe recipe;
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, id);
+                resultSet = statement.executeQuery();
                 resultSet.next();
-                return getRecipeFromResultSet(resultSet);
+                recipe = getRecipeFromResultSet(resultSet);
+                super.disconnect(connection);
+                return recipe;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return  null;
     }
 
     private Recipe getRecipeFromResultSet(ResultSet resultSet){
@@ -88,9 +98,9 @@ public class RecipeDAO extends DAO{
                     resultSet.getDouble("portions"),
                     //Recipe.stringToCategory(resultSet.getString("categories")), // Single Category
                     Recipe.stringsToCategories((String[])resultSet.getArray("categories").getArray()),
-                    (String[])resultSet.getArray("steps").getArray(),
-                    resultSet.getInt("view_count"),
-                    resultSet.getInt("star_count")
+                    (String[])resultSet.getArray("steps").getArray()//,
+//                    resultSet.getInt("view_count"),
+//                    resultSet.getInt("star_count")
                 );
         } catch (SQLException e) {
             e.printStackTrace();

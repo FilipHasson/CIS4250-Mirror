@@ -51,6 +51,15 @@ public class Recipe {
         this.stars = stars;
     }
 
+    public Recipe(int id, int accountId, double portions, Category[] categories, String[] steps) {
+        this.categories = categories;
+        this.id = id;
+        this.accountId = accountId;
+        this.portions = portions;
+        this.steps = steps;
+    }
+
+
     public Recipe(){
         this (0, 0, 0.0, new Category[]{null}, new String[]{""},0,0);
     }
@@ -139,8 +148,8 @@ public class Recipe {
             steps.add(Arrays.asList(recipe.getSteps()));
             json.put("account_id",recipe.getAccountId());
             json.put("portions",recipe.getPortions());
-            json.put("star_count",recipe.getStars());
-            json.put("view_count",recipe.getViews());
+            //json.put("star_count",recipe.getStars());
+            //json.put("view_count",recipe.getViews());
         }
 
         json.put("categories",categories);
