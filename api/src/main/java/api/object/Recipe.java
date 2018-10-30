@@ -15,20 +15,20 @@ import java.util.List;
  */
 public class Recipe {
     public enum Category{
-        NONE,
-        ATKINS,
-        BEVERAGE,
-        COMFORT,
-        DESSERT,
-        DINNER,
-        KETO,
-        LUNCH,
-        QUICK,
-        SALAD,
-        SAUCE,
-        SIDE,
-        SNACK,
-        SOUP;
+        none,
+        atkins,
+        beverage,
+        comfort,
+        dessert,
+        dinner,
+        keto,
+        lunch,
+        quick,
+        salad,
+        sauce,
+        side,
+        snack,
+        soup;
     }
 
     private Category[] categories;
@@ -78,35 +78,35 @@ public class Recipe {
 
     public static Category stringToCategory(String val){
         if (null == val) return null;
-        switch (val.toUpperCase()){
+        switch (val.toLowerCase()){
             case "NONE":
-                return Category.NONE;
-            case "ATKINS":
-                return Category.ATKINS;
-            case "BEVERAGE":
-                return Category.BEVERAGE;
-            case "COMFORT":
-                return Category.COMFORT;
-            case "DESSERT":
-                return Category.DESSERT;
-            case "DINNER":
-                return Category.DINNER;
-            case "KETO":
-                return Category.KETO;
-            case "LUNCH":
-                return Category.LUNCH;
-            case "QUICK":
-                return Category.QUICK;
-            case "SALAD":
-                return Category.SALAD;
-            case "SAUCE":
-                return Category.SAUCE;
-            case "SIDE":
-                return Category.SIDE;
-            case "SNACK":
-                return Category.SNACK;
-            case "SOUP":
-                return Category.SOUP;
+                return Category.none;
+            case "atkins":
+                return Category.atkins;
+            case "beverage":
+                return Category.beverage;
+            case "comfort":
+                return Category.comfort;
+            case "dessert":
+                return Category.dessert;
+            case "dinner":
+                return Category.dinner;
+            case "keto":
+                return Category.keto;
+            case "lunch":
+                return Category.lunch;
+            case "quick":
+                return Category.quick;
+            case "salad":
+                return Category.salad;
+            case "sauce":
+                return Category.sauce;
+            case "side":
+                return Category.side;
+            case "snack":
+                return Category.snack;
+            case "soup":
+                return Category.soup;
             default:
                 return null;
         }
@@ -127,6 +127,7 @@ public class Recipe {
             categoryArray[i] = Recipe.stringToCategory(string);
             i++;
         }
+        this.setCategories(categoryArray);
     }
 
     public String[] getCategoriesAsStrings(){
@@ -221,5 +222,18 @@ public class Recipe {
 
     public void setStars(int stars) {
         this.stars = stars;
+    }
+
+    @Override
+    public String toString() {
+        return "Recipe{" +
+                "categories=" + Arrays.toString(categories) +
+                ", id=" + id +
+                ", accountId=" + accountId +
+                ", portions=" + portions +
+                ", steps=" + Arrays.toString(steps) +
+                ", views=" + views +
+                ", stars=" + stars +
+                '}';
     }
 }

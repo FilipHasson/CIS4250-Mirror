@@ -3,10 +3,7 @@ package api.dao;
 import api.object.Food;
 import api.object.Recipe;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,14 +109,47 @@ public class FoodDAO extends DAO{
         return findByInt("recipe_id",id);
     }
 
-    public boolean insertFood(Food food){
+    public long insertFood(Food food){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        String query = "INSERT INTO food (title, nutrition_id, recipe_id, time_created, time_updated) VALUES (?, ?, ?, ?, ?)";
 
-        return true;
+        try {
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1,food.getTitle());
+            statement.setInt(2,food.getNutritionId());
+            statement.setLong(3,food.getRecipeId());
+            statement.setObject(4,food.getTimeCreated());
+            statement.setObject(5,food.getTimeUpdated());
+
+            return super.checkUpdated(connection,statement,statement.executeUpdate());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return 0;
     }
 
-    public boolean updateFood(Food food){
+    public int updateFood(Food food){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        int affectedRows = 0;
+        String query = "UPDATE food SET title = ?, time_updated  = ? WHERE id = ?";
 
-        return true;
+        try {
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1,food.getTitle());
+            statement.setObject(2,food.getTimeUpdated());
+            statement.setInt(3,food.getId());
+
+            affectedRows = statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return affectedRows;
     }
 
     private Food getFoodFromResultSet(ResultSet resultSet){

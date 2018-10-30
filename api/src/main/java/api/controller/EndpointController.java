@@ -1,6 +1,7 @@
 package api.controller;
 
 import api.dao.FoodDAO;
+import api.dao.NutritionDAO;
 import api.dao.RecipeDAO;
 import api.object.Food;
 import api.object.Nutrition;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.ResultSet;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -146,18 +148,49 @@ public class EndpointController {
             if (json.containsKey("categories")){
                 JSONArray array = (JSONArray) json.get("categories");
                 String[] categoryStrings = new String[array.size()];// = new String[steps.size()];
-                for (int i = 0; i < array.size(); i++) categoryStrings[i] = (String)array.get(i);
-                recipe.setSteps(categoryStrings);
+                for (int i = 0; i < array.size(); i++) categoryStrings[i] = ((String)array.get(i)).toLowerCase();
+                recipe.setCategories(categoryStrings);
             } else recipe.setCategories((Recipe.Category[]) null);
 
-            if (0 == food.getId()){
-                //FoodDao.insertFood
-                //RecipeDao.insertRecipe
-                //NutritionDAO.insertNutrition
+            System.out.println("FOOD: "+food.toString());
+            System.out.println("Recipe: "+recipe.toString());
+            System.out.println("Nutrition: "+nutrition.toString());
+
+            if (0 == food.getId()) {
+                int recipeId = ((Long)new RecipeDAO().insertRecipe(recipe)).intValue();
+                if (0 == recipeId) {
+                    return;
+                }
+                int nutritionId = ((Long)new NutritionDAO().insertNutrition(nutrition)).intValue();
+                if (0 == nutritionId) {
+//                    new DAO().deleteByInt("recipe","id",recipeId);
+                    return;
+                }
+                food.setRecipeId(recipeId);
+                food.setNutritionId(nutritionId);
+                int foodId = ((Long)new FoodDAO().insertFood(food)).intValue();
+                if (0 == foodId) {
+//                    new DAO().deleteByInt("recipe","id",recipeId);
+//                    new DAO().deleteByInt("nutrition","id",nutritionId);
+                    return;
+                }
             } else {
-                //FoodDao.updateFood
-                //RecipeDao.updateRecipe
-                //NutritionDao.updateNutrition
+//                Recipe rDbCopy = new RecipeDAO().findById(recipe.getId());
+//                Nutrition nDbCopy = new NutritionDAO().findById(nutrition.getId());
+
+                if (0 == new RecipeDAO().updateRecipe(recipe)) return;
+                if (0 == new NutritionDAO().updateNutrition(nutrition)) {
+//                    new DAO().deleteByInt("recipe","id",rDbCopy.getId());
+//                    new RecipeDAO().insertRecipe(rDbCopy);
+                    return;
+                }
+                if (0 == new FoodDAO().updateFood(food)){
+//                    new DAO().deleteByInt("recipe","id",rDbCopy.getId());
+//                    new RecipeDAO().insertRecipe(rDbCopy);
+//                    new DAO().deleteByInt("nutrition","id",nDbCopy.getId());
+//                    new NutritionDAO().insertNutrition(nDbCopy);
+                    return;
+                }
             }
         }
     }

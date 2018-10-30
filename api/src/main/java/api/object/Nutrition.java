@@ -370,4 +370,39 @@ public class Nutrition {
     public void setZinc_mg(double zinc_mg) {
         this.zinc_mg = zinc_mg;
     }
+
+    @Override
+    public String toString() {
+        return "Nutrition{" +
+                "id=" + id +
+                ", caffeine_mg=" + caffeine_mg +
+                ", calcium_mg=" + calcium_mg +
+                ", calories=" + calories +
+                ", carbohydrate_g=" + carbohydrate_g +
+                ", cholesterol_mg=" + cholesterol_mg +
+                ", fat_mono_g=" + fat_mono_g +
+                ", fat_poly_g=" + fat_poly_g +
+                ", fat_sat_g=" + fat_sat_g +
+                ", fat_trans_g=" + fat_trans_g +
+                ", folate_mcg=" + folate_mcg +
+                ", magnesium_mg=" + magnesium_mg +
+                ", manganese_mg=" + manganese_mg +
+                ", niacin_mg=" + niacin_mg +
+                ", potassium_mg=" + potassium_mg +
+                ", protein_g=" + protein_g +
+                ", riboflavin_mg=" + riboflavin_mg +
+                ", sodium_mg=" + sodium_mg +
+                ", sugars_g=" + sugars_g +
+                ", thiamin_mg=" + thiamin_mg +
+                ", total_fiber_g=" + total_fiber_g +
+                ", total_lipid_g=" + total_lipid_g +
+                ", vitamin_a_iu=" + vitamin_a_iu +
+                ", vitamin_b6_mg=" + vitamin_b6_mg +
+                ", vitamin_c_mg=" + vitamin_c_mg +
+                ", vitamin_d_iu=" + vitamin_d_iu +
+                ", vitamin_k_mcg=" + vitamin_k_mcg +
+                ", water_g=" + water_g +
+                ", zinc_mg=" + zinc_mg +
+                '}';
+    }
 }

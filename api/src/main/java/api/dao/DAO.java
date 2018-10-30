@@ -22,7 +22,7 @@ public class DAO {
 
     //TODO make the information actually load from the resource file
     //@Value("${spring.datasource.url}")
-    //private String jdbcUrl = "jdbc:postgresql://0.0.0.0:5432/postgres";//works without docker
+//    private String jdbcUrl = "jdbc:postgresql://0.0.0.0:5432/postgres";//works without docker
     private String jdbcUrl = "jdbc:postgresql://db:5432/postgres";//works on docker
     //@Value("${spring.datasource.username}")
     private String jdbcUsername = "postgres";
@@ -145,5 +145,40 @@ public class DAO {
 
         disconnect(connection);
         return resultSet;
+    }
+
+    public long checkUpdated(Connection connection, PreparedStatement statement, int affectedRows){
+        ResultSet resultSet;
+        if (0 < affectedRows){
+            try {
+                resultSet = statement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    disconnect(connection);
+                    return resultSet.getLong(1);
+                }
+            } catch (SQLException e) {
+                System.out.println("ROW UPDATED HAPPENED BUT HAS NOT GENERATED KEYS VERY BAD");
+                e.printStackTrace();
+            }
+        }
+
+        disconnect(connection);
+        return 0;
+    }
+
+    public int deleteByInt(String table, String field, int searchIndex){
+        Connection connection = connect();
+        PreparedStatement statement;
+        String query = "DELETE FROM "+table+" WHERE "+field+" = ?";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setInt(1,searchIndex);
+
+            return statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }

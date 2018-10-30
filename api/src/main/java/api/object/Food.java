@@ -134,4 +134,15 @@ public class Food {
     public void setTimeUpdated(OffsetDateTime timeUpdated) {
         this.timeUpdated = timeUpdated;
     }
+
+    @Override
+    public String toString() {
+        return "Food{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", nutritionId=" + nutritionId +
+                ", recipeId=" + recipeId +
+                ", timeUpdated=" + timeUpdated.toString() +
+                '}';
+    }
 }
