@@ -112,6 +112,16 @@ public class FoodDAO extends DAO{
         return findByInt("recipe_id",id);
     }
 
+    public boolean insertFood(Food food){
+
+        return true;
+    }
+
+    public boolean updateFood(Food food){
+
+        return true;
+    }
+
     private Food getFoodFromResultSet(ResultSet resultSet){
         try {
             return new Food(

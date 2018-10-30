@@ -120,6 +120,15 @@ public class Recipe {
         this.categories = categories;
     }
 
+    public void setCategories(String[] categories){
+        Category[] categoryArray = new Category[categories.length];
+        int i =0;
+        for (String string : categories){
+            categoryArray[i] = Recipe.stringToCategory(string);
+            i++;
+        }
+    }
+
     public String[] getCategoriesAsStrings(){
         String [] sCategories = new String[this.categories.length];
         int i = 0;

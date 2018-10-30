@@ -23,6 +23,16 @@ public class NutritionDAO extends DAO{
         return null;
     }
 
+    public boolean insertNutrition(Nutrition nutrition){
+
+        return true;
+    }
+
+    public boolean updateNutrition(Nutrition nutrition){
+
+        return true;
+    }
+
     private Nutrition getNutritionFromResultSet(ResultSet resultSet){
         try {
             return new Nutrition(
