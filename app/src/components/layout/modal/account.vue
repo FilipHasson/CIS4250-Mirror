@@ -26,18 +26,28 @@ export default {
 </script>
 
 <template>
-  <Modal v-if=shown>
+  <Modal width="25rem" v-if="shown">
     <h1 slot="header">Account</h1>
     <div slot="body">
-      <p class="account-modal--field"><strong>username:</strong> {{username}}</p>
-      <p class="account-modal--field"><strong>email:</strong> {{email}}</p>
-      <VButton type="button" :onClick=logout>Logout</VButton>
+      <table>
+        <tbody>
+          <tr>
+            <td class="account-table--key">username</td>
+            <td class="account-table--value">{{username}}</td>
+          </tr>
+          <tr>
+            <td class="account-table--key">email</td>
+            <td class="account-table--value">{{email}}</td>
+          </tr>
+        </tbody>
+      </table>
+      <VButton type="button" :onClick="logout">Logout</VButton>
     </div>
   </Modal>
 </template>
 
 <style lang="scss">
-.account-modal--field{
-  font-size: 0.75rem;
-}
+  .account-table--key {
+    font-weight: bold;
+  }
 </style>

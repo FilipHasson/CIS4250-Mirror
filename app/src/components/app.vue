@@ -17,59 +17,94 @@ export default {
 
 <template>
   <div id="app">
-    <NavigationHeader />
-    <router-view />
+    <NavigationHeader/>
+    <router-view/>
   </div>
 </template>
 
 <style lang="scss">
-html {
-  font-size: 18px;
-}
-
-body {
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  font-family: sans-serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  :focus {
-    outline: none;
+  html {
+    font-size: 18px;
   }
-}
 
-h1 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
-  margin-top: 2rem;
-}
+  body {
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-family: sans-serif;
+  }
 
-h2 {
-  font-size: 1.15rem;
-  margin-bottom: 1rem;
-}
+  * {
+    margin: 0;
+    padding: 0;
+    :focus {
+      outline: none;
+    }
+  }
 
-table {
-  border-collapse: collapse;
-  width: 50ch;
-}
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+  }
 
-td {
-  border: 3px solid $colour-medium;
-  text-align: left;
-  padding: 8px;
-}
+  h2 {
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+  }
 
-.page {
-  margin: 4.5rem 1rem;
-}
+  table {
+    border-collapse: collapse;
+  }
 
-.todo {
-  color: $colour-primary;
-  font-size: 2rem;
-  font-weight: bold;
-}
+  tr {
+    border: 3px solid $colour-medium;
+  }
+
+  td {
+    border: 3px solid $colour-medium;
+    text-align: left;
+    padding: 8px;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 0.25rem;
+    display: inline-block;
+    box-sizing: border-box;
+    font-size: 0.8rem;
+    border: 2px solid $colour-light;
+    color: $colour-light;
+    transition: 250ms;
+    font-size: 1rem;
+
+    &:focus {
+      border-color: black;
+      color: black;
+    }
+    &.ghost {
+      border: none;
+      margin-bottom: 1rem;
+      color: black;
+    }
+    &.title {
+      font-size: 1.5rem;
+    }
+  }
+
+  .page {
+    margin: 4.5rem 1rem;
+  }
+
+  .todo {
+    color: $colour-primary;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
+  .spacer {
+    margin-top: 1rem;
+  }
 </style>

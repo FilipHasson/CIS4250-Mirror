@@ -10,23 +10,24 @@ export default {
 </script>
 
 <template>
-  <button @click="onClick" class="v-button">
+  <button type="button" @click="onClick" class="v-button">
     <slot>Text</slot>
   </button>
 </template>
 
 <style lang="scss">
-.v-button {
-  color: white;
-  border: none;
-  background-color: $colour-medium;
-  padding: 8px 16px 8px 16px;
-  margin-top: 8px;
-  transition: 150ms;
-  cursor: pointer;
-  &:hover,
-  &:focus {
-    background-color: $colour-primary;
+  .v-button {
+    color: white;
+    border: none;
+    background-color: $colour-medium;
+    padding: 8px 16px 8px 16px;
+    margin-top: 8px;
+    transition: 150ms;
+    font-size: 1rem;
+    cursor: pointer;
+    &:hover,
+    &:focus {
+      background-color: $colour-primary;
+    }
   }
-}
 </style>

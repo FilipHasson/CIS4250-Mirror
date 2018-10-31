@@ -12,6 +12,7 @@ export const routes = [
     path: '/',
     name: 'YUMM',
     meta: {
+      in_header: true,
       is_public: true
     }
   },
@@ -20,6 +21,7 @@ export const routes = [
     path: '/explore',
     name: 'Explore',
     meta: {
+      in_header: true,
       is_public: true
     }
   },
@@ -28,6 +30,7 @@ export const routes = [
     path: '/recipes',
     name: 'Recipes',
     meta: {
+      in_header: true,
       is_public: false
     }
   },
@@ -44,6 +47,16 @@ export const routes = [
     path: '/plan',
     name: 'Meal Plan',
     meta: {
+      in_header: true,
+      is_public: false
+    }
+  },
+  {
+    component: () => import('@/components/pages/new_recipe'),
+    path: '/recipes/new',
+    name: 'Create a Recipe',
+    meta: {
+      in_header: false,
       is_public: false
     }
   },
@@ -53,10 +66,6 @@ export const routes = [
     meta: {}
   }
 ]
-
-export const publicRoutes = routes.filter(r => r.meta.is_public === true) || []
-export const privateRoutes =
-  routes.filter(r => r.meta.is_public === false) || []
 
 export function before (to, from, next) {
   const isLoggedIn = localStorage.getItem('user_id') !== null

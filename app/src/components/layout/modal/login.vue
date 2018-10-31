@@ -1,8 +1,10 @@
 <script>
 import Modal from '@/components/form/modal'
+import VButton from '@/components/form/button'
 export default {
   components: {
-    Modal
+    Modal,
+    VButton
   },
   data: function () {
     return {
@@ -32,7 +34,7 @@ export default {
         <input type="text" autocomplete="username" v-model="username" id="login-modal--username-input">
         <label for="login-modal--password-input">Password</label>
         <input type="password" autocomplete="password" v-model="password" id="login-modal--password-input">
-        <button type="button" @click="login">Submit</button>
+        <VButton :onClick="login">Submit</VButton>
       </form>
     </div>
   </Modal>

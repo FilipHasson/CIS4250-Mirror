@@ -16,9 +16,11 @@ export default {
       return this.$store.getters.isLoggedIn
     },
     routes: function () {
+      const headerRoutes = this.$store.state.registry.routes.header
+      const publicRoutes = this.$store.state.registry.routes.public
       return this.isLoggedIn
-        ? this.$store.state.registry.routes.all
-        : this.$store.state.registry.routes.public
+        ? headerRoutes
+        : [...new Set(headerRoutes)].filter(route => new Set(publicRoutes).has(route))
     },
     relevantModal: function () {
       return this.isLoggedIn

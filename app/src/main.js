@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+import VueTextareaAutosize from 'vue-textarea-autosize'
 
 // Helper Scripts
 import '@/scripts/helpers/config'
@@ -21,6 +22,7 @@ import App from '@/components/app'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
+Vue.use(VueTextareaAutosize)
 
 const router = new VueRouter({
   mode: 'history',
