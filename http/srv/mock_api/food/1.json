@@ -1,16 +1,61 @@
 {
-  "account_id": 1,
-  "recipe_id": 1,
-  "categories": [
-    "keto",
-    "breakfast"
-  ],
-  "header": "You cant' go wrong with this classic",
-  "id": 1,
-  "portions": 4,
-  "star_count": 10,
-  "time_created": 1540253892,
-  "time_modified": 1540253892,
-  "title": "Bacon and Eggs",
-  "view_count": 100
+    "data": {
+        "account_id": 2,
+        "categories": [
+            "keto",
+            "breakfast"
+        ],
+        "description": "You cant' go wrong with this classic",
+        "id": 1,
+        "ingredients": {
+            "1": 5,
+            "2": 2
+        },
+        "nutrition": {
+            "caffeine_mg": 0,
+            "calcium_mg": 0,
+            "calories": 5000,
+            "carbohydrate_g": 500,
+            "cholesterol_mg": 0,
+            "fat_mono_g": 0,
+            "fat_poly_g": 0,
+            "fat_sat_g": 0,
+            "fat_trans_g": 0,
+            "folate_mcg": 0,
+            "magnesium_mg": 0,
+            "manganese_mg": 0,
+            "niacin_mg": 0,
+            "nutrition_id": 32554,
+            "potassium_mg": 0,
+            "protein_g": 50,
+            "riboflavin_mg": 0,
+            "sodium_mg": 0,
+            "sugars_g": 0,
+            "thiamin_mg": 0,
+            "total_fiber_g": 0,
+            "total_lipid_g": 250,
+            "vitamin_a_iu": 0,
+            "vitamin_b6_mg": 0,
+            "vitamin_c_mg": 0,
+            "vitamin_d_iu": 0,
+            "vitamin_k_mcg": 0,
+            "water_g": 0,
+            "zinc_mg": 0
+        },
+        "recipe_id": 3,
+        "serving_count": 6,
+        "serving_size": "2 balls",
+        "star_count": 10,
+        "steps": [
+            "find man",
+            "find scissors",
+            "find grill",
+            "you know the rest.."
+        ],
+        "time_created": 1540253892,
+        "time_modified": 1540253892,
+        "title": "Bacon and Eggs",
+        "view_count": 1000
+    },
+    "meta": {}
 }

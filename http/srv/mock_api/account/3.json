@@ -1,8 +1,11 @@
 {
-  "email": "gdouglas@uoguelph.ca",
-  "id": 3,
-  "username": "grant",
-  "recipe_ids": [
-    3
-  ]
+  "data": {
+    "email": "gdouglas@uoguelph.ca",
+    "id": 3,
+    "username": "grant",
+    "recipe_ids": [
+      3
+    ]
+  },
+  "meta": {}
 }
