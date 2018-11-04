@@ -177,7 +177,29 @@
 						"recipes"
 					]
 				},
-				"description": "```JS\n[1,2,3]\n```"
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Ingredients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/ingredients",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}```"
 			},
 			"response": []
 		},
@@ -191,13 +213,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{api}}/food/{{food_id_1}}",
+					"raw": "{{api}}/food/1",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
 						"food",
-						"{{food_id_1}}"
+						"1"
 					]
 				},
 				"description": "```JS\n{\n    \"data\": {\n        \"account_id\": 2,\n        \"categories\": [\n            \"keto\",\n            \"breakfast\"\n        ],\n        \"description\": \"You cant' go wrong with this classic\",\n        \"id\": 1,\n        \"ingredients\": {\n            \"1\": 5,\n            \"2\": 2\n        },\n        \"nutrition\": {\n            \"caffeine_mg\": 0,\n            \"calcium_mg\": 0,\n            \"calories\": 5000,\n            \"carbohydrate_g\": 500,\n            \"cholesterol_mg\": 0,\n            \"fat_mono_g\": 0,\n            \"fat_poly_g\": 0,\n            \"fat_sat_g\": 0,\n            \"fat_trans_g\": 0,\n            \"folate_mcg\": 0,\n            \"magnesium_mg\": 0,\n            \"manganese_mg\": 0,\n            \"niacin_mg\": 0,\n            \"nutrition_id\": 32554,\n            \"potassium_mg\": 0,\n            \"protein_g\": 50,\n            \"riboflavin_mg\": 0,\n            \"sodium_mg\": 0,\n            \"sugars_g\": 0,\n            \"thiamin_mg\": 0,\n            \"total_fiber_g\": 0,\n            \"total_lipid_g\": 250,\n            \"vitamin_a_iu\": 0,\n            \"vitamin_b6_mg\": 0,\n            \"vitamin_c_mg\": 0,\n            \"vitamin_d_iu\": 0,\n            \"vitamin_k_mcg\": 0,\n            \"water_g\": 0,\n            \"zinc_mg\": 0\n        },\n        \"recipe_id\": 3,\n        \"serving_count\": 6,\n        \"serving_size\": \"2 balls\",\n        \"star_count\": 10,\n        \"steps\": [\n            \"find man\",\n            \"find scissors\",\n            \"find grill\",\n            \"you know the rest..\"\n        ],\n        \"time_created\": 1540253892,\n        \"time_modified\": 1540253892,\n        \"title\": \"Bacon and Eggs\",\n        \"view_count\": 1000\n    },\n    \"meta\": {}\n}\n```"
@@ -264,13 +286,13 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "{{api}}/foods/{{category-id}}",
+					"raw": "{{api}}/foods/keto",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
 						"foods",
-						"{{category-id}}"
+						"keto"
 					]
 				},
 				"description": "```JS\n{\n  \"data\": [\n    1\n  ],\n  \"meta\": {}\n}```"
