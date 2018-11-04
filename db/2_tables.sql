@@ -15,35 +15,20 @@ CREATE UNIQUE INDEX IF NOT EXISTS unique_email_idx
 DROP TABLE IF EXISTS nutrition CASCADE;
 CREATE TABLE nutrition (
   id SERIAL PRIMARY KEY,
-  usda_id INTEGER,
-  caffeine_mg REAL DEFAULT 0,
   calcium_mg REAL DEFAULT 0,
   calories REAL DEFAULT 0,
-  carbohydrate_g REAL DEFAULT 0,
+  carbs_fibre_g REAL DEFAULT 0,
+  carbs_sugar_g REAL DEFAULT 0,
+  carbs_total_g REAL DEFAULT 0,
   cholesterol_mg REAL DEFAULT 0,
-  fat_mono_g REAL DEFAULT 0,
-  fat_poly_g REAL DEFAULT 0,
   fat_sat_g REAL DEFAULT 0,
+  fat_total_g REAL DEFAULT 0,
   fat_trans_g REAL DEFAULT 0,
-  folate_mcg REAL DEFAULT 0,
-  magnesium_mg REAL DEFAULT 0,
-  manganese_mg REAL DEFAULT 0,
-  niacin_mg REAL DEFAULT 0,
-  potassium_mg REAL DEFAULT 0,
+  iron_mg REAL DEFAULT 0
   protein_g REAL DEFAULT 0,
-  riboflavin_mg REAL DEFAULT 0,
   sodium_mg REAL DEFAULT 0,
-  sugars_g REAL DEFAULT 0,
-  thiamin_mg REAL DEFAULT 0,
-  total_fiber_g REAL DEFAULT 0,
-  total_lipid_g REAL DEFAULT 0,
   vitamin_a_iu REAL DEFAULT 0,
-  vitamin_b6_mg REAL DEFAULT 0,
   vitamin_c_mg REAL DEFAULT 0,
-  vitamin_d_iu REAL DEFAULT 0,
-  vitamin_k_mcg REAL DEFAULT 0,
-  water_g REAL DEFAULT 0,
-  zinc_mg REAL DEFAULT 0
 );
 
 -- RECIPE ----------------------------------------------------------------------
@@ -72,7 +57,6 @@ DROP TABLE IF EXISTS food CASCADE;
 CREATE TABLE food (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
-  usda_id INTEGER UNIQUE,
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
   recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
