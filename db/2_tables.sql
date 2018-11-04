@@ -24,11 +24,11 @@ CREATE TABLE nutrition (
   fat_sat_g REAL DEFAULT 0,
   fat_total_g REAL DEFAULT 0,
   fat_trans_g REAL DEFAULT 0,
-  iron_mg REAL DEFAULT 0
+  iron_mg REAL DEFAULT 0,
   protein_g REAL DEFAULT 0,
   sodium_mg REAL DEFAULT 0,
   vitamin_a_iu REAL DEFAULT 0,
-  vitamin_c_mg REAL DEFAULT 0,
+  vitamin_c_mg REAL DEFAULT 0
 );
 
 -- RECIPE ----------------------------------------------------------------------
@@ -39,10 +39,11 @@ CREATE TABLE recipe (
   serving_count REAL NOT NULL,
   serving_size TEXT NOT NULL,
   categories RECIPE_CATEGORY [],
-  steps TEXT [],
   description TEXT,
   view_count INTEGER DEFAULT 0,
-  star_count INTEGER DEFAULT 0
+  star_count INTEGER DEFAULT 0,
+  steps TEXT [],
+  ingredient_ids INTEGER[]
 );
 
 DROP TABLE IF EXISTS token CASCADE;
@@ -61,7 +62,7 @@ CREATE TABLE food (
   recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
   time_updated TIMESTAMP DEFAULT now() NOT NULL,
-  CONSTRAINT title_const UNIQUE(title)
+  CONSTRAINT title_const UNIQUE (title)
 );
 
 -- MEAL ------------------------------------------------------------------------
