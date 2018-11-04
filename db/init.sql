@@ -54,11 +54,6 @@ CREATE UNIQUE INDEX IF NOT EXISTS unique_username_idx
 CREATE UNIQUE INDEX IF NOT EXISTS unique_email_idx
   ON account (trim(lower(email)));
 
-
--- Dummy Accounts
-INSERT INTO account(username, password, email) VALUES ('test1', 'testing123', 'test1@test.com'),
-('test2', 'testing345', 'test2@test.com');
-
 -- Nutrition
 DROP TABLE IF EXISTS nutrition CASCADE;
 CREATE TABLE nutrition (
@@ -115,14 +110,6 @@ CREATE TABLE token (
   expiry TIMESTAMP NOT NULL
 );
 
-
-
--- Dummy recipes
-INSERT INTO recipe(account_id, serving_count, serving_size, categories, steps)
-VALUES (1, 1, 'A Bowl','{keto, atkins}', '{setep 1, step 2, step 3}'),
-(1, 2, 'A Cup', '{keto, side, snack}', '{setep 4, step 5, step 6}'),
-(2, 5, 'A Cup','{quick, snack}', '{do this, then do this, this as well, then finally, this, yay!}');
-
 -- Food
 DROP TABLE IF EXISTS food CASCADE;
 CREATE TABLE food (
@@ -134,7 +121,6 @@ CREATE TABLE food (
   time_created TIMESTAMP DEFAULT now() NOT NULL,
   time_updated TIMESTAMP DEFAULT now() NOT NULL,
   CONSTRAINT title_const UNIQUE(title)
-
 );
 
 -- Meal
@@ -190,6 +176,7 @@ INSERT INTO food (usda_id, title)
 SELECT ndb_number, initcap(long_name)
 FROM usda.products
 ON CONFLICT ON CONSTRAINT title_const DO NOTHING;
+ALTER TABLE food DROP CONSTRAINT title_const;
 
 -- Add Nutrition Data
 DROP TABLE IF EXISTS usda.nutrition CASCADE;
@@ -326,20 +313,3 @@ ALTER TABLE food DROP COLUMN usda_id;
 ALTER TABLE nutrition DROP COLUMN usda_id;
 DROP SCHEMA usda CASCADE;
 DROP EXTENSION tablefunc;
-
-UPDATE food
-SET recipe_id = 1
-from recipe
-where food.id = 31789;
-
-UPDATE food
-SET recipe_id = 2
-from recipe
-where food.id = 32599;
-
-UPDATE food
-SET recipe_id = 3
-from recipe
-where food.id = 32937;
-
-ALTER TABLE food DROP CONSTRAINT title_const;
