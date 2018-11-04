@@ -1,150 +1,10 @@
--- init.sql
--- run by docker container on container creation to initialize database
-
--- EXTENSIONS ------------------------------------------------------------------
-
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
--- TYPES -----------------------------------------------------------------------
-
-DO LANGUAGE plpgsql
-$$
-BEGIN
-  CREATE TYPE RECIPE_CATEGORY AS ENUM (
-    'atkins',
-    'beverage',
-    'breakfast',
-    'comfort',
-    'dessert',
-    'dinner',
-    'keto',
-    'lunch',
-    'quick',
-    'salad',
-    'sauce',
-    'side',
-    'snack',
-    'soup'
-  );
-  CREATE TYPE MEAL_TYPE AS ENUM (
-    'breakfast',
-    'snack1',
-    'lunch',
-    'snack2',
-    'dinner',
-    'snack3'
-  );
-  EXCEPTION WHEN OTHERS
-  THEN
-END;
-$$;
-
--- TABLES ------------------------------------------------------------
-
--- Account
-DROP TABLE IF EXISTS account CASCADE;
-CREATE TABLE account (
-  id SERIAL PRIMARY KEY,
-  username VARCHAR(25),
-  password CHAR(32),
-  email VARCHAR(128)
-);
-CREATE UNIQUE INDEX IF NOT EXISTS unique_username_idx
-  ON account (trim(lower(username)));
-CREATE UNIQUE INDEX IF NOT EXISTS unique_email_idx
-  ON account (trim(lower(email)));
-
--- Nutrition
-DROP TABLE IF EXISTS nutrition CASCADE;
-CREATE TABLE nutrition (
-  id SERIAL PRIMARY KEY,
-  usda_id INT,
-  caffeine_mg REAL DEFAULT 0,
-  calcium_mg REAL DEFAULT 0,
-  calories REAL DEFAULT 0,
-  carbohydrate_g REAL DEFAULT 0,
-  cholesterol_mg REAL DEFAULT 0,
-  fat_mono_g REAL DEFAULT 0,
-  fat_poly_g REAL DEFAULT 0,
-  fat_sat_g REAL DEFAULT 0,
-  fat_trans_g REAL DEFAULT 0,
-  folate_mcg REAL DEFAULT 0,
-  magnesium_mg REAL DEFAULT 0,
-  manganese_mg REAL DEFAULT 0,
-  niacin_mg REAL DEFAULT 0,
-  potassium_mg REAL DEFAULT 0,
-  protein_g REAL DEFAULT 0,
-  riboflavin_mg REAL DEFAULT 0,
-  sodium_mg REAL DEFAULT 0,
-  sugars_g REAL DEFAULT 0,
-  thiamin_mg REAL DEFAULT 0,
-  total_fiber_g REAL DEFAULT 0,
-  total_lipid_g REAL DEFAULT 0,
-  vitamin_a_iu REAL DEFAULT 0,
-  vitamin_b6_mg REAL DEFAULT 0,
-  vitamin_c_mg REAL DEFAULT 0,
-  vitamin_d_iu REAL DEFAULT 0,
-  vitamin_k_mcg REAL DEFAULT 0,
-  water_g REAL DEFAULT 0,
-  zinc_mg REAL DEFAULT 0
-);
-
--- Recipe
-DROP TABLE IF EXISTS recipe CASCADE;
-CREATE TABLE recipe (
-  id SERIAL PRIMARY KEY,
-  account_id INTEGER REFERENCES account NOT NULL,
-  serving_count REAL NOT NULL,
-  serving_size TEXT NOT NULL,
-  categories RECIPE_CATEGORY [],
-  steps TEXT [],
-  description TEXT,
-  view_count INTEGER DEFAULT 0,
-  star_count INTEGER DEFAULT 0
-);
-
-DROP TABLE IF EXISTS token CASCADE;
-CREATE TABLE token (
-  id SERIAL PRIMARY KEY,
-  account_id INTEGER REFERENCES account NOT NULL,
-  expiry TIMESTAMP NOT NULL
-);
-
--- Food
-DROP TABLE IF EXISTS food CASCADE;
-CREATE TABLE food (
-  id SERIAL PRIMARY KEY,
-  title TEXT NOT NULL,
-  usda_id INTEGER UNIQUE,
-  nutrition_id INTEGER REFERENCES nutrition UNIQUE,
-  recipe_id INTEGER REFERENCES recipe UNIQUE,
-  time_created TIMESTAMP DEFAULT now() NOT NULL,
-  time_updated TIMESTAMP DEFAULT now() NOT NULL,
-  CONSTRAINT title_const UNIQUE(title)
-);
-
--- Meal
--- DROP TABLE IF EXISTS meal CASCADE;
--- CREATE TABLE meal (
---     id SERIAL PRIMARY KEY,
---     account_id INTEGER NOT NULL REFERENCES account,
---     date DATE,
---     position INTEGER NOT NULL DEFAULT 0,
---   type MEAL_TYPE NOT NULL
--- );
--- CREATE UNIQUE INDEX IF NOT EXISTS unique_combination_idx
---     ON meal (account_id, date, position, trim(lower(type)));
-
-
--- SEEDING ---------------------------------------------------------------------
-
 CREATE EXTENSION IF NOT EXISTS tablefunc;
 CREATE SCHEMA IF NOT EXISTS usda;
 
--- Add Product Data
+-- Add product data
 DROP TABLE IF EXISTS usda.products CASCADE;
 CREATE TABLE usda.products (
-  ndb_number INT,
+  ndb_number INTEGER,
   long_name TEXT,
   data_source TEXT,
   gtin_upc TEXT,
@@ -178,11 +38,11 @@ FROM usda.products
 ON CONFLICT ON CONSTRAINT title_const DO NOTHING;
 ALTER TABLE food DROP CONSTRAINT title_const;
 
--- Add Nutrition Data
+-- Add nutrition data
 DROP TABLE IF EXISTS usda.nutrition CASCADE;
 CREATE TABLE usda.nutrition (
-  ndb_no INT,
-  nutrient_code INT,
+  ndb_no INTEGER,
+  nutrient_code INTEGER,
   nutrient_name TEXT,
   derivation_code TEXT,
   output_value REAL,
@@ -206,6 +66,8 @@ DELETE FROM usda.nutrition WHERE nutrient_code NOT IN (
   315,318,324,401,405,406,415,417,430,601,606,645,646
 );
 DELETE FROM usda.nutrition WHERE output_value = 0;
+
+-- Transform USDA nutrition data
 INSERT INTO nutrition (
   usda_id,
   caffeine_mg,
@@ -270,7 +132,7 @@ SELECT
 FROM crosstab(
   $$SELECT ndb_no, nutrient_code, output_value FROM usda.nutrition nutrient_code ORDER BY 1,2$$
 ) AS t(
-  ndb_no INT,
+  ndb_no INTEGER,
   protein_g REAL,
   total_lipid_g REAL,
   carbohydrate_g REAL,
@@ -301,7 +163,7 @@ FROM crosstab(
   fat_poly_g REAL
 );
 
--- Link two together
+-- Link nutrition and food tables
 UPDATE food
 SET nutrition_id = nutrition.id
 FROM nutrition
