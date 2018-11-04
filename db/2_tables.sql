@@ -46,6 +46,8 @@ CREATE TABLE recipe (
   ingredient_ids INTEGER[]
 );
 
+
+-- TOKEN -----------------------------------------------------------------------
 DROP TABLE IF EXISTS token CASCADE;
 CREATE TABLE token (
   id SERIAL PRIMARY KEY,
@@ -61,8 +63,7 @@ CREATE TABLE food (
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
   recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
-  time_updated TIMESTAMP DEFAULT now() NOT NULL,
-  CONSTRAINT title_const UNIQUE (title)
+  time_updated TIMESTAMP DEFAULT now() NOT NULL
 );
 
 -- MEAL ------------------------------------------------------------------------
