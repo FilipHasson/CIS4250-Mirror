@@ -3,7 +3,7 @@ export default {
   props: {
     width: {
       type: String,
-      default: '300px'
+      default: '15rem'
     }
   },
   data: function () {
@@ -71,15 +71,15 @@ h3 {
 }
 
 .modal-container {
-  margin: 0px auto;
+  margin: 0 auto;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 0.15rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
 }
 
 .modal-body {
-  padding: 20px;
-  min-height: 20px;
+  padding: 1.1rem;
+  min-height: 1.1rem;
 }
 
 .modal-header {
@@ -89,12 +89,12 @@ h3 {
   background-color: $colour-primary;
   margin-top: 0;
   color: white;
-  padding: 8px;
+  padding: 0.5rem;
 
   .close-icon {
     margin-left: auto;
     transition: 150ms;
-    margin-right: 2px;
+    margin-right: 0.1rem;
     &:hover {
       color: hsla(0, 0, 0, 0.3);
       cursor: pointer;
@@ -108,8 +108,8 @@ h3 {
 
 input {
   width: 100%;
-  padding: 8px;
-  margin-bottom: 8px;
+  padding:  0.5rem;
+  margin-bottom: 0.5rem;
   display: inline-block;
   box-sizing: border-box;
   font-size: 0.8rem;
@@ -129,6 +129,7 @@ button {
   padding: 8px 16px 8px 16px;
   margin-top: 8px;
   transition: 150ms;
+  cursor: pointer;
   &:hover,
   &:focus {
     background-color: $colour-primary;

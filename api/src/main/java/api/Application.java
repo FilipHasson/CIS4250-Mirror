@@ -1,19 +1,16 @@
 package api;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@RestController
-@EnableAutoConfiguration
+/**
+ * Main Application class for YUMM app
+ * @author Filip Hasson
+ * @version 1.0
+ * @since 2018-10-26
+ */
+@SpringBootApplication
 public class Application {
-
-    @RequestMapping("/")
-    String home() {
-        return "Hello World!\n";
-    }
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
