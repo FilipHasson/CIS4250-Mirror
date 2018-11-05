@@ -1,0 +1,342 @@
+{
+	"info": {
+		"_postman_id": "887a6745-b033-4344-9297-ddd07121d66a",
+		"name": "Yumm",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Accounts",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/accounts",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"accounts"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Account",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/account/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"account",
+						"1"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": {\n    \"email\": \"jessy@jessywilliams.com\",\n    \"id\": 1,\n    \"recipe_ids\": [\n      1\n    ],\n    \"username\": \"jessy\"\n  },\n  \"meta\": {}\n}\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/accounts/login",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"accounts",
+						"login"
+					]
+				},
+				"description": "# Request\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\",\n    \"password\":\"doe\"\n  },\n  \"meta\": {}\n}\n```\n\n# Response\n\n## OK (200)\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\"\n  },\n  \"meta\": {\n    \"token\":\"asdfdsafad\"\n  }\n}\n```\n\n## Not Authenticated (401)\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\"\n  },\n  \"meta\": {\n    \"token\":null\n  }\n}\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/accounts/logout",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"accounts",
+						"logout"
+					]
+				},
+				"description": "# Request\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\",\n    \"password\":\"doe\"\n  },\n  \"meta\": {}\n}\n```\n\n# Response\n\n## OK (200)\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\"\n  },\n  \"meta\": {\n    \"token\":\"asdfdsafad\"\n  }\n}\n```\n\n## Not Authenticated (401)\n\n```JS\n{\n  \"data\": {\n    \"username\":\"john\"\n  },\n  \"meta\": {\n    \"token\":null\n  }\n}\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Meals",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/account/{{account-1}}/meals/{{yyyy}}{{mm}}{{dd}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"account",
+						"{{account-1}}",
+						"meals",
+						"{{yyyy}}{{mm}}{{dd}}"
+					]
+				},
+				"description": "# Request\n\n{\n  \"data\": {\n    \"breakfast\": {\n      \"1\": 2,\n      \"2\": 1.5\n    },\n    \"dinner\": {},\n    \"lunch\": {},\n    \"snack_1\": {},\n    \"snack_2\": {},\n    \"snack_3\": {}\n  },\n  \"meta\": {\n    \"token\": \"asdfsdafaf\"\n  }\n}\n\n\n# Response\n\n- 200 - updated\n- 404 - not found\n- 401 - not authorized"
+			},
+			"response": []
+		},
+		{
+			"name": "Meals",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/account/{{account-1}}/meals/{{yyyy}}{{mm}}{{dd}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"account",
+						"{{account-1}}",
+						"meals",
+						"{{yyyy}}{{mm}}{{dd}}"
+					]
+				},
+				"description": "# Request\n\n{\n  \"data\": {\n    \"breakfast\": {\n      \"1\": 2,\n      \"2\": 1.5\n    },\n    \"dinner\": {},\n    \"lunch\": {},\n    \"snack_1\": {},\n    \"snack_2\": {},\n    \"snack_3\": {}\n  },\n  \"meta\": {\n    \"token\": \"asdfsdafaf\"\n  }\n}\n\n\n# Response\n\n- 200 - updated\n- 404 - not found\n- 401 - not authorized"
+			},
+			"response": []
+		},
+		{
+			"name": "Meals",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/account/{{account-1}}/meals/{{yyyy}}{{mm}}{{dd}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"account",
+						"{{account-1}}",
+						"meals",
+						"{{yyyy}}{{mm}}{{dd}}"
+					]
+				},
+				"description": "# Request\n\n{\n  \"data\": {\n    \"breakfast\": {\n      \"1\": 2,\n      \"2\": 1.5\n    },\n    \"dinner\": {},\n    \"lunch\": {},\n    \"snack_1\": {},\n    \"snack_2\": {},\n    \"snack_3\": {}\n  },\n  \"meta\": {\n    \"token\": \"asdfsdafaf\"\n  }\n}\n\n\n# Response\n\n- 200 - updated\n- 404 - not found\n- 401 - not authorized"
+			},
+			"response": []
+		},
+		{
+			"name": "Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/recipes",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"recipes"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Ingredients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/ingredients",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"ingredients"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Food",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/food/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"food",
+						"1"
+					]
+				},
+				"description": "```JS\n{\n    \"data\": {\n        \"account_id\": 2,\n        \"categories\": [\n            \"keto\",\n            \"breakfast\"\n        ],\n        \"description\": \"You cant' go wrong with this classic\",\n        \"id\": 1,\n        \"ingredients\": {\n            \"1\": 5,\n            \"2\": 2\n        },\n        \"nutrition\": {\n            \"caffeine_mg\": 0,\n            \"calcium_mg\": 0,\n            \"calories\": 5000,\n            \"carbohydrate_g\": 500,\n            \"cholesterol_mg\": 0,\n            \"fat_mono_g\": 0,\n            \"fat_poly_g\": 0,\n            \"fat_sat_g\": 0,\n            \"fat_trans_g\": 0,\n            \"folate_mcg\": 0,\n            \"magnesium_mg\": 0,\n            \"manganese_mg\": 0,\n            \"niacin_mg\": 0,\n            \"nutrition_id\": 32554,\n            \"potassium_mg\": 0,\n            \"protein_g\": 50,\n            \"riboflavin_mg\": 0,\n            \"sodium_mg\": 0,\n            \"sugars_g\": 0,\n            \"thiamin_mg\": 0,\n            \"total_fiber_g\": 0,\n            \"total_lipid_g\": 250,\n            \"vitamin_a_iu\": 0,\n            \"vitamin_b6_mg\": 0,\n            \"vitamin_c_mg\": 0,\n            \"vitamin_d_iu\": 0,\n            \"vitamin_k_mcg\": 0,\n            \"water_g\": 0,\n            \"zinc_mg\": 0\n        },\n        \"recipe_id\": 3,\n        \"serving_count\": 6,\n        \"serving_size\": \"2 balls\",\n        \"star_count\": 10,\n        \"steps\": [\n            \"find man\",\n            \"find scissors\",\n            \"find grill\",\n            \"you know the rest..\"\n        ],\n        \"time_created\": 1540253892,\n        \"time_modified\": 1540253892,\n        \"title\": \"Bacon and Eggs\",\n        \"view_count\": 1000\n    },\n    \"meta\": {}\n}\n```"
+			},
+			"response": []
+		},
+		{
+			"name": "Foods",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/foods",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"foods"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1,\n    2,\n    3\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Foods Search",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/foods?search=title",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"foods"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "title"
+						}
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    3\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Foods Category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{api}}/foods/keto",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"foods",
+						"keto"
+					]
+				},
+				"description": "```JS\n{\n  \"data\": [\n    1\n  ],\n  \"meta\": {}\n}```"
+			},
+			"response": []
+		},
+		{
+			"name": "Food",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/food",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"food"
+					]
+				},
+				"description": "# Request\n\n```JS\n{\n    \"data\": {\n        \"account_id\": 2,\n        \"categories\": [\n            \"QUICK\",\n            \"SNACK\"\n        ],\n        \"description\": \"Mmm balls\",\n        \"ingredients\": {\n            \"1\": 5,\n            \"2\": 2\n        },\n        \"nutrition\": {\n            \"caffeine_mg\": 0,\n            \"calcium_mg\": 0,\n            \"calories\": 5000,\n            \"carbohydrate_g\": 500,\n            \"cholesterol_mg\": 0,\n            \"fat_mono_g\": 0,\n            \"fat_poly_g\": 0,\n            \"fat_sat_g\": 0,\n            \"fat_trans_g\": 0,\n            \"folate_mcg\": 0,\n            \"magnesium_mg\": 0,\n            \"manganese_mg\": 0,\n            \"niacin_mg\": 0,\n            \"nutrition_id\": 32554,\n            \"potassium_mg\": 0,\n            \"protein_g\": 50,\n            \"riboflavin_mg\": 0,\n            \"sodium_mg\": 0,\n            \"sugars_g\": 0,\n            \"thiamin_mg\": 0,\n            \"total_fiber_g\": 0,\n            \"total_lipid_g\": 250,\n            \"vitamin_a_iu\": 0,\n            \"vitamin_b6_mg\": 0,\n            \"vitamin_c_mg\": 0,\n            \"vitamin_d_iu\": 0,\n            \"vitamin_k_mcg\": 0,\n            \"water_g\": 0,\n            \"zinc_mg\": 0\n        },\n        \"recipe_id\": 3,\n        \"serving_count\": 6,\n        \"serving_size\": \"2 balls\",\n        \"star_count\": 0,\n        \"steps\": [\n            \"find man\",\n            \"find scissors\",\n            \"find grill\",\n            \"you know the rest..\"\n        ],\n        \"time_created\": 1540872576,\n        \"time_modified\": 1540872576,\n        \"title\": \"Real Man Balls\",\n        \"view_count\": 0\n    },\n    \"meta\": {\n        \"token\": \"asfadsfjknhasdfklnasf\"\n    }\n}```\n\n\n# Response\n\n## OK (201)\n\n```JS\n{\n  \"data\": {\n    \"id\": 123\n  },\n  \"meta\": {\n  }\n}\n```\n\n## Error\n\n- not authenticated: 401\n- invalid data: 400"
+			},
+			"response": []
+		},
+		{
+			"name": "Food",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "{{api}}/food/{{food_id_1}}",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"food",
+						"{{food_id_1}}"
+					]
+				},
+				"description": "```JS\n{\n    \"data\": {\n        \"account_id\": 2,\n        \"categories\": [\n            \"QUICK\",\n            \"SNACK\"\n        ],\n        \"description\": \"Mmm balls\",\n        \"id\": 0,\n        \"ingredients\": {\n            \"1\": 5,\n            \"2\": 2\n        },\n        \"nutrition\": {\n            \"caffeine_mg\": 0,\n            \"calcium_mg\": 0,\n            \"calories\": 5000,\n            \"carbohydrate_g\": 500,\n            \"cholesterol_mg\": 0,\n            \"fat_mono_g\": 0,\n            \"fat_poly_g\": 0,\n            \"fat_sat_g\": 0,\n            \"fat_trans_g\": 0,\n            \"folate_mcg\": 0,\n            \"magnesium_mg\": 0,\n            \"manganese_mg\": 0,\n            \"niacin_mg\": 0,\n            \"nutrition_id\": 32554,\n            \"potassium_mg\": 0,\n            \"protein_g\": 50,\n            \"riboflavin_mg\": 0,\n            \"sodium_mg\": 0,\n            \"sugars_g\": 0,\n            \"thiamin_mg\": 0,\n            \"total_fiber_g\": 0,\n            \"total_lipid_g\": 250,\n            \"vitamin_a_iu\": 0,\n            \"vitamin_b6_mg\": 0,\n            \"vitamin_c_mg\": 0,\n            \"vitamin_d_iu\": 0,\n            \"vitamin_k_mcg\": 0,\n            \"water_g\": 0,\n            \"zinc_mg\": 0\n        },\n        \"recipe_id\": 3,\n        \"serving_count\": 6,\n        \"serving_size\": \"2 balls\",\n        \"star_count\": 0,\n        \"steps\": [\n            \"find man\",\n            \"find scissors\",\n            \"find grill\",\n            \"you know the rest..\"\n        ],\n        \"time_created\": 1540872576,\n        \"time_modified\": 1540872576,\n        \"title\": \"Real Man Balls\",\n        \"view_count\": 0\n    },\n    \"meta\": {\n        \"token\": \"asfadsfjknhasdfklnasf\"\n    }\n}```"
+			},
+			"response": []
+		}
+	]
+}

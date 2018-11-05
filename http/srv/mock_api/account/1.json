@@ -1,8 +1,11 @@
 {
-  "email": "jessy@jessywilliams.com",
-  "id": 1,
-  "username": "jessy",
-  "recipe_ids": [
-    1
-  ]
+  "data": {
+    "email": "jessy@jessywilliams.com",
+    "id": 1,
+    "recipe_ids": [
+      1
+    ],
+    "username": "jessy"
+  },
+  "meta": {}
 }
