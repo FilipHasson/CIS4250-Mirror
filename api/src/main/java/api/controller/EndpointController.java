@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.sql.ResultSet;
 import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -84,8 +82,6 @@ public class EndpointController {
         Food food  = new Food();
         Recipe recipe = new Recipe();
         Nutrition nutrition;// = new Nutrition();
-        String dataString = null;
-        String metaString = null;
         String nutritionString = null;
         int foodId;
 
@@ -99,36 +95,22 @@ public class EndpointController {
         try {
             json = (JSONObject)parser.parse(jsonString);
             if (!JsonValidator.isValidJson(json)) return;
-            dataString = jsonString(json,"data");
-            metaString = jsonString(json, "meta");
+            data = jsonJson(json,"data");
+            meta = jsonJson(json,"meta");
+//            dataString = jsonString(json,"data");
+//            metaString = jsonString(json, "meta");
         } catch (ParseException e) {
             e.printStackTrace();
             return;
         }
 
-        try{
-            data =(JSONObject)parser.parse(dataString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return;
-        }
 
-        try {
-            meta =(JSONObject)parser.parse(metaString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return;
-        }
 
         if (null != data){
-            try {
-                if (!data.containsKey("nutrition")) return;
-                nutritionString = jsonString(data, "nutrition");
-                jNutrition = (JSONObject) parser.parse(nutritionString);
-            } catch (ParseException e) {
-                e.printStackTrace();
+            if (data.containsKey("nutrition")) {
+                jNutrition = jsonJson(data, "nutrition");
+                //jNutrition = (JSONObject) parser.parse(nutritionString);
             }
-
             food.setTitle(jsonString(data,"title"));
             food.setId(jsonInt(data,"id")); // UPDATE OR CREATE
             if (0 == foodId){
@@ -154,7 +136,8 @@ public class EndpointController {
             recipe.setAccountId(jsonInt(data,"account_id"));
             recipe.setStars(jsonInt(data,"star_count"));
             recipe.setViews(jsonInt(data,"view_count"));
-            recipe.setPortions(jsonDouble(data,"portions"));
+            recipe.setServing_count(jsonInt(data,"serving_count"));
+            recipe.setServing_size(jsonString(data,"serving_size"));
 
             if (data.containsKey("steps")){
                 JSONArray array = (JSONArray) data.get("steps");
@@ -252,6 +235,11 @@ public class EndpointController {
     private int jsonInt(JSONObject json, String field){
         if (json.containsKey(field)) return ((Long)json.get(field)).intValue();
         return 0;
+    }
+
+    private JSONObject jsonJson(JSONObject json, String field){
+        if (json.containsKey(field)) return (JSONObject)json.get(field);
+        return null;
     }
 
     private String jsonString(JSONObject json, String field){

@@ -34,34 +34,37 @@ public class Recipe {
     private Category[] categories;
     private int id;
     private int accountId;
-    private double portions;
+    private double serving_count;
+    private String serving_size;
     private String[] steps;
     private int views;
     private int stars;
 
 
-    public Recipe(int id, int accountId, double portions, Category[] categories,
+    public Recipe(int id, int accountId, double serving_count, String serving_size, Category[] categories,
                   String[] steps, int views, int stars) {
         this.categories = categories;
         this.id = id;
         this.accountId = accountId;
-        this.portions = portions;
+        this.serving_count = serving_count;
+        this.serving_size = serving_size;
         this.steps = steps;
         this.views = views;
         this.stars = stars;
     }
 
-    public Recipe(int id, int accountId, double portions, Category[] categories, String[] steps) {
+    public Recipe(int id, int accountId, double serving_count, String serving_size, Category[] categories, String[] steps) {
         this.categories = categories;
         this.id = id;
         this.accountId = accountId;
-        this.portions = portions;
+        this.serving_count = serving_count;
+        this.serving_size = serving_size;
         this.steps = steps;
     }
 
 
     public Recipe(){
-        this (0, 0, 0.0, new Category[]{null}, new String[]{""},0,0);
+        this (0, 0, 0.0, "", new Category[]{null}, new String[]{""},0,0);
     }
 
     public static Category[] stringsToCategories(String[] vals){
@@ -149,7 +152,8 @@ public class Recipe {
         if (null == recipe){
             json.put("recipe_id",null);
             json.put("account_id",null);
-            json.put("portions",null);
+            json.put("serving_count",null);
+            json.put("serving_size",null);
             json.put("star_count",null);
             json.put("view_count",null);
         } else {
@@ -157,7 +161,8 @@ public class Recipe {
             categories.addAll(Arrays.asList(recipe.getCategoriesAsStrings()));
             steps.addAll(Arrays.asList(recipe.getSteps()));
             json.put("account_id",recipe.getAccountId());
-            json.put("portions",recipe.getPortions());
+            json.put("serving_count",recipe.getServing_count());
+            json.put("serving_size",recipe.getServing_size());
             json.put("star_count",recipe.getStars());
             json.put("view_count",recipe.getViews());
         }
@@ -192,12 +197,12 @@ public class Recipe {
         this.accountId = accountId;
     }
 
-    public double getPortions() {
-        return portions;
+    public double getServing_count() {
+        return serving_count;
     }
 
-    public void setPortions(double portions) {
-        this.portions = portions;
+    public void setServing_count(double serving_count) {
+        this.serving_count = serving_count;
     }
 
     public String[] getSteps() {
@@ -224,13 +229,21 @@ public class Recipe {
         this.stars = stars;
     }
 
+    public String getServing_size() {
+        return serving_size;
+    }
+
+    public void setServing_size(String serving_size) {
+        this.serving_size = serving_size;
+    }
+
     @Override
     public String toString() {
         return "Recipe{" +
                 "categories=" + Arrays.toString(categories) +
                 ", id=" + id +
                 ", accountId=" + accountId +
-                ", portions=" + portions +
+                ", serving_count=" + serving_count +
                 ", steps=" + Arrays.toString(steps) +
                 ", views=" + views +
                 ", stars=" + stars +

@@ -91,17 +91,18 @@ public class RecipeDAO extends DAO{
         Connection connection = super.connect();
         PreparedStatement statement;
         ResultSet resultSet;
-        String query = "INSERT INTO recipe (account_id, portions, categories, steps, view_count, star_count) VALUES (?, ?, CAST(? AS recipe_category[]), ?, ?, ?)";
+        String query = "INSERT INTO recipe (account_id, serving_count, categories, steps, view_count, star_count, serving_size) VALUES (?, ?, CAST(? AS recipe_category[]), ?, ?, ?, ?)";
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1,recipe.getAccountId());
-            statement.setDouble(2,recipe.getPortions());
+            statement.setDouble(2,recipe.getServing_count());
             Array enumArray = connection.createArrayOf("recipe_category",recipe.getCategories());
             Array stepArray = connection.createArrayOf("TEXT",recipe.getSteps());
             statement.setArray(3,enumArray);
             statement.setArray(4,stepArray);
             statement.setInt(5,recipe.getViews());
             statement.setInt(6,recipe.getStars());
+            statement.setString(7,recipe.getServing_size());
 
             return super.checkUpdated(connection,statement,statement.executeUpdate());
         } catch (SQLException e) {
@@ -115,20 +116,21 @@ public class RecipeDAO extends DAO{
     public int updateRecipe(Recipe recipe){
         Connection connection = super.connect();
         PreparedStatement statement;
-        String query = "UPDATE recipe SET account_id = ?, portions = ?, categories = CAST(? AS recipe_category[]), steps = ?, view_count = ?, star_count = ? WHERE id = ?";
+        String query = "UPDATE recipe SET account_id = ?, serving_count = ?, categories = CAST(? AS recipe_category[]), steps = ?, view_count = ?, star_count = ?, serving_size = ? WHERE id = ?";
         int affectedRows = 0;
 
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1,recipe.getAccountId());
-            statement.setDouble(2,recipe.getPortions());
+            statement.setDouble(2,recipe.getServing_count());
             Array enumArray = connection.createArrayOf("recipe_category",recipe.getCategories());
             Array stepArray = connection.createArrayOf("TEXT",recipe.getSteps());
             statement.setArray(3,enumArray);
             statement.setArray(4,stepArray);
             statement.setInt(5,recipe.getViews());
             statement.setInt(6,recipe.getStars());
-            statement.setInt(7,recipe.getId());
+            statement.setString(7,recipe.getServing_size());
+            statement.setInt(8,recipe.getId());
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
@@ -144,7 +146,8 @@ public class RecipeDAO extends DAO{
             return new Recipe(
                     resultSet.getInt("id"),
                     resultSet.getInt("account_id"),
-                    resultSet.getDouble("portions"),
+                    resultSet.getDouble("serving_count"),
+                    resultSet.getString("serving_size"),
                     Recipe.stringsToCategories((String[])resultSet.getArray("categories").getArray()),
                     (String[])resultSet.getArray("steps").getArray(),
                     resultSet.getInt("view_count"),
