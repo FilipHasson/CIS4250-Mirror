@@ -6,6 +6,7 @@ import api.dao.RecipeDAO;
 import api.object.Food;
 import api.object.Nutrition;
 import api.object.Recipe;
+import api.validator.JsonValidator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -36,117 +37,134 @@ public class EndpointController {
 
     @RequestMapping(value="/food/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody JSONObject getFood(@PathVariable("id") int id){
-        return new FoodDAO().findById(id).toJson();
+        return initJsonReturn(new FoodDAO().findById(id).toJson());
     }
 
     @RequestMapping(value="/foods", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONArray getFoods(){
+    public JSONObject getFoods(){
         JSONArray json = new JSONArray();
         json.addAll(Food.getIds(new FoodDAO().findAllOrderByFieldLimit("time_created",100)));
-        return json;
+        return initJsonReturn(json);
     }
 
     @RequestMapping(value="/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONArray getRecipes(){
+    public JSONObject getRecipes(){
         JSONArray json = new JSONArray();
         List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100));
         for (int id : recipeIds){
             json.add(new FoodDAO().findByInt("recipe_id",id).getId());
         }
-        return json;
+        return initJsonReturn(json);
     }
 
     @RequestMapping(value="/foods/{category}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONArray getFoods(@PathVariable("category") String category){
+    public JSONObject getFoods(@PathVariable("category") String category){
         JSONArray json = new JSONArray();
         json.addAll(Food.getIds(new FoodDAO().findByRecipeCategory(category)));
-        return json;
+        return initJsonReturn(json);
     }
+
 
     @RequestMapping(value="/food")
     @ResponseBody
-    public void newFood(@RequestBody String jsonString){
+    public void newFood(@RequestBody String jsonString) {
+        newFood(jsonString,"0");
+    }
+
+    @RequestMapping(value="/food/{id}")
+    @ResponseBody
+    public void newFood(@RequestBody String jsonString, @PathVariable("id")String sFoodId){
         JSONObject json = null;
+        JSONObject meta = null;
+        JSONObject data = null;
+        JSONObject jNutrition = null;
         Food food  = new Food();
         Recipe recipe = new Recipe();
-        Nutrition nutrition = new Nutrition();
+        Nutrition nutrition;// = new Nutrition();
+        String dataString = null;
+        String metaString = null;
+        String nutritionString = null;
+        int foodId;
+
+        try {
+            foodId = Integer.parseInt(sFoodId);
+        } catch (NumberFormatException e){
+            foodId = 0;
+        }
 
         JSONParser parser = new JSONParser();
         try {
-             json = (JSONObject)parser.parse(jsonString);
+            json = (JSONObject)parser.parse(jsonString);
+            if (!JsonValidator.isValidJson(json)) return;
+            dataString = jsonString(json,"data");
+            metaString = jsonString(json, "meta");
         } catch (ParseException e) {
             e.printStackTrace();
+            return;
         }
 
-        if (null != json){
-            food.setTitle(jsonString(json,"title"));
-            food.setId(jsonInt(json,"id")); // UPDATE OR CREATE
-            if (0 == food.getId()){
+        try{
+            data =(JSONObject)parser.parse(dataString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        try {
+            meta =(JSONObject)parser.parse(metaString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if (null != data){
+            try {
+                if (!data.containsKey("nutrition")) return;
+                nutritionString = jsonString(data, "nutrition");
+                jNutrition = (JSONObject) parser.parse(nutritionString);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            food.setTitle(jsonString(data,"title"));
+            food.setId(jsonInt(data,"id")); // UPDATE OR CREATE
+            if (0 == foodId){
                 food.setNutritionId(0);
                 food.setRecipeId(0);
-                nutrition.setId(0);
                 recipe.setId(0);
                 food.setTimeCreated(OffsetDateTime.now());
                 food.setTimeUpdated(OffsetDateTime.now());
             } else {
-                food.setNutritionId(jsonInt(json, "nutrition_id"));// UPDATE OR CREATE
-                food.setRecipeId(jsonInt(json, "recipe_id"));// UPDATE OR CREATE
-                nutrition.setId(food.getNutritionId());
+                food.setNutritionId(jsonInt(data, "nutrition_id"));// UPDATE OR CREATE
+                food.setRecipeId(jsonInt(data, "recipe_id"));// UPDATE OR CREATE
+//                nutrition.setId(food.getNutritionId());
                 recipe.setId(food.getRecipeId());
                 food.setTimeUpdated(OffsetDateTime.now());
                 long epoch = 0;
-                if (json.containsKey("time_created")) epoch = (long)json.get("time_created");
+                if (data.containsKey("time_created")) epoch = (long)data.get("time_created");
                 if (epoch != 0) food.setTimeCreated(OffsetDateTime.ofInstant(Instant.ofEpochMilli(epoch), TimeZone.getDefault().toZoneId()));
                 else food.setTimeCreated(OffsetDateTime.now());
             }
 
-            food.setTimeCreated(OffsetDateTime.now());
-            food.setTimeUpdated(OffsetDateTime.now());
-            nutrition.setCaffeine_mg(jsonDouble(json,"caffine_mg"));
-            nutrition.setCalcium_mg(jsonDouble(json,"calcium_mg"));
-            nutrition.setCalories(jsonDouble(json,"calories"));
-            nutrition.setCarbohydrate_g(jsonDouble(json,"carbohydrate_g"));
-            nutrition.setCholesterol_mg(jsonDouble(json,"cholesterol_mg"));
-            nutrition.setFat_mono_g(jsonDouble(json,"fat_mono_g"));
-            nutrition.setFat_poly_g(jsonDouble(json,"fat_poly_g"));
-            nutrition.setFat_sat_g(jsonDouble(json,"fat_sat_g"));
-            nutrition.setFat_trans_g(jsonDouble(json,"fat_trans_g"));
-            nutrition.setFolate_mcg(jsonDouble(json,"folate_mcg"));
-            nutrition.setMagnesium_mg(jsonDouble(json,"magnesium_mg"));
-            nutrition.setManganese_mg(jsonDouble(json,"manganese_mg"));
-            nutrition.setNiacin_mg(jsonDouble(json,"niacin_mg"));
-            nutrition.setPotassium_mg(jsonDouble(json,"potassium_mg"));
-            nutrition.setProtein_g(jsonDouble(json,"protein_g"));
-            nutrition.setRiboflavin_mg(jsonDouble(json,"riboflavin_mg"));
-            nutrition.setSodium_mg(jsonDouble(json,"sodium_mg"));
-            nutrition.setSugars_g(jsonDouble(json,"sugars_g"));
-            nutrition.setThiamin_mg(jsonDouble(json,"thiamin_mg"));
-            nutrition.setTotal_fiber_g(jsonDouble(json,"total_fiber_g"));
-            nutrition.setTotal_lipid_g(jsonDouble(json,"total_lipid_g"));
-            nutrition.setVitamin_a_iu(jsonDouble(json,"vitamin_a_iu"));
-            nutrition.setVitamin_b6_mg(jsonDouble(json,"vitamin_b6_mg"));
-            nutrition.setVitamin_c_mg(jsonDouble(json,"vitamin_c_mg"));
-            nutrition.setVitamin_d_iu(jsonDouble(json,"vitamin_d_iu"));
-            nutrition.setVitamin_k_mcg(jsonDouble(json,"vitamin_k_mcg"));
-            nutrition.setWater_g(jsonDouble(json,"water_g"));
-            nutrition.setZinc_mg(jsonDouble(json,"zinc_mg"));
-            recipe.setAccountId(jsonInt(json,"account_id"));
-            recipe.setStars(jsonInt(json,"star_count"));
-            recipe.setViews(jsonInt(json,"view_count"));
-            recipe.setPortions(jsonDouble(json,"portions"));
+            nutrition = fillNutrition(jNutrition,foodId);
 
-            if (json.containsKey("steps")){
-                JSONArray array = (JSONArray) json.get("steps");
+            recipe.setAccountId(jsonInt(data,"account_id"));
+            recipe.setStars(jsonInt(data,"star_count"));
+            recipe.setViews(jsonInt(data,"view_count"));
+            recipe.setPortions(jsonDouble(data,"portions"));
+
+            if (data.containsKey("steps")){
+                JSONArray array = (JSONArray) data.get("steps");
                 String[] stepStrings = new String[array.size()];// = new String[steps.size()];
                 for (int i = 0; i < array.size(); i++) stepStrings[i] = (String)array.get(i);
                 recipe.setSteps(stepStrings);
             } else recipe.setSteps(new String[] {""});
 
-            if (json.containsKey("categories")){
-                JSONArray array = (JSONArray) json.get("categories");
+            if (data.containsKey("categories")){
+                JSONArray array = (JSONArray) data.get("categories");
                 String[] categoryStrings = new String[array.size()];// = new String[steps.size()];
                 for (int i = 0; i < array.size(); i++) categoryStrings[i] = ((String)array.get(i)).toLowerCase();
                 recipe.setCategories(categoryStrings);
@@ -156,7 +174,7 @@ public class EndpointController {
             System.out.println("Recipe: "+recipe.toString());
             System.out.println("Nutrition: "+nutrition.toString());
 
-            if (0 == food.getId()) {
+            if (0 == foodId) {
                 int recipeId = ((Long)new RecipeDAO().insertRecipe(recipe)).intValue();
                 if (0 == recipeId) {
                     return;
@@ -168,7 +186,7 @@ public class EndpointController {
                 }
                 food.setRecipeId(recipeId);
                 food.setNutritionId(nutritionId);
-                int foodId = ((Long)new FoodDAO().insertFood(food)).intValue();
+                foodId = ((Long)new FoodDAO().insertFood(food)).intValue();
                 if (0 == foodId) {
 //                    new DAO().deleteByInt("recipe","id",recipeId);
 //                    new DAO().deleteByInt("nutrition","id",nutritionId);
@@ -195,6 +213,42 @@ public class EndpointController {
         }
     }
 
+    private Nutrition fillNutrition(JSONObject json, int id){
+        Nutrition  nutrition = new Nutrition();
+
+        nutrition.setId(id);
+//        nutrition.setCaffeine_mg(jsonDouble(json,"caffine_mg"));
+//        nutrition.setCalcium_mg(jsonDouble(json,"calcium_mg"));
+//        nutrition.setCalories(jsonDouble(json,"calories"));
+//        nutrition.setCarbohydrate_g(jsonDouble(json,"carbohydrate_g"));
+//        nutrition.setCholesterol_mg(jsonDouble(json,"cholesterol_mg"));
+//        nutrition.setFat_mono_g(jsonDouble(json,"fat_mono_g"));
+//        nutrition.setFat_poly_g(jsonDouble(json,"fat_poly_g"));
+//        nutrition.setFat_sat_g(jsonDouble(json,"fat_sat_g"));
+//        nutrition.setFat_trans_g(jsonDouble(json,"fat_trans_g"));
+//        nutrition.setFolate_mcg(jsonDouble(json,"folate_mcg"));
+//        nutrition.setMagnesium_mg(jsonDouble(json,"magnesium_mg"));
+//        nutrition.setManganese_mg(jsonDouble(json,"manganese_mg"));
+//        nutrition.setNiacin_mg(jsonDouble(json,"niacin_mg"));
+//        nutrition.setPotassium_mg(jsonDouble(json,"potassium_mg"));
+//        nutrition.setProtein_g(jsonDouble(json,"protein_g"));
+//        nutrition.setRiboflavin_mg(jsonDouble(json,"riboflavin_mg"));
+//        nutrition.setSodium_mg(jsonDouble(json,"sodium_mg"));
+//        nutrition.setSugars_g(jsonDouble(json,"sugars_g"));
+//        nutrition.setThiamin_mg(jsonDouble(json,"thiamin_mg"));
+//        nutrition.setTotal_fiber_g(jsonDouble(json,"total_fiber_g"));
+//        nutrition.setTotal_lipid_g(jsonDouble(json,"total_lipid_g"));
+//        nutrition.setVitamin_a_iu(jsonDouble(json,"vitamin_a_iu"));
+//        nutrition.setVitamin_b6_mg(jsonDouble(json,"vitamin_b6_mg"));
+//        nutrition.setVitamin_c_mg(jsonDouble(json,"vitamin_c_mg"));
+//        nutrition.setVitamin_d_iu(jsonDouble(json,"vitamin_d_iu"));
+//        nutrition.setVitamin_k_mcg(jsonDouble(json,"vitamin_k_mcg"));
+//        nutrition.setWater_g(jsonDouble(json,"water_g"));
+//        nutrition.setZinc_mg(jsonDouble(json,"zinc_mg"));
+
+        return nutrition;
+    }
+
     private int jsonInt(JSONObject json, String field){
         if (json.containsKey(field)) return ((Long)json.get(field)).intValue();
         return 0;
@@ -210,5 +264,31 @@ public class EndpointController {
         return 0;
     }
 
+    private JSONObject initJsonReturn(JSONObject data){
+        JSONObject json = new JSONObject();
+        json.put("data",data);
+        json.put("meta",new JSONObject());
+        return json;
+    }
+
+    private JSONObject initJsonReturn(JSONArray data){
+        JSONObject json = new JSONObject();
+        json.put("data",data);
+        json.put("meta",new JSONObject());
+        return json;
+    }
+
+    private JSONObject initJsonReturn(JSONObject data, JSONObject meta){
+        JSONObject json = new JSONObject();
+        json.put("data",data);
+        json.put("meta",meta);
+        return json;
+    }
+
+    private JSONObject initJsonMeta(String token){
+        JSONObject json  = new JSONObject();
+        json.put("token",token);
+        return json;
+    }
 
 }
