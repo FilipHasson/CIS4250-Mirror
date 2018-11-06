@@ -40,8 +40,7 @@ CREATE TABLE recipe (
   description TEXT,
   view_count INTEGER DEFAULT 0,
   star_count INTEGER DEFAULT 0,
-  steps TEXT [],
-  ingredients SERVING []
+  steps TEXT []
 );
 
 -- TOKEN -----------------------------------------------------------------------

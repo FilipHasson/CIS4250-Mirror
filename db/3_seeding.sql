@@ -42,7 +42,6 @@ ALTER TABLE usda.products
 INSERT INTO food (usda_id, title)
 SELECT ndb_number, initcap(long_name)
 FROM usda.products
-JOIN usda.servings ON usda.products.ndb_number = usda.servings.ndb_no
 ON CONFLICT ON CONSTRAINT title_const DO NOTHING;
 
 -- Add serving size data
