@@ -37,10 +37,55 @@ ALTER TABLE usda.products
   DROP COLUMN date_modified,
   DROP COLUMN date_available,
   DROP COLUMN ingredients_english;
+
+-- Add food titles
 INSERT INTO food (usda_id, title)
 SELECT ndb_number, initcap(long_name)
 FROM usda.products
+JOIN usda.servings ON usda.products.ndb_number = usda.servings.ndb_no
 ON CONFLICT ON CONSTRAINT title_const DO NOTHING;
+
+-- Add serving size data
+DROP TABLE IF EXISTS usda.servings CASCADE;
+CREATE TABLE usda.servings (
+  ndb_no INTEGER,
+  measurement_amount TEXT,
+  measurement_type TEXT,
+  quantity_amount TEXT,
+  quantity_type TEXT,
+  preperation_state TEXT
+);
+COPY usda.servings (
+  ndb_no,
+  measurement_amount,
+  measurement_type,
+  quantity_amount,
+  quantity_type,
+  preperation_state
+)
+FROM '/Serving_size.csv' WITH CSV HEADER DELIMITER AS ',';
+ALTER TABLE usda.servings DROP COLUMN preperation_state;
+UPDATE food
+    SET
+      serving_count = t.serving_count,
+      serving_size = REGEXP_REPLACE(LOWER(t.serving_size), $$\s*\|.+|\($|^["\s]+|^[^\d\w]*|[^\d\w]*$|^x[\s\d."']+$$, '', 'g')
+FROM (
+    SELECT
+    ndb_no,
+    CASE
+        WHEN (quantity_amount IS NOT NULL AND quantity_amount != '') THEN quantity_amount::REAL
+        WHEN (measurement_amount IS NOT NULL AND measurement_amount != '') THEN measurement_amount::REAL
+        ELSE NULL
+    END AS serving_count,
+    CASE
+        WHEN (quantity_amount IS NOT NULL AND quantity_amount != '') THEN quantity_type
+        WHEN (measurement_amount IS NOT NULL AND measurement_amount != '') THEN measurement_type
+        ELSE NULL
+      END AS serving_size
+    FROM usda.servings
+) t
+WHERE food.usda_id = t.ndb_no;
+DELETE FROM food WHERE serving_size IS NULL OR serving_size = '';
 
 -- Add nutrition data
 DROP TABLE IF EXISTS usda.nutrition CASCADE;
