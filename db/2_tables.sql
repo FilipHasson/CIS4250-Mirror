@@ -67,18 +67,20 @@ CREATE TABLE food (
 );
 
 -- Create a GIN index for food table's title row
-ALTER TABLE food ADD COLUMN tsv_food_title tsvector;
-CREATE INDEX tsv_food_title_idx ON food USING gin(tsv_food_title);
+ALTER TABLE food ADD COLUMN IF NOT EXISTS tsv_food_title tsvector;
+CREATE INDEX IF NOT EXISTS  tsv_food_title_idx ON food USING gin(tsv_food_title);
 UPDATE food SET tsv_food_title = setweight(to_tsvector(coalesce(title,'')), 'A');
 
 -- Add trigger to automatically update trigger on insert and update
+DROP FUNCTION IF EXISTS food_text_search_trigger;
 CREATE FUNCTION food_text_search_trigger() RETURNS trigger AS $$
 BEGIN new.tsv_food_title :=
   setweight(to_tsvector(coalesce(new.title,'')), 'A');
   return new;
   end
 $$ LANGUAGE plpgsql;
-
+CREATE TRIGGER update_search_meta BEFORE INSERT OR UPDATE
+ON food FOR EACH ROW EXECUTE PROCEDURE food_text_search_trigger();
 
 -- MEAL ------------------------------------------------------------------------
 -- todo
