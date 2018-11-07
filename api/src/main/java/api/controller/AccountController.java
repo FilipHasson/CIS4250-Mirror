@@ -3,9 +3,11 @@ package api.controller;
 
 import api.dao.AccountDAO;
 import api.dao.FoodDAO;
+import api.dao.RecipeDAO;
 import api.exception.UnauthorizedException;
 import api.object.Account;
 import api.object.Food;
+import api.object.Recipe;
 import api.validator.AccountValidator;
 import api.validator.JsonValidator;
 import org.json.simple.JSONArray;
@@ -96,9 +98,11 @@ public class AccountController {
         if (null != meta) token = jsonString(meta,"token");
         if (token.equals(VALID_TOKEN)){
             //TODO check against meaningful token
-            if (null != data) username = jsonString(data,"username");
-            accountJson = new AccountDAO().findByUsername(username).toJson();
-            return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));
+            if (null != data){
+                username = jsonString(data,"username");
+                accountJson = new AccountDAO().findByUsername(username).toJson();
+                return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));
+            }
         }
         throw new UnauthorizedException();
     }
