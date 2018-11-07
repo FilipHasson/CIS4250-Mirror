@@ -6,7 +6,6 @@ import api.dao.RecipeDAO;
 import api.object.Food;
 import api.object.Nutrition;
 import api.object.Recipe;
-import api.validator.JsonValidator;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -22,6 +21,8 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.TimeZone;
+
+import static api.validator.JsonValidator.*;
 
 /**
  * EndPoint Controller for YUMM app
@@ -94,7 +95,7 @@ public class EndpointController {
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
-            if (!JsonValidator.isValidJson(json)) return;
+            if (!isValidJson(json)) return;
             data = jsonJson(json,"data");
             meta = jsonJson(json,"meta");
 //            dataString = jsonString(json,"data");
@@ -232,51 +233,6 @@ public class EndpointController {
         return nutrition;
     }
 
-    private int jsonInt(JSONObject json, String field){
-        if (json.containsKey(field)) return ((Long)json.get(field)).intValue();
-        return 0;
-    }
 
-    private JSONObject jsonJson(JSONObject json, String field){
-        if (json.containsKey(field)) return (JSONObject)json.get(field);
-        return null;
-    }
-
-    private String jsonString(JSONObject json, String field){
-        if (json.containsKey(field)) return (String)json.get(field);
-        return "";
-    }
-
-    private double jsonDouble(JSONObject json, String field){
-        if (json.containsKey(field)) return (Double)json.get(field);
-        return 0;
-    }
-
-    private JSONObject initJsonReturn(JSONObject data){
-        JSONObject json = new JSONObject();
-        json.put("data",data);
-        json.put("meta",new JSONObject());
-        return json;
-    }
-
-    private JSONObject initJsonReturn(JSONArray data){
-        JSONObject json = new JSONObject();
-        json.put("data",data);
-        json.put("meta",new JSONObject());
-        return json;
-    }
-
-    private JSONObject initJsonReturn(JSONObject data, JSONObject meta){
-        JSONObject json = new JSONObject();
-        json.put("data",data);
-        json.put("meta",meta);
-        return json;
-    }
-
-    private JSONObject initJsonMeta(String token){
-        JSONObject json  = new JSONObject();
-        json.put("token",token);
-        return json;
-    }
 
 }
