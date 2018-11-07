@@ -65,6 +65,30 @@ public class FoodDAO extends DAO{
         return findByRecipeCategory(Recipe.stringToCategory(category));
     }
 
+    public List<Food> findByAccountId(int accountId){
+        List<Food> foods = new ArrayList<>();
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String query = "SELECT * FROM food, recipe WHERE food.recipe_id = recipe.id AND recipe.account_id = ?";
+
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setInt(1,accountId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                foods.add(getFoodFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return foods;
+    }
+
+
     public List<Food> findByRecipeCategory(Recipe.Category category){
         List<Food> foods = new ArrayList<>();
         Connection connection = super.connect();
