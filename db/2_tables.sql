@@ -68,7 +68,7 @@ DROP TABLE IF EXISTS servings CASCADE;
 CREATE TABLE servings (
   recipe_id INTEGER REFERENCES recipe NOT NULL,
   food_id INTEGER REFERENCES food NOT NULL,
-  quantity INTEGER DEFAULT 0,
+  quantity REAL DEFAULT 0,
   PRIMARY KEY(food_id, recipe_id)
 );
 
