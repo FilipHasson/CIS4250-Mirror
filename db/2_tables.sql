@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS account CASCADE;
 CREATE TABLE account (
   id SERIAL PRIMARY KEY,
   username VARCHAR(25),
-  password CHAR(32),
+  password CHAR(64),
   email VARCHAR(128)
 );
 CREATE UNIQUE INDEX IF NOT EXISTS unique_username_idx
@@ -48,7 +48,8 @@ DROP TABLE IF EXISTS token CASCADE;
 CREATE TABLE token (
   id SERIAL PRIMARY KEY,
   account_id INTEGER REFERENCES account NOT NULL,
-  expiry TIMESTAMP NOT NULL
+  expiry TIMESTAMP NOT NULL,
+  token_str TEXT
 );
 
 -- FOOD ------------------------------------------------------------------------
@@ -90,4 +91,13 @@ CREATE TRIGGER update_search_meta BEFORE INSERT OR UPDATE
 ON food FOR EACH ROW EXECUTE PROCEDURE food_text_search_trigger();
 
 -- MEAL ------------------------------------------------------------------------
+DROP TABLE IF EXISTS meals CASCADE;
+CREATE TABLE meals (
+  meal_day DATE DEFAULT current_date NOT NULL,
+  account_id INTEGER REFERENCES account NOT NULL,
+  meal_list MEAL_TUPLE [],
+  PRIMARY KEY(meal_day, account_id)
+
+);
+
 -- todo
