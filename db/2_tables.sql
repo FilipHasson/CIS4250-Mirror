@@ -36,16 +36,12 @@ DROP TABLE IF EXISTS recipe CASCADE;
 CREATE TABLE recipe (
   id SERIAL PRIMARY KEY,
   account_id INTEGER REFERENCES account NOT NULL,
-  serving_count REAL NOT NULL,
-  serving_size TEXT NOT NULL,
   categories RECIPE_CATEGORY [],
   description TEXT,
   view_count INTEGER DEFAULT 0,
   star_count INTEGER DEFAULT 0,
-  steps TEXT [],
-  ingredient_ids INTEGER[]
+  steps TEXT []
 );
-
 
 -- TOKEN -----------------------------------------------------------------------
 DROP TABLE IF EXISTS token CASCADE;
@@ -60,6 +56,8 @@ DROP TABLE IF EXISTS food CASCADE;
 CREATE TABLE food (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
+  serving_count REAL NOT NULL DEFAULT 0,
+  serving_size TEXT,
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
   recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
