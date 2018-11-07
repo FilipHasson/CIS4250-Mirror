@@ -1,6 +1,7 @@
 package api.validator;
 
 import api.dao.AccountDAO;
+import api.exception.UnauthorizedException;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -42,6 +43,6 @@ public class AccountValidator {
         if (Arrays.equals(AccountValidator.hexStringToByteArray(plaintext),new AccountDAO().findAccountHash(username))){
             return VALID_TOKEN;
         }
-        return null;
+        throw new UnauthorizedException();
     }
 }
