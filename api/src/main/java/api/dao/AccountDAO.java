@@ -90,8 +90,7 @@ public class AccountDAO extends DAO{
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, account.getUsername());
-            //TODO do not trim hashes when grant updates DB
-            statement.setString(2, AccountValidator.byteArrayToHexString(account.getPasswordHash()).substring(0,32));
+            statement.setString(2, AccountValidator.byteArrayToHexString(account.getPasswordHash()));
             statement.setString(3, account.getEmail());
 
             return super.checkUpdated(connection,statement,statement.executeUpdate());
