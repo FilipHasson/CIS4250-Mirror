@@ -1,5 +1,6 @@
 package api.dao;
 
+import api.exception.NotFoundException;
 import api.object.Account;
 import api.validator.AccountValidator;
 
@@ -19,6 +20,7 @@ public class AccountDAO extends DAO{
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw new NotFoundException();
         }
 
         return accounts;
@@ -33,6 +35,7 @@ public class AccountDAO extends DAO{
                 return getAccountFromResultSet(resultSet);
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new NotFoundException();
             }
         }
         return null;
@@ -46,6 +49,7 @@ public class AccountDAO extends DAO{
                 return getAccountFromResultSet(resultSet);
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new NotFoundException();
             }
         }
         return null;
@@ -59,6 +63,7 @@ public class AccountDAO extends DAO{
                 return AccountValidator.hexStringToByteArray(resultSet.getString("password"));
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new NotFoundException();
             }
         }
         return null;
@@ -72,6 +77,7 @@ public class AccountDAO extends DAO{
                 return AccountValidator.hexStringToByteArray(resultSet.getString("password"));
             } catch (SQLException e) {
                 e.printStackTrace();
+                throw new NotFoundException();
             }
         }
         return null;
@@ -97,17 +103,17 @@ public class AccountDAO extends DAO{
         return 0;
     }
 
-    public Account getAccountFromResultSet(ResultSet resultSet){
-        try {
+    public Account getAccountFromResultSet(ResultSet resultSet) throws SQLException{
+//        try {
             return new Account(
                     resultSet.getInt("id"),
                     resultSet.getString("username"),
                     resultSet.getString("email")
             );
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
     }
 
     public Account getAccountFromResultSetWithPassword(ResultSet resultSet){
