@@ -1,6 +1,7 @@
 package api.validator;
 
 import api.dao.AccountDAO;
+import api.exception.BadRequestException;
 import api.exception.UnauthorizedException;
 
 import java.nio.charset.StandardCharsets;
@@ -40,9 +41,16 @@ public class AccountValidator {
     }
 
     public static String loginRequest(String username, String plaintext){
-        if (Arrays.equals(AccountValidator.hexStringToByteArray(plaintext),new AccountDAO().findAccountHash(username))){
+        if (null == plaintext || plaintext.length() == 0) throw new BadRequestException();
+        if (AccountValidator.byteArrayToHexString(AccountValidator.hashPassword(plaintext)).substring(0,32).equals(
+                AccountValidator.byteArrayToHexString(new AccountDAO().findAccountHash(username)))){
             return VALID_TOKEN;
         }
+
+        System.out.println(plaintext);
+//        System.out.println(AccountValidator.hexStringToByteArray(plaintext));
+        System.out.println(AccountValidator.byteArrayToHexString(AccountValidator.hashPassword(plaintext)).substring(0,32));
+        System.out.println(AccountValidator.byteArrayToHexString(new AccountDAO().findAccountHash(username)));
         throw new UnauthorizedException();
     }
 }

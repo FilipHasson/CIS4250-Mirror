@@ -3,11 +3,9 @@ package api.controller;
 
 import api.dao.AccountDAO;
 import api.dao.FoodDAO;
-import api.dao.RecipeDAO;
-import api.exception.UnauthorizedException;
+import api.exception.BadRequestException;
 import api.object.Account;
 import api.object.Food;
-import api.object.Recipe;
 import api.validator.AccountValidator;
 import api.validator.JsonValidator;
 import org.json.simple.JSONArray;
@@ -55,11 +53,11 @@ public class AccountController {
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
-            if (!JsonValidator.isValidJson(json)) throw new UnauthorizedException();
+            if (!JsonValidator.isValidJson(json)) throw new BadRequestException();
             data = JsonValidator.jsonJson(json,"data");
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new UnauthorizedException();
+            throw new BadRequestException();
         }
 
         if (null != data){
@@ -87,12 +85,12 @@ public class AccountController {
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
-            if (!JsonValidator.isValidJson(json)) throw new UnauthorizedException();
+            if (!JsonValidator.isValidJson(json)) throw new BadRequestException();
             data = JsonValidator.jsonJson(json,"data");
             meta = JsonValidator.jsonJson(json,"meta");
         } catch (ParseException e) {
             e.printStackTrace();
-            throw new UnauthorizedException();
+            throw new BadRequestException();
         }
 
         if (null != meta) token = jsonString(meta,"token");
@@ -104,7 +102,7 @@ public class AccountController {
                 return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));
             }
         }
-        throw new UnauthorizedException();
+        throw new BadRequestException();
     }
 
     //TODO remove generation method when account creation possible
