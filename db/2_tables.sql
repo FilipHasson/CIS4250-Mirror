@@ -59,10 +59,19 @@ CREATE TABLE food (
   serving_count REAL NOT NULL DEFAULT 0,
   serving_size TEXT,
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
-  recipe_id INTEGER REFERENCES recipe UNIQUE,
   time_created TIMESTAMP DEFAULT now() NOT NULL,
   time_updated TIMESTAMP DEFAULT now() NOT NULL
 );
+
+-- Servings --------------------------------------------------------------------
+DROP TABLE IF EXISTS servings CASCADE;
+CREATE TABLE servings (
+  recipe_id INTEGER REFERENCES recipe NOT NULL,
+  food_id INTEGER REFERENCES food NOT NULL,
+  quantity INTEGER DEFAULT 0,
+  PRIMARY KEY(food_id, recipe_id)
+);
+
 
 -- Create a GIN index for food table's title row
 ALTER TABLE food ADD COLUMN IF NOT EXISTS tsv_food_title tsvector;
