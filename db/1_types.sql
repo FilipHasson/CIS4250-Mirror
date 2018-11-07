@@ -27,7 +27,8 @@ BEGIN
   );
   CREATE TYPE MEAL_TUPLE AS (
     type MEAL_TYPE,
-    food_id INTEGER
+    food_id INTEGER,
+    serve_amount INTEGER
   );
   EXCEPTION WHEN OTHERS
   THEN
