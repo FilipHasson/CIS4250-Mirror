@@ -1,5 +1,6 @@
 package api.dao;
 
+import api.exception.ConflictException;
 import api.exception.NotFoundException;
 import api.object.Account;
 import api.validator.AccountValidator;
@@ -99,7 +100,7 @@ public class AccountDAO extends DAO{
         }
 
         super.disconnect(connection);
-        return 0;
+        throw new ConflictException();
     }
 
     public Account getAccountFromResultSet(ResultSet resultSet) throws SQLException{

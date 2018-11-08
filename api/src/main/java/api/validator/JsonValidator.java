@@ -1,5 +1,6 @@
 package api.validator;
 
+import api.exception.BadRequestException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -54,5 +55,10 @@ public class JsonValidator {
         JSONObject json  = new JSONObject();
         json.put("token",token);
         return json;
+    }
+
+    public static JSONObject getData(JSONObject json){
+        if (!JsonValidator.isValidJson(json)) throw new BadRequestException();
+        return JsonValidator.jsonJson(json,"data");
     }
 }

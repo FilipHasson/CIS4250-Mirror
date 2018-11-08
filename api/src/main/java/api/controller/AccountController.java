@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import static api.validator.AccountValidator.VALID_TOKEN;
+import static api.validator.JsonValidator.getData;
 import static api.validator.JsonValidator.jsonString;
 
 @Controller
@@ -53,8 +54,7 @@ public class AccountController {
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
-            if (!JsonValidator.isValidJson(json)) throw new BadRequestException();
-            data = JsonValidator.jsonJson(json,"data");
+            data = getData(json);
         } catch (ParseException e) {
             e.printStackTrace();
             throw new BadRequestException();
@@ -105,6 +105,43 @@ public class AccountController {
         throw new BadRequestException();
     }
 
+
+    @RequestMapping(value="/accounts")
+    @ResponseBody
+    public JSONObject createAccount(@RequestBody String jsonString){
+        JSONObject json;
+        JSONObject data;
+        JSONObject accountJson;
+        String username = "";
+        String token = null;
+        String password = null;
+        String email = null;
+
+        JSONParser parser = new JSONParser();
+        try {
+            json = (JSONObject)parser.parse(jsonString);
+            data = getData(json);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        if (null != data){
+            password = jsonString(data,"password");
+            username = jsonString(data,"username");
+            email = jsonString(data,"email");
+            if (null != password && null != username && null != email){
+                new AccountDAO().insertAccount(new Account(username,email,password));
+                token = AccountValidator.loginRequest(username,password);
+            }
+        }
+
+        accountJson = new AccountDAO().findByUsername(username).toJson();
+        return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));
+    }
+
+
+
     //TODO remove generation method when account creation possible
     @RequestMapping(value="/accounts/generate")
     @ResponseBody
@@ -114,4 +151,5 @@ public class AccountController {
         dao.insertAccount(new Account("jessy","jwranco@uoguelph.ca","test"));
         dao.insertAccount(new Account("grant","gdougla@uoguelph.ca","secure"));
     }
+
 }
