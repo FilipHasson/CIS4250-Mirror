@@ -106,7 +106,7 @@ public class AccountController {
     }
 
 
-    @RequestMapping(value="/accounts")
+    @RequestMapping(value="/account")
     @ResponseBody
     public JSONObject createAccount(@RequestBody String jsonString){
         JSONObject json;
