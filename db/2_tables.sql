@@ -57,6 +57,7 @@ DROP TABLE IF EXISTS food CASCADE;
 CREATE TABLE food (
   id SERIAL PRIMARY KEY,
   title TEXT NOT NULL,
+  recipe_id INTEGER REFERENCES recipe UNIQUE,
   serving_count REAL NOT NULL DEFAULT 0,
   serving_size TEXT,
   nutrition_id INTEGER REFERENCES nutrition UNIQUE,
@@ -97,7 +98,16 @@ CREATE TABLE meals (
   account_id INTEGER REFERENCES account NOT NULL,
   meal_list MEAL_TUPLE [],
   PRIMARY KEY(meal_day, account_id)
-
 );
 
--- todo
+-- GOALS -----------------------------------------------------------------------
+
+DROP TABLE IF EXISTS goals CASCADE;
+CREATE TABLE goals (
+  id SERIAL PRIMARY KEY,
+  account_id INTEGER REFERENCES account NOT NULL,
+  calorie_goal INTEGER,
+  date_goal DATE
+);
+
+
