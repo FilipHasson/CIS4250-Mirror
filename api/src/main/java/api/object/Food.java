@@ -17,19 +17,22 @@ import java.util.List;
 public class Food {
     private int id;
     private String title;
+    private double serving_count;
+    private String serving_size;
     private int nutritionId;
     private Nutrition nutrition;
     private int recipeId;
-
     private Recipe recipe;
     private OffsetDateTime timeCreated;
     private OffsetDateTime timeUpdated;
 
-    public Food(int id, String title, int nId, int rId, OffsetDateTime created, OffsetDateTime updated, Recipe r, Nutrition n) {
+    public Food(int id, String title,double serving_count, String serving_size, int nId, int rId, OffsetDateTime created, OffsetDateTime updated, Recipe r, Nutrition n) {
         this.id = id;
         this.title = title;
         this.nutritionId = nId;
         this.recipeId = rId;
+        this.serving_count = serving_count;
+        this.serving_size = serving_size;
         this.timeCreated = created;
         this.timeUpdated = updated;
         if (0 == recipeId) this.recipe = null;
@@ -38,12 +41,12 @@ public class Food {
         else this.nutrition = n;
     }
 
-    public Food(int id,String title, int nId, int rId, OffsetDateTime created, OffsetDateTime updated){
-        this(id, title, nId, rId, created, updated, new RecipeDAO().findById(rId), new NutritionDAO().findById(nId));
+    public Food(int id,String title, double serving_count, String serving_size, int nId, int rId, OffsetDateTime created, OffsetDateTime updated){
+        this(id, title, serving_count, serving_size,nId, rId, created, updated, new RecipeDAO().findById(rId), new NutritionDAO().findById(nId));
     }
 
     public Food(){
-        this(0,",", 0,0,OffsetDateTime.now(),OffsetDateTime.now(),new Recipe(),new Nutrition());
+        this(0,"", 0,"",0,0,OffsetDateTime.now(),OffsetDateTime.now(),new Recipe(),new Nutrition());
     }
 
     public JSONObject toJson(){

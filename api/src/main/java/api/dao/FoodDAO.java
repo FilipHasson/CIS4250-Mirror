@@ -157,6 +157,8 @@ public class FoodDAO extends DAO{
             return new Food(
                     resultSet.getInt("id"),
                     resultSet.getString("title"),
+                    resultSet.getDouble("serving_count"),
+                    resultSet.getString("serving_size"),
                     resultSet.getInt("nutrition_id"),
                     resultSet.getInt("recipe_id"),
                     resultSet.getObject("time_created", OffsetDateTime.class),
