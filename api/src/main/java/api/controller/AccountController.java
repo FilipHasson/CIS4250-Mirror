@@ -134,7 +134,7 @@ public class AccountController {
                 new AccountDAO().insertAccount(new Account(username,email,password));
                 token = AccountValidator.loginRequest(username,password);
             }
-        }
+        } else throw new BadRequestException();
 
         accountJson = new AccountDAO().findByUsername(username).toJson();
         return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));

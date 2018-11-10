@@ -1,29 +1,18 @@
 package api.object;
 
+import org.json.simple.JSONObject;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Meal {
+    private int id;
+    private int accountId;
+    private int foodId;
     private LocalDate date;
-    private int account_id;
-    private HashMap<Type,ArrayList<Serving>> servings;
-
-    public Meal(LocalDate date, int account_id, HashMap<Type, ArrayList<Serving>> servings) {
-        this.date = date;
-        this.account_id = account_id;
-        this.servings = servings;
-    }
-
-    public Meal(LocalDate date, int account_id){
-        this.date = date;
-        this.account_id = account_id;
-        this.servings = new HashMap<>();
-    }
-
-    public Meal() {
-        this (LocalDate.now(),0,new HashMap<>());
-    }
+    private Type type;
+    private int servingAmmount;
 
     public enum Type {
         breakfast,
@@ -32,15 +21,6 @@ public class Meal {
         snack_1,
         snack_2,
         snack_3
-    }
-
-    public void addServing(Meal.Type type, Serving serving){
-        if (servings.containsKey(type)){
-            servings.get(type).add(serving);
-        } else {
-            servings.put(type,new ArrayList<>());
-            servings.get(type).add(serving);
-        }
     }
 
     public static Type stringToType(String val){
@@ -63,6 +43,60 @@ public class Meal {
         }
     }
 
+    public Meal(int id, int accountId, int foodId, LocalDate date, Type type, int servingAmmount) {
+        this.id = id;
+        this.accountId = accountId;
+        this.foodId = foodId;
+        this.date = date;
+        this.type = type;
+        this.servingAmmount = servingAmmount;
+    }
+
+    public Meal() {
+        this(0,0,0,LocalDate.now(),null,0);
+    }
+
+    public JSONObject toJson(){
+        JSONObject json = new JSONObject();
+
+        json.put("id",this.id);
+        json.put("account_id",this.accountId);
+        json.put("food_id",this.foodId);
+        json.put("date",date.toEpochDay());
+        json.put("type",this.type.toString());
+        json.put("serving_ammount",this.servingAmmount);
+
+        return json;
+    }
+
+    public void addToJson(JSONObject json){
+
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(int accountId) {
+        this.accountId = accountId;
+    }
+
+    public int getFoodId() {
+        return foodId;
+    }
+
+    public void setFoodId(int foodId) {
+        this.foodId = foodId;
+    }
+
     public LocalDate getDate() {
         return date;
     }
@@ -71,19 +105,19 @@ public class Meal {
         this.date = date;
     }
 
-    public int getAccount_id() {
-        return account_id;
+    public Type getType() {
+        return type;
     }
 
-    public void setAccount_id(int account_id) {
-        this.account_id = account_id;
+    public void setType(Type type) {
+        this.type = type;
     }
 
-    public HashMap<Type, ArrayList<Serving>> getServings() {
-        return servings;
+    public int getServingAmmount() {
+        return servingAmmount;
     }
 
-    public void setServings(HashMap<Type, ArrayList<Serving>> servings) {
-        this.servings = servings;
+    public void setServingAmmount(int servingAmmount) {
+        this.servingAmmount = servingAmmount;
     }
 }

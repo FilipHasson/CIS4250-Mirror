@@ -1,18 +1,17 @@
 package api.controller;
 
+import api.dao.MealDAO;
 import api.exception.BadRequestException;
+import api.exception.NotFoundException;
 import api.exception.UnauthorizedException;
 import api.object.Meal;
-import api.object.Serving;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -21,63 +20,136 @@ import java.util.List;
 import static api.validator.JsonValidator.*;
 import static api.validator.JsonValidator.jsonInt;
 
+@Controller
+@RequestMapping("/")
 public class MealController {
 
-    @RequestMapping(value="/account/{id}/meals/{date}")
+    @RequestMapping(value="/account/{id}/meals/{date}", method = RequestMethod.POST)
     @ResponseBody
-    public void getMealDay(@RequestBody String jsonString, @PathVariable("id")String sAccountId, @PathVariable("date")String sdate) {
-        JSONObject json, data, meta;
-        Meal meal;
+    public void setMealDay (@PathVariable("id")String sAccountId, @PathVariable("date")String sdate,
+                            @RequestBody String jsonString) {
+        JSONObject json;
+        JSONObject data;
+        JSONObject meta;
+        JSONObject breakfast;
+        JSONObject lunch;
+        JSONObject dinner;
+        JSONObject snack_1;
+        JSONObject snack_2;
+        JSONObject snack_3;
         int accountId;
-        HashMap<Meal.Type,JSONObject> daysMeals = new HashMap<>();
-
-        try {
-            accountId = Integer.parseInt(sAccountId);
-            LocalDate date = LocalDate.parse(sdate, DateTimeFormatter.ofPattern("yyyyMMdd"));
-            meal = new Meal(date,accountId);
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new BadRequestException();
-        }
-
+        LocalDate date;
 
         JSONParser parser = new JSONParser();
         try {
+            accountId = Integer.parseInt(sAccountId);
+            date = LocalDate.parse(sdate, DateTimeFormatter.ofPattern("yyyyMMdd"));
             json = (JSONObject)parser.parse(jsonString);
-            if (!isValidJson(json)) throw new BadRequestException();
+            data = getData(json);
+            meta = jsonJson(json,"meta");
         } catch (ParseException e) {
             e.printStackTrace();
             throw new BadRequestException();
         }
 
-        if (!isValidRecipe(json)) throw new BadRequestException();
-        if (null == (data = jsonJson(json,"data")) || null == (meta = jsonJson(json,"meta"))) throw new BadRequestException();
-        if (!isValidToken(jsonString(meta,"token"),jsonInt(data,"account_id"))) throw new UnauthorizedException();//TODO replce with proper
+        //TODO Validate token
 
-        daysMeals.put(Meal.Type.breakfast,jsonJson(data,"breakfast"));
-        daysMeals.put(Meal.Type.lunch,jsonJson(data,"lunch"));
-        daysMeals.put(Meal.Type.dinner,jsonJson(data,"dinner"));
-        daysMeals.put(Meal.Type.snack_1,jsonJson(data,"snack_1"));
-        daysMeals.put(Meal.Type.snack_2,jsonJson(data,"snack_2"));
-        daysMeals.put(Meal.Type.snack_3,jsonJson(data,"snack_3"));
+        if (null != data){
+            breakfast = jsonJson(data,"breakfast");
+            lunch = jsonJson(data,"lunch");
+            dinner = jsonJson(data,"dinner");
+            snack_1 = jsonJson(data,"snack_1");
+            snack_2 = jsonJson(data,"snack_2");
+            snack_3 = jsonJson(data,"snack_3");
 
-        for (Meal.Type type : Meal.Type.values()) {
-            for (Object key : daysMeals.get(type).keySet()) {
-                try {
-                    meal.addServing(type,
-                            new Serving(
-                                    Integer.parseInt((String) key),
-                                    (Integer) daysMeals.get(type).get(key),
-                                    type
-                            ));
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                    throw new BadRequestException();
-                }
+            insertMeals(breakfast,"breakfast",date,accountId);
+            insertMeals(lunch,"breakfast",date,accountId);
+            insertMeals(dinner,"dinner",date,accountId);
+            insertMeals(snack_1,"snack_1",date,accountId);
+            insertMeals(snack_2,"snack_2",date,accountId);
+            insertMeals(snack_3,"snack_3",date,accountId);
+
+        } else throw new BadRequestException();
+    }
+
+    private void insertMeals(JSONObject json, String type, LocalDate date, int accountId){
+        Meal meal = new Meal();
+        meal.setAccountId(accountId);
+        meal.setDate(date);
+        meal.setType(Meal.stringToType(type));
+
+        for (Object key : json.keySet()){
+            try {
+                meal.setFoodId(Integer.parseInt((String) key));
+                meal.setServingAmmount(((Long) json.get(key)).intValue());
+                new MealDAO().insertMeal(meal);
+            } catch (NumberFormatException e){
+                throw new BadRequestException();
+            }
+        }
+    }
+
+    @RequestMapping(value="/account/{id}/meals/{date}", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject getMealDay(@PathVariable("id")String sAccountId, @PathVariable("date")String sdate) {
+        JSONObject json = new JSONObject();
+        int accountId;
+        LocalDate date;
+        JSONObject breakfast = new JSONObject();
+        JSONObject lunch = new JSONObject();
+        JSONObject dinner = new JSONObject();
+        JSONObject snack_1 = new JSONObject();
+        JSONObject snack_2 = new JSONObject();
+        JSONObject snack_3 = new JSONObject();
+        List<Meal> meals;
+
+
+        try {
+            accountId = Integer.parseInt(sAccountId);
+            date = LocalDate.parse(sdate, DateTimeFormatter.ofPattern("yyyyMMdd"));
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        meals = new MealDAO().getByDateAccount(date,accountId);
+
+        if (null == meals) throw new NotFoundException();
+
+        System.out.println(meals.size());
+
+        for (Meal meal : meals){
+            switch (meal.getType()){
+                case breakfast:
+                    breakfast.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                case lunch:
+                    lunch.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                case dinner:
+                    dinner.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                case snack_1:
+                    snack_1.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                case snack_2:
+                    snack_2.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                case snack_3:
+                    snack_3.put(Integer.toString(meal.getFoodId()),meal.getServingAmmount());
+                    break;
+                default:
             }
         }
 
 
+        json.put("breakfast",breakfast);
+        json.put("lunch",lunch);
+        json.put("dinner",dinner);
+        json.put("snack_1",snack_1);
+        json.put("snack_2",snack_2);
+        json.put("snack_3",snack_3);
+        return initJsonReturn(json);
     }
 
 
