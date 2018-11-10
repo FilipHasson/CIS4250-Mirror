@@ -11,16 +11,49 @@ public class JsonValidator {
     }
 
     public static boolean hasValidFood(JSONObject json){
-        if (true){}
-        return true;
+        return dataHasValidFood(getData(json));
+
     }
 
     public static boolean hasValidNutrition(JSONObject json){
-        return true;
+        return dataHasValidNutrition(getData(json));
+    }
+
+    public static boolean dataHasValidFood(JSONObject data){
+        if (data.containsKey("title") && data.containsKey("serving_count") && data.containsKey("serving_size"))
+            return true;
+        return false;
+
+    }
+
+    public static boolean dataHasValidNutrition(JSONObject data){
+        JSONObject nutrition = jsonJson(data,"nutrition");
+        if (nutrition != null && nutrition.containsKey("calcium_mg") && nutrition.containsKey("calories") &&
+                nutrition.containsKey("carbs_fibre_g") && nutrition.containsKey("carbs_sugar_g") &&
+                nutrition.containsKey("carbs_total_g") && nutrition.containsKey("cholesterol_mg") &&
+                nutrition.containsKey("fat_sat_g") && nutrition.containsKey("fat_total_g") &&
+                nutrition.containsKey("fat_trans_g") && nutrition.containsKey("iron_mg") &&
+                nutrition.containsKey("protein_g") && nutrition.containsKey("sodium_mg") &&
+                nutrition.containsKey("vitamin_a_iu") && nutrition.containsKey("vitamin_c_mg"))
+            return true;
+        return false;
+    }
+
+    public static boolean dataHasValidRecipeObject(JSONObject data){
+            if (data.containsKey("account_id") && data.containsKey("description") && data.containsKey("star_count") &&
+                    data.containsKey("view_count") && data.containsKey("ingredients") && data.containsKey("categories") &&
+                    data.containsKey("steps"))
+                return true;
+        return false;
     }
 
     public static boolean isValidRecipe(JSONObject json) {
-        return true;
+        JSONObject data;
+        if (null != (data = jsonJson(json,"data"))){
+            if(dataHasValidRecipeObject(data) && dataHasValidFood(data) && dataHasValidNutrition(data))
+                return true;
+        }
+        return false;
     }
 
     public static int jsonInt(JSONObject json, String field){
@@ -39,7 +72,12 @@ public class JsonValidator {
     }
 
     public static double jsonDouble(JSONObject json, String field){
-        if (json.containsKey(field)) return (Double)json.get(field);
+        try {
+            if (json.containsKey(field)) return (Double) json.get(field);
+        } catch (ClassCastException e){
+            Long i = new Long((Long)json.get(field));
+            return i.doubleValue();
+        }
         return 0;
     }
 

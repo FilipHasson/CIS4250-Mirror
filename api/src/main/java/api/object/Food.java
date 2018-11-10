@@ -54,7 +54,8 @@ public class Food {
 
         json.put("id",this.id);
         json.put("title",this.title);
-        json.put("header","don't really know what you want here Jessy");
+        json.put("serving_count",this.serving_count);
+        json.put("serving_size",this.serving_size);
         json.put("time_created",this.timeCreated.toEpochSecond());
         json.put("time_modified",this.timeUpdated.toEpochSecond());
 
@@ -138,14 +139,35 @@ public class Food {
         this.timeUpdated = timeUpdated;
     }
 
+    public double getServing_count() {
+        return serving_count;
+    }
+
+    public void setServing_count(double serving_count) {
+        this.serving_count = serving_count;
+    }
+
+    public String getServing_size() {
+        return serving_size;
+    }
+
+    public void setServing_size(String serving_size) {
+        this.serving_size = serving_size;
+    }
+
     @Override
     public String toString() {
         return "Food{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", serving_count=" + serving_count +
+                ", serving_size='" + serving_size + '\'' +
                 ", nutritionId=" + nutritionId +
+                ", nutrition=" + nutrition +
                 ", recipeId=" + recipeId +
-                ", timeUpdated=" + timeUpdated.toString() +
+                ", recipe=" + recipe +
+                ", timeCreated=" + timeCreated +
+                ", timeUpdated=" + timeUpdated +
                 '}';
     }
 }

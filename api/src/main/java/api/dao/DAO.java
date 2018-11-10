@@ -22,8 +22,8 @@ public class DAO {
 
     //TODO make the information actually load from the resource file
     //@Value("${spring.datasource.url}")
-//    private String jdbcUrl = "jdbc:postgresql://0.0.0.0:5432/yumm";//works without docker
-    private String jdbcUrl = "jdbc:postgresql://db:5432/yumm";//works on docker
+    private String jdbcUrl = "jdbc:postgresql://0.0.0.0:5432/yumm";//works without docker
+//    private String jdbcUrl = "jdbc:postgresql://db:5432/yumm";//works on docker
     //@Value("${spring.datasource.username}")
     private String jdbcUsername = "postgres";
     //@Value("${spring.datasource.password}")

@@ -221,4 +221,25 @@ public class Nutrition {
     public void setIron_mg(double iron_mg) {
         this.iron_mg = iron_mg;
     }
+
+    @Override
+    public String toString() {
+        return "Nutrition{" +
+                "id=" + id +
+                ", calcium_mg=" + calcium_mg +
+                ", calories=" + calories +
+                ", carbs_fibre_g=" + carbs_fibre_g +
+                ", carbs_sugar_g=" + carbs_sugar_g +
+                ", carbs_total_g=" + carbs_total_g +
+                ", cholesterol_mg=" + cholesterol_mg +
+                ", fat_sat_g=" + fat_sat_g +
+                ", fat_total_g=" + fat_total_g +
+                ", fat_trans_g=" + fat_trans_g +
+                ", iron_mg=" + iron_mg +
+                ", protein_g=" + protein_g +
+                ", sodium_mg=" + sodium_mg +
+                ", vitamin_a_iu=" + vitamin_a_iu +
+                ", vitamin_c_mg=" + vitamin_c_mg +
+                '}';
+    }
 }

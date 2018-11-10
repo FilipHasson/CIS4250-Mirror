@@ -136,15 +136,17 @@ public class FoodDAO extends DAO{
     public long insertFood(Food food){
         Connection connection = super.connect();
         PreparedStatement statement;
-        String query = "INSERT INTO food (title, nutrition_id, recipe_id, time_created, time_updated) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO food (title, serving_count, serving_size, nutrition_id, recipe_id, time_created, time_updated) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,food.getTitle());
-            statement.setInt(2,food.getNutritionId());
-            statement.setLong(3,food.getRecipeId());
-            statement.setObject(4,food.getTimeCreated());
-            statement.setObject(5,food.getTimeUpdated());
+            statement.setDouble(2,food.getServing_count());
+            statement.setString(3,food.getServing_size());
+            statement.setInt(4,food.getNutritionId());
+            statement.setLong(5,food.getRecipeId());
+            statement.setObject(6,food.getTimeCreated());
+            statement.setObject(7,food.getTimeUpdated());
 
             return super.checkUpdated(connection,statement,statement.executeUpdate());
         } catch (SQLException e) {
@@ -159,13 +161,15 @@ public class FoodDAO extends DAO{
         Connection connection = super.connect();
         PreparedStatement statement;
         int affectedRows = 0;
-        String query = "UPDATE food SET title = ?, time_updated  = ? WHERE id = ?";
+        String query = "UPDATE food SET title = ?, serving_count = ?, serving_size = ?, time_updated  = ? WHERE id = ?";
 
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,food.getTitle());
-            statement.setObject(2,food.getTimeUpdated());
-            statement.setInt(3,food.getId());
+            statement.setDouble(2,food.getServing_count());
+            statement.setString(3,food.getServing_size());
+            statement.setObject(4,food.getTimeUpdated());
+            statement.setInt(5,food.getId());
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {

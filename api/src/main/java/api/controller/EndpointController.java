@@ -1,8 +1,12 @@
 package api.controller;
 
 import api.dao.FoodDAO;
+import api.dao.IngredientDAO;
 import api.dao.NutritionDAO;
 import api.dao.RecipeDAO;
+import api.exception.BadRequestException;
+import api.exception.ConflictException;
+import api.exception.UnauthorizedException;
 import api.object.Food;
 import api.object.Nutrition;
 import api.object.Recipe;
@@ -19,7 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static api.validator.JsonValidator.*;
@@ -82,117 +88,126 @@ public class EndpointController {
         JSONObject jNutrition = null;
         Food food  = new Food();
         Recipe recipe = new Recipe();
-        Nutrition nutrition;// = new Nutrition();
-        String nutritionString = null;
+        Nutrition nutrition = new Nutrition();
         int foodId;
 
         try {
             foodId = Integer.parseInt(sFoodId);
         } catch (NumberFormatException e){
-            foodId = 0;
+            throw new BadRequestException();
         }
 
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
             if (!isValidJson(json)) return;
-            data = jsonJson(json,"data");
-            meta = jsonJson(json,"meta");
-//            dataString = jsonString(json,"data");
-//            metaString = jsonString(json, "meta");
         } catch (ParseException e) {
             e.printStackTrace();
-            return;
+            throw new BadRequestException();
         }
 
+        if (!isValidRecipe(json)) throw new BadRequestException();
+        if (null == (data = jsonJson(json,"data")) || null == (meta = jsonJson(json,"meta"))) throw new BadRequestException();
+        if (!isValidToken(jsonString(meta,"token"),jsonInt(data,"account_id"))) throw new UnauthorizedException();
+
+        jNutrition = jsonJson(data, "nutrition");
+        food.setTitle(jsonString(data,"title"));
+        food.setServing_count(jsonDouble(data,"serving_count"));
+        food.setServing_size(jsonString(data,"serving_size"));
+        if (0 == foodId){
+            food.setTimeCreated(OffsetDateTime.now());
+            food.setTimeUpdated(OffsetDateTime.now());
+        } else {
+            food.setId(foodId); // UPDATE OR CREATE
+            int recipeId = new FoodDAO().findById(foodId).getRecipeId();
+            int nutritionId = new FoodDAO().findById(foodId).getNutritionId();
+            if (jsonInt(data,"account_id")!= new FoodDAO().findById(foodId).getRecipe().getAccountId())throw new UnauthorizedException();
+            food.setRecipeId(recipeId);
+            food.setNutritionId(nutritionId);
+            food.setTimeUpdated(OffsetDateTime.now());
+            recipe.setId(recipeId);
+            nutrition.setId(nutritionId);
+            long epoch = 0;
+            if (data.containsKey("time_created")) epoch = (long)data.get("time_created");
+            if (epoch != 0) food.setTimeCreated(OffsetDateTime.ofInstant(Instant.ofEpochMilli(epoch), TimeZone.getDefault().toZoneId()));
+            else food.setTimeCreated(OffsetDateTime.now());
+        }
+
+        nutrition = fillNutrition(jNutrition,foodId);
+        recipe.setAccountId(jsonInt(data,"account_id"));
+        recipe.setStars(jsonInt(data,"star_count"));
+        recipe.setViews(jsonInt(data,"view_count"));
+//        recipe.setServing_count(jsonInt(data,"serving_count"));
+//        recipe.setServing_size(jsonString(data,"serving_size"));
+        recipe.setDescription(jsonString(data,"description"));
+
+        if (data.containsKey("steps")){//Populate steps
+            JSONArray array = (JSONArray) data.get("steps");
+            String[] stepStrings = new String[array.size()];
+            for (int i = 0; i < array.size(); i++) stepStrings[i] = (String)array.get(i);
+            recipe.setSteps(stepStrings);
+        } else recipe.setSteps(new String[] {""});
+
+        if (data.containsKey("categories")){ //Populate Categories
+            JSONArray array = (JSONArray) data.get("categories");
+            String[] categoryStrings = new String[array.size()];
+            for (int i = 0; i < array.size(); i++) categoryStrings[i] = ((String)array.get(i)).toLowerCase();
+            recipe.setCategories(categoryStrings);
+        } else recipe.setCategories((Recipe.Category[]) null);
 
 
-        if (null != data){
-            if (data.containsKey("nutrition")) {
-                jNutrition = jsonJson(data, "nutrition");
-                //jNutrition = (JSONObject) parser.parse(nutritionString);
+
+        System.out.println("FOOD: "+food.toString());
+        System.out.println("Recipe: "+recipe.toString());
+        System.out.println("Nutrition: "+nutrition.toString());
+        if (0 == foodId) { // New Recipe
+            int recipeId = ((Long)new RecipeDAO().insertRecipe(recipe)).intValue();
+            if (0 == recipeId) {
+                System.out.println("plz no");
+                throw new ConflictException();
             }
-            food.setTitle(jsonString(data,"title"));
-            food.setId(jsonInt(data,"id")); // UPDATE OR CREATE
-            if (0 == foodId){
-                food.setNutritionId(0);
-                food.setRecipeId(0);
-                recipe.setId(0);
-                food.setTimeCreated(OffsetDateTime.now());
-                food.setTimeUpdated(OffsetDateTime.now());
-            } else {
-                food.setNutritionId(jsonInt(data, "nutrition_id"));// UPDATE OR CREATE
-                food.setRecipeId(jsonInt(data, "recipe_id"));// UPDATE OR CREATE
-//                nutrition.setId(food.getNutritionId());
-                recipe.setId(food.getRecipeId());
-                food.setTimeUpdated(OffsetDateTime.now());
-                long epoch = 0;
-                if (data.containsKey("time_created")) epoch = (long)data.get("time_created");
-                if (epoch != 0) food.setTimeCreated(OffsetDateTime.ofInstant(Instant.ofEpochMilli(epoch), TimeZone.getDefault().toZoneId()));
-                else food.setTimeCreated(OffsetDateTime.now());
+            recipe.setId(recipeId);
+            if (data.containsKey("ingredients")){//Populate Ingredients
+                JSONObject jIngredient = jsonJson(data,"ingredients");
+                for (Object key : jIngredient.keySet()){
+                    recipe.addIngredient(Integer.parseInt((String)key),jsonDouble(jIngredient,(String)key));
+                }
             }
 
-            nutrition = fillNutrition(jNutrition,foodId);
-
-            recipe.setAccountId(jsonInt(data,"account_id"));
-            recipe.setStars(jsonInt(data,"star_count"));
-            recipe.setViews(jsonInt(data,"view_count"));
-            recipe.setServing_count(jsonInt(data,"serving_count"));
-            recipe.setServing_size(jsonString(data,"serving_size"));
-
-            if (data.containsKey("steps")){
-                JSONArray array = (JSONArray) data.get("steps");
-                String[] stepStrings = new String[array.size()];// = new String[steps.size()];
-                for (int i = 0; i < array.size(); i++) stepStrings[i] = (String)array.get(i);
-                recipe.setSteps(stepStrings);
-            } else recipe.setSteps(new String[] {""});
-
-            if (data.containsKey("categories")){
-                JSONArray array = (JSONArray) data.get("categories");
-                String[] categoryStrings = new String[array.size()];// = new String[steps.size()];
-                for (int i = 0; i < array.size(); i++) categoryStrings[i] = ((String)array.get(i)).toLowerCase();
-                recipe.setCategories(categoryStrings);
-            } else recipe.setCategories((Recipe.Category[]) null);
-
-            System.out.println("FOOD: "+food.toString());
-            System.out.println("Recipe: "+recipe.toString());
-            System.out.println("Nutrition: "+nutrition.toString());
-
+            if (recipe.getIngredients().size() != new IngredientDAO().insertIngredients(recipe.getIngredients()))
+                System.out.println("Something Weird Happened");
+            //TODO Make whole transaction work instead of doing it in stages
+            int nutritionId = ((Long)new NutritionDAO().insertNutrition(nutrition)).intValue();
+            if (0 == nutritionId) {
+//              new DAO().deleteByInt("recipe","id",recipeId);
+                System.out.println("maybe?");
+                throw new ConflictException();
+            }
+            food.setRecipeId(recipeId);
+            food.setNutritionId(nutritionId);
+            foodId = ((Long)new FoodDAO().insertFood(food)).intValue();
             if (0 == foodId) {
-                int recipeId = ((Long)new RecipeDAO().insertRecipe(recipe)).intValue();
-                if (0 == recipeId) {
-                    return;
-                }
-                int nutritionId = ((Long)new NutritionDAO().insertNutrition(nutrition)).intValue();
-                if (0 == nutritionId) {
-//                    new DAO().deleteByInt("recipe","id",recipeId);
-                    return;
-                }
-                food.setRecipeId(recipeId);
-                food.setNutritionId(nutritionId);
-                foodId = ((Long)new FoodDAO().insertFood(food)).intValue();
-                if (0 == foodId) {
-//                    new DAO().deleteByInt("recipe","id",recipeId);
-//                    new DAO().deleteByInt("nutrition","id",nutritionId);
-                    return;
-                }
-            } else {
-//                Recipe rDbCopy = new RecipeDAO().findById(recipe.getId());
-//                Nutrition nDbCopy = new NutritionDAO().findById(nutrition.getId());
-
-                if (0 == new RecipeDAO().updateRecipe(recipe)) return;
-                if (0 == new NutritionDAO().updateNutrition(nutrition)) {
-//                    new DAO().deleteByInt("recipe","id",rDbCopy.getId());
-//                    new RecipeDAO().insertRecipe(rDbCopy);
-                    return;
-                }
-                if (0 == new FoodDAO().updateFood(food)){
-//                    new DAO().deleteByInt("recipe","id",rDbCopy.getId());
-//                    new RecipeDAO().insertRecipe(rDbCopy);
-//                    new DAO().deleteByInt("nutrition","id",nDbCopy.getId());
-//                    new NutritionDAO().insertNutrition(nDbCopy);
-                    return;
-                }
+//              new DAO().deleteByInt("recipe","id",recipeId);
+//              new DAO().deleteByInt("nutrition","id",nutritionId);
+                throw new ConflictException();
+            }
+        } else { // Update Recipe
+//          Recipe rDbCopy = new RecipeDAO().findById(recipe.getId());
+//          Nutrition nDbCopy = new NutritionDAO().findById(nutrition.getId());
+            if (0 == new RecipeDAO().updateRecipe(recipe)) return;
+            if (0 == new NutritionDAO().updateNutrition(nutrition)) {
+//              new DAO().deleteByInt("recipe","id",rDbCopy.getId());
+//              new RecipeDAO().insertRecipe(rDbCopy);
+//                System.out.println("it can't be");
+//                throw new ConflictException();
+            }
+            if (0 == new FoodDAO().updateFood(food)){
+//              new DAO().deleteByInt("recipe","id",rDbCopy.getId());
+//              new RecipeDAO().insertRecipe(rDbCopy);
+//              new DAO().deleteByInt("nutrition","id",nDbCopy.getId());
+//              new NutritionDAO().insertNutrition(nDbCopy);
+//                System.out.println("id feel dumb");
+//                throw new ConflictException();
             }
         }
     }
@@ -201,38 +216,28 @@ public class EndpointController {
         Nutrition  nutrition = new Nutrition();
 
         nutrition.setId(id);
-//        nutrition.setCaffeine_mg(jsonDouble(json,"caffine_mg"));
-//        nutrition.setCalcium_mg(jsonDouble(json,"calcium_mg"));
-//        nutrition.setCalories(jsonDouble(json,"calories"));
-//        nutrition.setCarbohydrate_g(jsonDouble(json,"carbohydrate_g"));
-//        nutrition.setCholesterol_mg(jsonDouble(json,"cholesterol_mg"));
-//        nutrition.setFat_mono_g(jsonDouble(json,"fat_mono_g"));
-//        nutrition.setFat_poly_g(jsonDouble(json,"fat_poly_g"));
-//        nutrition.setFat_sat_g(jsonDouble(json,"fat_sat_g"));
-//        nutrition.setFat_trans_g(jsonDouble(json,"fat_trans_g"));
-//        nutrition.setFolate_mcg(jsonDouble(json,"folate_mcg"));
-//        nutrition.setMagnesium_mg(jsonDouble(json,"magnesium_mg"));
-//        nutrition.setManganese_mg(jsonDouble(json,"manganese_mg"));
-//        nutrition.setNiacin_mg(jsonDouble(json,"niacin_mg"));
-//        nutrition.setPotassium_mg(jsonDouble(json,"potassium_mg"));
-//        nutrition.setProtein_g(jsonDouble(json,"protein_g"));
-//        nutrition.setRiboflavin_mg(jsonDouble(json,"riboflavin_mg"));
-//        nutrition.setSodium_mg(jsonDouble(json,"sodium_mg"));
-//        nutrition.setSugars_g(jsonDouble(json,"sugars_g"));
-//        nutrition.setThiamin_mg(jsonDouble(json,"thiamin_mg"));
-//        nutrition.setTotal_fiber_g(jsonDouble(json,"total_fiber_g"));
-//        nutrition.setTotal_lipid_g(jsonDouble(json,"total_lipid_g"));
-//        nutrition.setVitamin_a_iu(jsonDouble(json,"vitamin_a_iu"));
-//        nutrition.setVitamin_b6_mg(jsonDouble(json,"vitamin_b6_mg"));
-//        nutrition.setVitamin_c_mg(jsonDouble(json,"vitamin_c_mg"));
-//        nutrition.setVitamin_d_iu(jsonDouble(json,"vitamin_d_iu"));
-//        nutrition.setVitamin_k_mcg(jsonDouble(json,"vitamin_k_mcg"));
-//        nutrition.setWater_g(jsonDouble(json,"water_g"));
-//        nutrition.setZinc_mg(jsonDouble(json,"zinc_mg"));
+        nutrition.setCalcium_mg(jsonDouble(json,"calcium_mg"));
+        nutrition.setCalories(jsonDouble(json,"calories"));
+        nutrition.setCarbs_fibre_g(jsonDouble(json,"carbs_fibre_g"));
+        nutrition.setCarbs_sugar_g(jsonDouble(json,"carbs_sugar_g"));
+        nutrition.setCarbs_total_g(jsonDouble(json,"carbs_total_g"));
+        nutrition.setCholesterol_mg(jsonDouble(json,"cholesterol_mg"));
+        nutrition.setFat_sat_g(jsonDouble(json,"fat_sat_g"));
+        nutrition.setFat_total_g(jsonDouble(json,"fat_total_g"));
+        nutrition.setFat_trans_g(jsonDouble(json,"fat_trans_g"));
+        nutrition.setIron_mg(jsonDouble(json,"iron_mg"));
+        nutrition.setProtein_g(jsonDouble(json,"protein_g"));
+        nutrition.setSodium_mg(jsonDouble(json,"sodium_mg"));
+        nutrition.setVitamin_a_iu(jsonDouble(json,"vitamin_a_iu"));
+        nutrition.setVitamin_c_mg(jsonDouble(json,"vitamin_c_mg"));
 
         return nutrition;
     }
 
+    //TODO Replace with Real one
+    private boolean isValidToken(String token, int account_id){
+        return true;
+    }
 
 
 }
