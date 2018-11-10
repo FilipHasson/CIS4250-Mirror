@@ -180,6 +180,32 @@ public class FoodDAO extends DAO{
         return affectedRows;
     }
 
+    public List<Food> search(String title){
+//        SELECT food.* FROM food, plainto_tsquery($1) AS q
+//        WHERE (tsv_food_title @@ q) AND recipe_id IS NULL;
+        List<Food> foods = new ArrayList<>();
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+//        String query = "SELECT * FROM food, recipe WHERE food.recipe_id = recipe.id AND recipe.account_id = ?";
+
+        String query = "SELECT * FROM food, plainto_tsquery(?) AS q WHERE (tsv_food_title @@ q) AND recipe_id IS NULL LIMIT 10";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1,title);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                foods.add(getFoodFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return foods;
+    }
+
     private Food getFoodFromResultSet(ResultSet resultSet){
         try {
             return new Food(

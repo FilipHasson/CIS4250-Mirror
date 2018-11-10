@@ -87,6 +87,57 @@ public class RecipeDAO extends DAO{
         return  null;
     }
 
+    /*
+    public List<Food> search(String title){
+//        SELECT food.* FROM food, plainto_tsquery($1) AS q
+//        WHERE (tsv_food_title @@ q) AND recipe_id IS NULL;
+        List<Food> foods = new ArrayList<>();
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+//        String query = "SELECT * FROM food, recipe WHERE food.recipe_id = recipe.id AND recipe.account_id = ?";
+
+        String query = "SELECT * FROM food, plainto_tsquery(?) AS q WHERE (tsv_food_title @@ q) AND recipe_id IS NULL LIMIT 10";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1,title);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                foods.add(getFoodFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return foods;
+    }
+     */
+//        String query = "SELECT * FROM recipe, food WHERE food.recipe_id = recipe.id ORDER BY food.time_created LIMIT "+limit;
+    public List<Recipe> search (String title, int accountId){
+        ArrayList<Recipe> recipes = new ArrayList<>();
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String query = "SELECT * FROM recipe, food, plainto_tsquery(?) AS q  WHERE (tsv_food_title @@ q) AND food.recipe_id = recipe.id " +
+                "AND recipe.account_id = ? LIMIT 15";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1,title);
+            statement.setInt(2, accountId);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                recipes.add(getRecipeFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return recipes;
+    }
+
     public long insertRecipe(Recipe recipe){
         Connection connection = super.connect();
         PreparedStatement statement;

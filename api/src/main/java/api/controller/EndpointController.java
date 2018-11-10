@@ -16,10 +16,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -47,26 +44,48 @@ public class EndpointController {
 
     @RequestMapping(value="/foods", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONObject getFoods(){
+    public JSONObject getFoods(@RequestParam(value = "search", required = false)String title){
         JSONArray json = new JSONArray();
-        json.addAll(Food.getIds(new FoodDAO().findAllOrderByFieldLimit("time_created",100)));
-        return initJsonReturn(json);
+        if(null != title){
+            json.addAll(Food.getIds(new FoodDAO().search(title)));
+            return initJsonReturn(json);
+        } else{
+            json.addAll(Food.getIds(new FoodDAO().findAllOrderByFieldLimit("time_created",100)));
+            return initJsonReturn(json);
+        }
     }
 
     @RequestMapping(value="/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONObject getRecipes(){
+    public JSONObject getRecipes(@RequestParam(value = "search", required = false)String title,
+                                 @RequestParam(value = "id", required = false)String sId ){
         JSONArray json = new JSONArray();
-        List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100));
-        for (int id : recipeIds){
-            json.add(new FoodDAO().findByInt("recipe_id",id).getId());
+        if(null != title && null != sId){
+            try {
+                int id = Integer.parseInt(sId);
+                List<Integer> recipeIds = (Recipe.getIds(new RecipeDAO().search(title,id)));
+                for (int rId : recipeIds){
+                    json.add(new FoodDAO().findByInt("recipe_id",rId).getId());
+                }
+            } catch (NumberFormatException e){
+                e.printStackTrace();
+                throw new BadRequestException();
+            }
+        } else if (null != title ^ null != sId){
+            System.out.println("Only one parameter null");
+            throw new BadRequestException();
+        } else {
+            List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100));
+            for (int id : recipeIds){
+                json.add(new FoodDAO().findByInt("recipe_id",id).getId());
+            }
         }
         return initJsonReturn(json);
     }
 
     @RequestMapping(value="/foods/{category}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public JSONObject getFoods(@PathVariable("category") String category){
+    public JSONObject getFoodsByCategory(@PathVariable("category") String category){
         JSONArray json = new JSONArray();
         json.addAll(Food.getIds(new FoodDAO().findByRecipeCategory(category)));
         return initJsonReturn(json);
@@ -100,7 +119,7 @@ public class EndpointController {
         JSONParser parser = new JSONParser();
         try {
             json = (JSONObject)parser.parse(jsonString);
-            if (!isValidJson(json)) return;
+            if (!isValidJson(json)) throw new BadRequestException();
         } catch (ParseException e) {
             e.printStackTrace();
             throw new BadRequestException();
