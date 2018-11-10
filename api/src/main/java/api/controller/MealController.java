@@ -116,7 +116,6 @@ public class MealController {
 
         if (null == meals) throw new NotFoundException();
 
-        System.out.println(meals.size());
 
         for (Meal meal : meals){
             switch (meal.getType()){

@@ -182,7 +182,6 @@ public class EndpointController {
         if (0 == foodId) { // New Recipe
             int recipeId = ((Long)new RecipeDAO().insertRecipe(recipe)).intValue();
             if (0 == recipeId) {
-                System.out.println("plz no");
                 throw new ConflictException();
             }
             recipe.setId(recipeId);
@@ -199,7 +198,6 @@ public class EndpointController {
             int nutritionId = ((Long)new NutritionDAO().insertNutrition(nutrition)).intValue();
             if (0 == nutritionId) {
 //              new DAO().deleteByInt("recipe","id",recipeId);
-                System.out.println("maybe?");
                 throw new ConflictException();
             }
             food.setRecipeId(recipeId);
