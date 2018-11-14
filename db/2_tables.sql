@@ -111,4 +111,14 @@ CREATE TABLE goals (
   date_goal DATE
 );
 
+-- HEALTH -----------------------------------------------------------------------
+DROP TABLE IF EXISTS health CASCADE;
+CREATE TABLE health (
+  account_id INTEGER REFERENCES account NOT NULL PRIMARY KEY,
+  age INTEGER,
+  weight INTEGER,
+  height INTEGER,
+  lifestyle ACTIVITY_LEVEL
+);
+
 
