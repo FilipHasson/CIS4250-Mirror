@@ -26,11 +26,11 @@ BEGIN
     'snack3'
   );
   CREATE TYPE ACTIVITY_LEVEL AS ENUM (
-    'Extremely_Inactive',
-    'Sedentary',
-    'Moderately_Active',
-    'Vigorously_Active',
-    'Extremely_Active'
+    'extremely_inactive',
+    'sedentary',
+    'moderately_active',
+    'vigorously_active',
+    'extremely_active'
   );
   CREATE TYPE COMMENT_TUPLE AS (
     comment_time TIMESTAMP,

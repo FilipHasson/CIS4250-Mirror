@@ -118,6 +118,7 @@ CREATE TABLE health (
   age INTEGER,
   weight INTEGER,
   height INTEGER,
+  categories RECIPE_CATEGORY [],
   lifestyle ACTIVITY_LEVEL
 );
 
