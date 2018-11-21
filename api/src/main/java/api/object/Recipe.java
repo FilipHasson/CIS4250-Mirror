@@ -71,7 +71,7 @@ public class Recipe {
     public static Category stringToCategory(String val){
         if (null == val) return null;
         switch (val.toLowerCase()){
-            case "NONE":
+            case "none":
                 return Category.none;
             case "atkins":
                 return Category.atkins;
@@ -137,12 +137,12 @@ public class Recipe {
     public static void addToJsonResponse(JSONObject json, Recipe recipe){
         JSONArray categories = new JSONArray();
         JSONArray steps = new JSONArray();
+        JSONObject ingredients = new JSONObject();
+
 
         if (null == recipe){
             json.put("recipe_id",null);
             json.put("account_id",null);
-            json.put("serving_count",null);
-            json.put("serving_size",null);
             json.put("star_count",null);
             json.put("view_count",null);
         } else {
@@ -152,8 +152,12 @@ public class Recipe {
             json.put("account_id",recipe.getAccountId());
             json.put("star_count",recipe.getStars());
             json.put("view_count",recipe.getViews());
+            for (Ingredient ingredient : recipe.getIngredients()){
+                Ingredient.addToJsonResponse(ingredients,ingredient);
+            }
         }
 
+        json.put("ingredients",ingredients);
         json.put("categories",categories);
         json.put("steps",steps);
     }

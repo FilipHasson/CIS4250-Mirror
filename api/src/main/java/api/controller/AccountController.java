@@ -3,9 +3,13 @@ package api.controller;
 
 import api.dao.AccountDAO;
 import api.dao.FoodDAO;
+import api.dao.HealthDAO;
 import api.exception.BadRequestException;
+import api.exception.ConflictException;
 import api.object.Account;
 import api.object.Food;
+import api.object.Health;
+import api.object.Recipe;
 import api.validator.AccountValidator;
 import api.validator.JsonValidator;
 import org.json.simple.JSONArray;
@@ -17,8 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import static api.validator.AccountValidator.VALID_TOKEN;
-import static api.validator.JsonValidator.getData;
-import static api.validator.JsonValidator.jsonString;
+import static api.validator.JsonValidator.*;
 
 @Controller
 @RequestMapping("/")
@@ -140,7 +143,63 @@ public class AccountController {
         return JsonValidator.initJsonReturn(accountJson,JsonValidator.initJsonMeta(token));
     }
 
+    @RequestMapping(value="/account/info/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public void setHealthInfo (@PathVariable("id")String sAccountId, @RequestBody String jsonString) {
+        JSONObject json;
+        JSONObject data;
+        JSONObject healthJson;
+        JSONObject meta;
+        int accountId;
+        Health health;
 
+        JSONParser parser = new JSONParser();
+        try {
+            json = (JSONObject)parser.parse(jsonString);
+            data = getData(json);
+            meta = jsonJson(json,"meta");
+            healthJson = jsonJson(data,"health");
+            accountId = Integer.parseInt(sAccountId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        if (accountId == 0) throw new BadRequestException();
+        if (null == new AccountDAO().findById(accountId)) throw new BadRequestException();
+        if (null != healthJson){
+//TODO RESTREICTIONS WHEN IMPLEMENTED
+//            JSONArray array = (JSONArray) data.get("restrictions");
+//            String[] restrictionStrings = new String[array.size()];
+//            for (int i = 0; i < array.size(); i++) restrictionStrings[i] = (String)array.get(i);
+
+            health = new Health(
+                    jsonInt(healthJson,"age"),
+                    jsonInt(healthJson,"weight"),
+                    jsonInt(healthJson,"height"),
+                    Health.stringToLifeStyle(jsonString(healthJson,"lifestyle")),
+//                    Recipe.stringsToCategories(restrictionStrings)
+                    null
+            );
+
+            if (0 == new HealthDAO().insertHealth(health,accountId))throw new ConflictException();
+        }
+    }
+
+    @RequestMapping(value="/account/health/{id}", method = RequestMethod.GET)
+    @ResponseBody
+    public JSONObject getHealth(@PathVariable("id")String sAccountId){
+        int accountId;
+
+        try {
+            accountId = Integer.parseInt(sAccountId);
+        } catch (NumberFormatException e){
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        return initJsonReturn(new AccountDAO().findById(accountId).toJson());
+    }
 
     //TODO remove generation method when account creation possible
     @RequestMapping(value="/accounts/generate")

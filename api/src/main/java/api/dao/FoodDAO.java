@@ -206,6 +206,51 @@ public class FoodDAO extends DAO{
         return foods;
     }
 
+    public int deleteFood(Food food){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        int affectedRows = 0;
+        int c;
+        String deleteFood = "DELETE FROM food WHERE id = ?";
+        String deleteServings = "DELETE FROM servings WHERE recipe_id = ?";
+        String deleteNutrition = "DELETE FROM nutrition WHERE id = ?";
+        String deleteRecipe = "DELETE FROM recipe WHERE id = ?";
+
+
+        try{
+            statement = connection.prepareStatement(deleteFood);
+            statement.setInt(1,food.getId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete FOOD");
+            affectedRows += c;
+
+
+            statement = connection.prepareStatement(deleteServings);
+            statement.setInt(1, food.getRecipeId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Servings");
+            affectedRows += c;
+
+            statement = connection.prepareStatement(deleteNutrition);
+            statement.setInt(1, food.getNutritionId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Nutrition");
+            affectedRows += c;
+
+            statement = connection.prepareStatement(deleteRecipe);
+            statement.setInt(1, food.getRecipeId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Recipe");
+            affectedRows += c;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return affectedRows;
+    }
+
     private Food getFoodFromResultSet(ResultSet resultSet){
         try {
             return new Food(

@@ -1,9 +1,11 @@
 package api.object;
 
+import org.json.simple.JSONObject;
+
 public class Ingredient {
-    int recipe_id;
-    int food_id;
-    double quantity;
+    private int recipe_id;
+    private int food_id;
+    private double quantity;
 
     public Ingredient(int recipe_id, int food_id, double quantity) {
         this.recipe_id = recipe_id;
@@ -37,5 +39,11 @@ public class Ingredient {
 
     public void setQuantity(double quantity) {
         this.quantity = quantity;
+    }
+
+    public static void addToJsonResponse(JSONObject json, Ingredient ingredient){
+        if (null != ingredient){
+            json.put(ingredient.getFood_id(),ingredient.getQuantity());
+        }
     }
 }

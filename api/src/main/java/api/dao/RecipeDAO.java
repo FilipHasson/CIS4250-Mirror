@@ -83,6 +83,7 @@ public class RecipeDAO extends DAO{
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+            super.disconnect(connection);
         }
         return  null;
     }

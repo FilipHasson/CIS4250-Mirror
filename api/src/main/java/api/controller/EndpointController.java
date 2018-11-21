@@ -4,9 +4,7 @@ import api.dao.FoodDAO;
 import api.dao.IngredientDAO;
 import api.dao.NutritionDAO;
 import api.dao.RecipeDAO;
-import api.exception.BadRequestException;
-import api.exception.ConflictException;
-import api.exception.UnauthorizedException;
+import api.exception.*;
 import api.object.Food;
 import api.object.Nutrition;
 import api.object.Recipe;
@@ -227,6 +225,40 @@ public class EndpointController {
 //                throw new ConflictException();
             }
         }
+    }
+
+    @RequestMapping(value="/account/{acc_id}/delete/{food_id}")
+    @ResponseBody
+    public void deleteRecipe(@RequestBody String jsonString, @PathVariable("acc_id")String sAccountId,
+                             @PathVariable("food_id")String sFoodId) {
+        JSONObject json;
+        JSONObject data;
+        JSONObject meta;
+        int accountId;
+        int foodId;
+        int result;
+
+        JSONParser parser = new JSONParser();
+        try {
+            accountId = Integer.parseInt(sAccountId);
+            foodId = Integer.parseInt(sFoodId);
+            json = (JSONObject)parser.parse(jsonString);
+            data = getData(json);
+            meta = jsonJson(json,"meta");
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        //TODO Validate token
+        Food toDelete = new FoodDAO().findById(foodId);
+        if (null == toDelete) throw new NotFoundException();
+        if (toDelete.getRecipe() == null) throw new NotFoundException();
+        if (toDelete.getRecipe().getAccountId() != accountId) throw new BadRequestException();
+
+        result = new FoodDAO().deleteFood(toDelete);
+        if (0 == result) throw new NotFoundException();
+        if (0 > result) throw new NotAcceptableException();
     }
 
     private Nutrition fillNutrition(JSONObject json, int id){
