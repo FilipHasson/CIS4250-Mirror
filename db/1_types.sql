@@ -30,6 +30,10 @@ BEGIN
     food_id INTEGER,
     serve_amount INTEGER
   );
+  CREATE TYPE COMMENT_TUPLE AS (
+    comment_time TIMESTAMP,
+    comment TEXT
+  );
   EXCEPTION WHEN OTHERS
   THEN
 END;
