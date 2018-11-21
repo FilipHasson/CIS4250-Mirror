@@ -25,6 +25,13 @@ BEGIN
     'dinner',
     'snack3'
   );
+  CREATE TYPE ACTIVITY_LEVEL AS ENUM (
+    'Extremely_Inactive',
+    'Sedentary',
+    'Moderately_Active',
+    'Vigorously_Active',
+    'Extremely_Active'
+  );
   EXCEPTION WHEN OTHERS
   THEN
 END;
