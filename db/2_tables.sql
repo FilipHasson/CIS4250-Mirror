@@ -121,4 +121,27 @@ CREATE TABLE health (
   lifestyle ACTIVITY_LEVEL
 );
 
+-- COMMENTS -----------------------------------------------------------------------
+DROP TABLE IF EXISTS comments CASCADE;
+CREATE TABLE comments (
+  account_id INTEGER REFERENCES account NOT NULL,
+  recipe_id INTEGER REFERENCES recipe NOT NULL,
+  comment_list COMMENT_TUPLE[],
+  PRIMARY KEY(account_id, recipe_id)
+);
 
+-- FAVORITES -----------------------------------------------------------------------
+DROP TABLE IF EXISTS favorites CASCADE;
+CREATE TABLE favorites (
+  id SERIAL PRIMARY KEY,
+  account_id INTEGER REFERENCES account NOT NULL,
+  recipe_id INTEGER REFERENCES recipe NOT NULL
+);
+
+-- STARS -----------------------------------------------------------------------
+DROP TABLE IF EXISTS stars CASCADE;
+CREATE TABLE stars (
+  id SERIAL PRIMARY KEY,
+  account_id INTEGER REFERENCES account NOT NULL,
+  recipe_id INTEGER REFERENCES recipe NOT NULL
+);

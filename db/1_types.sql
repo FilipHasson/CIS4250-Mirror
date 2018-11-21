@@ -32,6 +32,10 @@ BEGIN
     'Vigorously_Active',
     'Extremely_Active'
   );
+  CREATE TYPE COMMENT_TUPLE AS (
+    comment_time TIMESTAMP,
+    comment TEXT
+  );
   EXCEPTION WHEN OTHERS
   THEN
 END;
