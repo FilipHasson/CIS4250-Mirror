@@ -152,6 +152,7 @@ public class AccountController {
         JSONObject meta;
         int accountId;
         Health health;
+        String[] restrictionStrings = null;
 
         JSONParser parser = new JSONParser();
         try {
@@ -168,18 +169,21 @@ public class AccountController {
         if (accountId == 0) throw new BadRequestException();
         if (null == new AccountDAO().findById(accountId)) throw new BadRequestException();
         if (null != healthJson){
-//TODO RESTREICTIONS WHEN IMPLEMENTED
-//            JSONArray array = (JSONArray) data.get("restrictions");
-//            String[] restrictionStrings = new String[array.size()];
-//            for (int i = 0; i < array.size(); i++) restrictionStrings[i] = (String)array.get(i);
+            JSONArray array = (JSONArray) healthJson.get("restrictions");
+            if (array == null){
+                System.out.println("Empty Array");
+            } else {
+                restrictionStrings = new String[array.size()];
+                for (int i = 0; i < array.size(); i++) restrictionStrings[i] = (String) array.get(i);
+            }
 
             health = new Health(
                     jsonInt(healthJson,"age"),
                     jsonInt(healthJson,"weight"),
                     jsonInt(healthJson,"height"),
                     Health.stringToLifeStyle(jsonString(healthJson,"lifestyle")),
-//                    Recipe.stringsToCategories(restrictionStrings)
-                    null
+                    Recipe.stringsToCategories(restrictionStrings)
+//                    null
             );
 
             if (0 == new HealthDAO().insertHealth(health,accountId))throw new ConflictException();

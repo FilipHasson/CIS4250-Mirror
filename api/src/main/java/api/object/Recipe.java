@@ -57,6 +57,7 @@ public class Recipe {
     }
 
     public static Category[] stringsToCategories(String[] vals){
+        if (vals == null) return null;
         Category[] categories = new Category[vals.length];
         int i = 0;
 

@@ -64,8 +64,7 @@ public class Health {
             healthJson.put("weight",health.getWeight());
             healthJson.put("height",health.getHeight());
             healthJson.put("lifestyle",health.getLifestyleAsString());
-            //TODO RESTRICTIONS
-//            restrictions.addAll(Arrays.asList(health.getRestrictionsAsStrings()));
+            restrictions.addAll(Arrays.asList(health.getRestrictionsAsStrings()));
         }
 
         healthJson.put("restrictions",restrictions);
