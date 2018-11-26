@@ -21,7 +21,9 @@ public class FavoriteDAO extends DAO{
         ResultSet resultSet;
         String tempStr = category.replace("\"", "\'");
 
-        String query = "SELECT * FROM favorites, recipe WHERE favorites.account_id = " + accountId + " AND favorites.recipe_id = recipe.id AND \'" + tempStr + "\'=ANY(recipe.categories);";
+        // String query = "SELECT * FROM favorites, recipe WHERE favorites.account_id = " + accountId + " AND favorites.recipe_id = recipe.id AND \'" + tempStr + "\'=ANY(recipe.categories);";
+
+        String query = "select * from recipe where categories @> ANY(select categories from recipe right join (select recipe_id from favorites where account_id = " + accountID + ") as f on recipe.id = f.recipe_id);"
 
         System.out.println(query);
 
