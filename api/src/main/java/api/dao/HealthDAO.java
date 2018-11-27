@@ -2,6 +2,8 @@ package api.dao;
 
 import api.object.Health;
 import api.object.Recipe;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -36,6 +38,29 @@ public class HealthDAO extends DAO{
         }
 
         super.disconnect(connection);
+        return 0;
+    }
+
+    public long insertGoal(int calories, String date, int accountId)
+    {
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        LocalDate newDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        String query = "INSERT INTO goals (account_id, calorie_goal, date_goal)" +
+                "VALUES (?, ?, ?)";
+
+        try{
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            statement.setInt(1, accountId);
+            statement.setInt(2, calories);
+            statement.setObject(3, newDate);
+
+            return super.checkUpdated(connection,statement,statement.executeUpdate());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        super.disconnect(connection);
+
         return 0;
     }
 

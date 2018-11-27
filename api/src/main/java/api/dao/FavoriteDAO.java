@@ -13,17 +13,14 @@ import java.util.List;
 
 public class FavoriteDAO extends DAO{
 
-    public List<Recipe> findByAccountId(int accountId, String category)
+    public List<Recipe> findByAccountId(int accountId)
     {
         List<Recipe> recipe = new ArrayList<>();
         Connection connection = super.connect();
         PreparedStatement statement;
         ResultSet resultSet;
-        String tempStr = category.replace("\"", "\'");
 
-        // String query = "SELECT * FROM favorites, recipe WHERE favorites.account_id = " + accountId + " AND favorites.recipe_id = recipe.id AND \'" + tempStr + "\'=ANY(recipe.categories);";
-
-        String query = "select * from recipe where categories @> ANY(select categories from recipe right join (select recipe_id from favorites where account_id = " + accountID + ") as f on recipe.id = f.recipe_id);"
+        String query = "select * from recipe where categories @> ANY(select categories from recipe right join (select recipe_id from favorites where account_id = " + accountId + ") as f on recipe.id = f.recipe_id);";
 
         System.out.println(query);
 
@@ -45,7 +42,7 @@ public class FavoriteDAO extends DAO{
     private Recipe getRecipeFromResultSet(ResultSet resultSet){
         try {
             Recipe recipe =  new Recipe(
-                    resultSet.getInt("recipe_id"),
+                    resultSet.getInt("id"),
                     resultSet.getInt("account_id"),
                     Recipe.stringsToCategories((String[])resultSet.getArray("categories").getArray()),
                     (String[])resultSet.getArray("steps").getArray(),

@@ -19,6 +19,8 @@ import org.json.simple.parser.ParseException;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static api.validator.AccountValidator.VALID_TOKEN;
 import static api.validator.JsonValidator.*;
@@ -187,6 +189,46 @@ public class AccountController {
             );
 
             if (0 == new HealthDAO().insertHealth(health,accountId))throw new ConflictException();
+        }
+    }
+
+    @RequestMapping(value="/account/info/weight/{id}", method = RequestMethod.POST)
+    @ResponseBody
+    public void setHealthTarget (@PathVariable("id")String sAccountId, @RequestBody String jsonString) {
+        JSONObject json;
+        JSONObject data;
+        int weight;
+        JSONObject meta;
+        int accountId;
+        Health health;
+        String[] restrictionStrings = null;
+
+        JSONParser parser = new JSONParser();
+        try {
+            json = (JSONObject)parser.parse(jsonString);
+            data = getData(json);
+            meta = jsonJson(json,"meta");
+            accountId = Integer.parseInt(sAccountId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new BadRequestException();
+        }
+
+        if (accountId == 0) throw new BadRequestException();
+        if (null == new AccountDAO().findById(accountId)) throw new BadRequestException();
+        if (null != data){
+
+            int target = jsonInt(data,"weight");
+            Health healthInfo = new HealthDAO().findByAccountId(accountId);
+
+            // calculates estimated caloric intake to lose 0.5kg per week
+            int cals = (int) (1.25 * ((10 * healthInfo.getWeight()) + (6.25 * healthInfo.getHeight()) - (5 * healthInfo.getAge()) + 5));
+            int slowLoss = cals - 500;
+            int dateGoal = (int) ((healthInfo.getWeight() - target) * 2);
+
+            String test = LocalDate.now().plusWeeks(dateGoal).toString();
+            long val = new HealthDAO().insertGoal(slowLoss, test, accountId);
+
         }
     }
 

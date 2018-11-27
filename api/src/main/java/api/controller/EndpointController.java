@@ -101,17 +101,18 @@ public class EndpointController {
 
     @RequestMapping(value="/recipes/recommend")
     @ResponseBody
-    public JSONObject getRecipesByFavorites(@RequestParam(value = "id", required = false)int account_id,
-                                            @RequestParam(value = "category", required = false)String cat){
+    public JSONObject getRecipesByFavorites(@RequestParam(value = "id", required = false)int account_id){
         JSONArray json = new JSONArray();
         FavoriteDAO fav = new FavoriteDAO();
-        List<Integer> recipeIds = Recipe.getIds(fav.findByAccountId(account_id, cat));
+        List<Integer> recipeIds = Recipe.getIds(fav.findByAccountId(account_id));
         for (int id : recipeIds){
             System.out.println(id);
             json.add(new RecipeDAO().findById(id));
         }
         return initJsonReturn(json);
     }
+
+
 
 
     @RequestMapping(value="/food")
