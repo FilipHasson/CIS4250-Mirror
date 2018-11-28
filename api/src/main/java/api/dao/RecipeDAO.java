@@ -49,12 +49,20 @@ public class RecipeDAO extends DAO{
         return recipes;
     }
 
-    public List<Recipe> findByCategory(Recipe.Category category){
-        ResultSet resultSet = super.findByString("recipe","category",category.toString());
+    public List<Recipe> findByCategory(String category){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+
+        String tempStr = category.replace("\"", "\'");
+        String query = "SELECT * FROM recipe WHERE " + tempStr + "=ANY(categories);";
         List<Recipe> recipes = new ArrayList<>();
 
         try {
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
+                System.out.println(resultSet);
                 recipes.add(getRecipeFromResultSet(resultSet));
             }
         } catch (SQLException e) {

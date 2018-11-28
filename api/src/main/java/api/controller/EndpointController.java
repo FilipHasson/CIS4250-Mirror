@@ -4,6 +4,7 @@ import api.dao.FoodDAO;
 import api.dao.IngredientDAO;
 import api.dao.NutritionDAO;
 import api.dao.RecipeDAO;
+import api.dao.FavoriteDAO;
 import api.exception.*;
 import api.object.Food;
 import api.object.Nutrition;
@@ -56,25 +57,34 @@ public class EndpointController {
     @RequestMapping(value="/recipes", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public JSONObject getRecipes(@RequestParam(value = "search", required = false)String title,
-                                 @RequestParam(value = "id", required = false)String sId ){
+                                 @RequestParam(value = "id", required = false)String sId,
+                                 @RequestParam(value = "category", required = false)String cat ){
         JSONArray json = new JSONArray();
-        if(null != title && null != sId){
+        if(null != title && null != sId && null != cat){
             try {
                 int id = Integer.parseInt(sId);
                 List<Integer> recipeIds = (Recipe.getIds(new RecipeDAO().search(title,id)));
                 for (int rId : recipeIds){
+
                     json.add(new FoodDAO().findByInt("recipe_id",rId).getId());
                 }
             } catch (NumberFormatException e){
                 e.printStackTrace();
                 throw new BadRequestException();
             }
-        } else if (null != title ^ null != sId){
-            System.out.println("Only one parameter null");
-            throw new BadRequestException();
+        // } else if (null != title ^ null != sId ^ null != cat){
+        //     System.out.println("Only one parameter null");
+        //     throw new BadRequestException();
+        } else if(null != cat){
+            List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findByCategory(cat));
+            for(int id: recipeIds)
+            {
+                json.add(new FoodDAO().findByInt("recipe_id",id).getId());
+            }
         } else {
             List<Integer> recipeIds = Recipe.getIds(new RecipeDAO().findAllOrderByTimeLimit(100));
             for (int id : recipeIds){
+
                 json.add(new FoodDAO().findByInt("recipe_id",id).getId());
             }
         }
@@ -88,6 +98,21 @@ public class EndpointController {
         json.addAll(Food.getIds(new FoodDAO().findByRecipeCategory(category)));
         return initJsonReturn(json);
     }
+
+    @RequestMapping(value="/recipes/recommend")
+    @ResponseBody
+    public JSONObject getRecipesByFavorites(@RequestParam(value = "id", required = false)int account_id){
+        JSONArray json = new JSONArray();
+        FavoriteDAO fav = new FavoriteDAO();
+        List<Integer> recipeIds = Recipe.getIds(fav.findByAccountId(account_id));
+        for (int id : recipeIds){
+            System.out.println(id);
+            json.add(new RecipeDAO().findById(id));
+        }
+        return initJsonReturn(json);
+    }
+
+
 
 
     @RequestMapping(value="/food")

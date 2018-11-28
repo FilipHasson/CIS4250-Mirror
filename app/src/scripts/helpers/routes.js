@@ -48,6 +48,14 @@ export const routes = [
     }
   },
   {
+    component: () => import('@/components/pages/health'),
+    path: '/health',
+    name: 'Health',
+    meta: {
+      is_public: false
+    }
+  },
+  {
     path: '*',
     redirect: REDIRECT_ROUTE,
     meta: {}
