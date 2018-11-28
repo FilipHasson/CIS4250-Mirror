@@ -1,56 +1,48 @@
-<script>
-
-export default {
-  name: 'health',
-  mounted () {
-
-  },
-  computed: {
-
-  },
-  methods: {
-    close () {
-      this.$emit('close')
-    }
-  }
-
-}
-</script>
-
 <template>
-  <div class="modal-backdrop">
-    <div class="modal">
-      <header class="modal-header">
-        <slot name="header">
-          This is the default tile!
-
-          <button
-            type="button"
-            class="btn-close"
-            @click="close"
-          >
-            x
-          </button>
-        </slot>
-      </header>
-      <section class="modal-body">
-        <slot name="body">
-          I'm the default body!
-        </slot>
-       </section>
-       <footer class="modal-footer">
-          <slot name="footer">
-            I'm the default footer!
-
-            <button
-              type="button"
-              class="btn-green"
-              @click="close"
-            >
-              Close me!
-          </button>
-        </slot>
-      </footer>
+  <div id="explore" class="page">
+    <div @keydown.enter="handleSubmit">
+      <label>
+        Email:
+        <input type="weight" v-model="user.weight"/>
+      </label>
+      <button @click="handleSubmit">Submit</button>
     </div>
+    Expected Finish Date: {{ user.date }} <hr>
+    Caloric Intake Goal: {{ user.goal }}
   </div>
 </template>
+
+<script>
+import axios from 'axios'
+export default {
+
+  data () {
+    return {
+      user: {
+        weight: '',
+        goal: '',
+        date: ''
+      }
+    }
+  },
+  methods: {
+    handleSubmit () {
+      var weight = parseInt(this.user.weight)
+      var _this = this
+      var url = '/api/account/info/weight/' + this.$store.state.session.user_id
+
+      axios.post(url, {
+        data: { weight }, meta: {}
+      })
+        .then(function (response) {
+          var result = response.data
+          _this.user.goal = result.weight
+          _this.user.date = result.date
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+    }
+  }
+}
+</script>

@@ -64,6 +64,8 @@ public class HealthDAO extends DAO{
         return 0;
     }
 
+
+
     public Health findByAccountId(int accountId){
         if (0 != accountId){
             Connection connection = connect();

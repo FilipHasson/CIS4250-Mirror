@@ -194,7 +194,7 @@ public class AccountController {
 
     @RequestMapping(value="/account/info/weight/{id}", method = RequestMethod.POST)
     @ResponseBody
-    public void setHealthTarget (@PathVariable("id")String sAccountId, @RequestBody String jsonString) {
+    public JSONObject setHealthTarget (@PathVariable("id")String sAccountId, @RequestBody String jsonString) {
         JSONObject json;
         JSONObject data;
         int weight;
@@ -227,9 +227,27 @@ public class AccountController {
             int dateGoal = (int) ((healthInfo.getWeight() - target) * 2);
 
             String test = LocalDate.now().plusWeeks(dateGoal).toString();
-            long val = new HealthDAO().insertGoal(slowLoss, test, accountId);
+
+            JSONParser respParse = new JSONParser();
+            JSONObject resp = new JSONObject();
+
+            // create result JSON that is sent back to caller, with calorie and date info
+            String jsonStr = "{\"weight\":" + slowLoss + ", \"date\":\"" + test + "\"}";
+            try
+            {
+                resp = (JSONObject) respParse.parse(jsonStr);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                throw new BadRequestException();
+            }
+
+            if(0 == new HealthDAO().insertGoal(slowLoss, test, accountId))throw new ConflictException();
+
+            return resp;
 
         }
+
+        return null;
     }
 
     @RequestMapping(value="/account/health/{id}", method = RequestMethod.GET)
