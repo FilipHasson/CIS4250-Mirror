@@ -25,10 +25,12 @@ BEGIN
     'dinner',
     'snack3'
   );
-  CREATE TYPE MEAL_TUPLE AS (
-    type MEAL_TYPE,
-    food_id INTEGER,
-    serve_amount INTEGER
+  CREATE TYPE ACTIVITY_LEVEL AS ENUM (
+    'extremely_inactive',
+    'sedentary',
+    'moderately_active',
+    'vigorously_active',
+    'extremely_active'
   );
   CREATE TYPE COMMENT_TUPLE AS (
     comment_time TIMESTAMP,

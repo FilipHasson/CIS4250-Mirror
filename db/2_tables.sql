@@ -94,10 +94,12 @@ ON food FOR EACH ROW EXECUTE PROCEDURE food_text_search_trigger();
 -- MEAL ------------------------------------------------------------------------
 DROP TABLE IF EXISTS meals CASCADE;
 CREATE TABLE meals (
+  id SERIAL PRIMARY KEY,
   meal_day DATE DEFAULT current_date NOT NULL,
   account_id INTEGER REFERENCES account NOT NULL,
-  meal_list MEAL_TUPLE [],
-  PRIMARY KEY(meal_day, account_id)
+  type MEAL_TYPE,
+  food_id INTEGER REFERENCES food NOT NULL,
+  serving_amount INTEGER
 );
 
 -- GOALS -----------------------------------------------------------------------
@@ -107,6 +109,17 @@ CREATE TABLE goals (
   account_id INTEGER REFERENCES account NOT NULL,
   calorie_goal INTEGER,
   date_goal DATE
+);
+
+-- HEALTH -----------------------------------------------------------------------
+DROP TABLE IF EXISTS health CASCADE;
+CREATE TABLE health (
+  account_id INTEGER REFERENCES account NOT NULL PRIMARY KEY,
+  age INTEGER,
+  weight INTEGER,
+  height INTEGER,
+  categories RECIPE_CATEGORY [],
+  lifestyle ACTIVITY_LEVEL
 );
 
 -- COMMENTS -----------------------------------------------------------------------

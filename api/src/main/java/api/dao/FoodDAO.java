@@ -136,15 +136,17 @@ public class FoodDAO extends DAO{
     public long insertFood(Food food){
         Connection connection = super.connect();
         PreparedStatement statement;
-        String query = "INSERT INTO food (title, nutrition_id, recipe_id, time_created, time_updated) VALUES (?, ?, ?, ?, ?)";
+        String query = "INSERT INTO food (title, serving_count, serving_size, nutrition_id, recipe_id, time_created, time_updated) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,food.getTitle());
-            statement.setInt(2,food.getNutritionId());
-            statement.setLong(3,food.getRecipeId());
-            statement.setObject(4,food.getTimeCreated());
-            statement.setObject(5,food.getTimeUpdated());
+            statement.setDouble(2,food.getServing_count());
+            statement.setString(3,food.getServing_size());
+            statement.setInt(4,food.getNutritionId());
+            statement.setLong(5,food.getRecipeId());
+            statement.setObject(6,food.getTimeCreated());
+            statement.setObject(7,food.getTimeUpdated());
 
             return super.checkUpdated(connection,statement,statement.executeUpdate());
         } catch (SQLException e) {
@@ -159,13 +161,15 @@ public class FoodDAO extends DAO{
         Connection connection = super.connect();
         PreparedStatement statement;
         int affectedRows = 0;
-        String query = "UPDATE food SET title = ?, time_updated  = ? WHERE id = ?";
+        String query = "UPDATE food SET title = ?, serving_count = ?, serving_size = ?, time_updated  = ? WHERE id = ?";
 
         try {
             statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1,food.getTitle());
-            statement.setObject(2,food.getTimeUpdated());
-            statement.setInt(3,food.getId());
+            statement.setDouble(2,food.getServing_count());
+            statement.setString(3,food.getServing_size());
+            statement.setObject(4,food.getTimeUpdated());
+            statement.setInt(5,food.getId());
 
             affectedRows = statement.executeUpdate();
         } catch (SQLException e) {
@@ -176,11 +180,84 @@ public class FoodDAO extends DAO{
         return affectedRows;
     }
 
+    public List<Food> search(String title){
+//        SELECT food.* FROM food, plainto_tsquery($1) AS q
+//        WHERE (tsv_food_title @@ q) AND recipe_id IS NULL;
+        List<Food> foods = new ArrayList<>();
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        ResultSet resultSet;
+//        String query = "SELECT * FROM food, recipe WHERE food.recipe_id = recipe.id AND recipe.account_id = ?";
+
+        String query = "SELECT * FROM food, plainto_tsquery(?) AS q WHERE (tsv_food_title @@ q) AND recipe_id IS NULL LIMIT 10";
+        try {
+            statement = connection.prepareStatement(query);
+            statement.setString(1,title);
+
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                foods.add(getFoodFromResultSet(resultSet));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        super.disconnect(connection);
+        return foods;
+    }
+
+    public int deleteFood(Food food){
+        Connection connection = super.connect();
+        PreparedStatement statement;
+        int affectedRows = 0;
+        int c;
+        String deleteFood = "DELETE FROM food WHERE id = ?";
+        String deleteServings = "DELETE FROM servings WHERE recipe_id = ?";
+        String deleteNutrition = "DELETE FROM nutrition WHERE id = ?";
+        String deleteRecipe = "DELETE FROM recipe WHERE id = ?";
+
+
+        try{
+            statement = connection.prepareStatement(deleteFood);
+            statement.setInt(1,food.getId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete FOOD");
+            affectedRows += c;
+
+
+            statement = connection.prepareStatement(deleteServings);
+            statement.setInt(1, food.getRecipeId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Servings");
+            affectedRows += c;
+
+            statement = connection.prepareStatement(deleteNutrition);
+            statement.setInt(1, food.getNutritionId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Nutrition");
+            affectedRows += c;
+
+            statement = connection.prepareStatement(deleteRecipe);
+            statement.setInt(1, food.getRecipeId());
+            c = statement.executeUpdate();
+            if (0 == c) System.out.println("Did not delete Recipe");
+            affectedRows += c;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1;
+        }
+
+        return affectedRows;
+    }
+
     private Food getFoodFromResultSet(ResultSet resultSet){
         try {
             return new Food(
                     resultSet.getInt("id"),
                     resultSet.getString("title"),
+                    resultSet.getDouble("serving_count"),
+                    resultSet.getString("serving_size"),
                     resultSet.getInt("nutrition_id"),
                     resultSet.getInt("recipe_id"),
                     resultSet.getObject("time_created", OffsetDateTime.class),

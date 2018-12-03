@@ -34,40 +34,30 @@ public class Recipe {
     private Category[] categories;
     private int id;
     private int accountId;
-    private double serving_count;
-    private String serving_size;
     private String[] steps;
     private int views;
     private int stars;
+    private ArrayList<Ingredient> ingredients;
+    private String description;
 
-
-    public Recipe(int id, int accountId, double serving_count, String serving_size, Category[] categories,
-                  String[] steps, int views, int stars) {
+    public Recipe(int id, int accountId, Category[] categories,
+                  String[] steps, int views, int stars, ArrayList<Ingredient> ingredients, String description) {
         this.categories = categories;
         this.id = id;
         this.accountId = accountId;
-        this.serving_count = serving_count;
-        this.serving_size = serving_size;
         this.steps = steps;
         this.views = views;
         this.stars = stars;
+        this.ingredients = ingredients;
+        this.description = description;
     }
-
-    public Recipe(int id, int accountId, double serving_count, String serving_size, Category[] categories, String[] steps) {
-        this.categories = categories;
-        this.id = id;
-        this.accountId = accountId;
-        this.serving_count = serving_count;
-        this.serving_size = serving_size;
-        this.steps = steps;
-    }
-
 
     public Recipe(){
-        this (0, 0, 0.0, "", new Category[]{null}, new String[]{""},0,0);
+        this (0, 0,  new Category[]{null}, new String[]{""},0,0,new ArrayList<>(),"");
     }
 
     public static Category[] stringsToCategories(String[] vals){
+        if (vals == null) return null;
         Category[] categories = new Category[vals.length];
         int i = 0;
 
@@ -82,7 +72,7 @@ public class Recipe {
     public static Category stringToCategory(String val){
         if (null == val) return null;
         switch (val.toLowerCase()){
-            case "NONE":
+            case "none":
                 return Category.none;
             case "atkins":
                 return Category.atkins;
@@ -148,12 +138,12 @@ public class Recipe {
     public static void addToJsonResponse(JSONObject json, Recipe recipe){
         JSONArray categories = new JSONArray();
         JSONArray steps = new JSONArray();
+        JSONObject ingredients = new JSONObject();
+
 
         if (null == recipe){
             json.put("recipe_id",null);
             json.put("account_id",null);
-            json.put("serving_count",null);
-            json.put("serving_size",null);
             json.put("star_count",null);
             json.put("view_count",null);
         } else {
@@ -161,12 +151,14 @@ public class Recipe {
             categories.addAll(Arrays.asList(recipe.getCategoriesAsStrings()));
             steps.addAll(Arrays.asList(recipe.getSteps()));
             json.put("account_id",recipe.getAccountId());
-            json.put("serving_count",recipe.getServing_count());
-            json.put("serving_size",recipe.getServing_size());
             json.put("star_count",recipe.getStars());
             json.put("view_count",recipe.getViews());
+            for (Ingredient ingredient : recipe.getIngredients()){
+                Ingredient.addToJsonResponse(ingredients,ingredient);
+            }
         }
 
+        json.put("ingredients",ingredients);
         json.put("categories",categories);
         json.put("steps",steps);
     }
@@ -197,14 +189,6 @@ public class Recipe {
         this.accountId = accountId;
     }
 
-    public double getServing_count() {
-        return serving_count;
-    }
-
-    public void setServing_count(double serving_count) {
-        this.serving_count = serving_count;
-    }
-
     public String[] getSteps() {
         return steps;
     }
@@ -229,12 +213,24 @@ public class Recipe {
         this.stars = stars;
     }
 
-    public String getServing_size() {
-        return serving_size;
+    public ArrayList<Ingredient> getIngredients() {
+        return ingredients;
     }
 
-    public void setServing_size(String serving_size) {
-        this.serving_size = serving_size;
+    public void setIngredients(ArrayList<Ingredient> ingredients) {
+        this.ingredients = ingredients;
+    }
+
+    public void addIngredient(int foodId, double quantity){
+        this.ingredients.add(new Ingredient(this.id,foodId,quantity));
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -243,7 +239,6 @@ public class Recipe {
                 "categories=" + Arrays.toString(categories) +
                 ", id=" + id +
                 ", accountId=" + accountId +
-                ", serving_count=" + serving_count +
                 ", steps=" + Arrays.toString(steps) +
                 ", views=" + views +
                 ", stars=" + stars +

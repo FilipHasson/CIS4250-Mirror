@@ -17,19 +17,22 @@ import java.util.List;
 public class Food {
     private int id;
     private String title;
+    private double serving_count;
+    private String serving_size;
     private int nutritionId;
     private Nutrition nutrition;
     private int recipeId;
-
     private Recipe recipe;
     private OffsetDateTime timeCreated;
     private OffsetDateTime timeUpdated;
 
-    public Food(int id, String title, int nId, int rId, OffsetDateTime created, OffsetDateTime updated, Recipe r, Nutrition n) {
+    public Food(int id, String title,double serving_count, String serving_size, int nId, int rId, OffsetDateTime created, OffsetDateTime updated, Recipe r, Nutrition n) {
         this.id = id;
         this.title = title;
         this.nutritionId = nId;
         this.recipeId = rId;
+        this.serving_count = serving_count;
+        this.serving_size = serving_size;
         this.timeCreated = created;
         this.timeUpdated = updated;
         if (0 == recipeId) this.recipe = null;
@@ -38,12 +41,12 @@ public class Food {
         else this.nutrition = n;
     }
 
-    public Food(int id,String title, int nId, int rId, OffsetDateTime created, OffsetDateTime updated){
-        this(id, title, nId, rId, created, updated, new RecipeDAO().findById(rId), new NutritionDAO().findById(nId));
+    public Food(int id,String title, double serving_count, String serving_size, int nId, int rId, OffsetDateTime created, OffsetDateTime updated){
+        this(id, title, serving_count, serving_size,nId, rId, created, updated, new RecipeDAO().findById(rId), new NutritionDAO().findById(nId));
     }
 
     public Food(){
-        this(0,",", 0,0,OffsetDateTime.now(),OffsetDateTime.now(),new Recipe(),new Nutrition());
+        this(0,"", 0,"",0,0,OffsetDateTime.now(),OffsetDateTime.now(),new Recipe(),new Nutrition());
     }
 
     public JSONObject toJson(){
@@ -51,7 +54,8 @@ public class Food {
 
         json.put("id",this.id);
         json.put("title",this.title);
-        json.put("header","don't really know what you want here Jessy");
+        json.put("serving_count",this.serving_count);
+        json.put("serving_size",this.serving_size);
         json.put("time_created",this.timeCreated.toEpochSecond());
         json.put("time_modified",this.timeUpdated.toEpochSecond());
 
@@ -135,14 +139,35 @@ public class Food {
         this.timeUpdated = timeUpdated;
     }
 
+    public double getServing_count() {
+        return serving_count;
+    }
+
+    public void setServing_count(double serving_count) {
+        this.serving_count = serving_count;
+    }
+
+    public String getServing_size() {
+        return serving_size;
+    }
+
+    public void setServing_size(String serving_size) {
+        this.serving_size = serving_size;
+    }
+
     @Override
     public String toString() {
         return "Food{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
+                ", serving_count=" + serving_count +
+                ", serving_size='" + serving_size + '\'' +
                 ", nutritionId=" + nutritionId +
+                ", nutrition=" + nutrition +
                 ", recipeId=" + recipeId +
-                ", timeUpdated=" + timeUpdated.toString() +
+                ", recipe=" + recipe +
+                ", timeCreated=" + timeCreated +
+                ", timeUpdated=" + timeUpdated +
                 '}';
     }
 }
